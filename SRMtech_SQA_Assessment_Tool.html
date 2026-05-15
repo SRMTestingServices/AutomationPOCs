@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SRMtech SQA Assessment Tool — UCA Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e1a;
+    --bg-panel: #ffffff;
+    --bg-soft: #f4f6fb;
+    --bg-card: #ffffff;
+    --ink: #0a0e1a;
+    --ink-soft: #4a5568;
+    --ink-muted: #7a869a;
+    --accent: #00b8a9;
+    --accent-deep: #008b80;
+    --line: #e3e7ef;
+    --line-soft: #eef1f6;
+
+    /* Dimension colors */
+    --c-policy: #3b6ef7;
+    --c-controls: #00b8a9;
+    --c-risk: #f4a522;
+    --c-ai: #e94e77;
+    --c-audit: #ef4444;
+    --c-quality: #8b5cf6;
+    --c-data: #06b6d4;
+    --c-vendor: #f97316;
+
+    /* Maturity colors */
+    --m-1: #ef4444;
+    --m-2: #f97316;
+    --m-3: #f4a522;
+    --m-4: #84cc16;
+    --m-5: #22c55e;
+
+    --radius: 4px;
+    --shadow: 0 1px 3px rgba(10,14,26,0.06), 0 1px 2px rgba(10,14,26,0.04);
+    --shadow-lg: 0 10px 30px rgba(10,14,26,0.08), 0 4px 12px rgba(10,14,26,0.04);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    background: var(--bg-soft);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* HEADER */
+  .top-bar {
+    background: var(--bg);
+    color: #fff;
+    padding: 18px 32px;
+    border-bottom: 3px solid var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+  }
+  .brand-mark {
+    font-family: 'Fraunces', serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.01em;
+  }
+  .brand-divider {
+    width: 1px;
+    height: 18px;
+    background: rgba(255,255,255,0.25);
+    align-self: center;
+  }
+  .brand-sub {
+    font-size: 11px;
+    color: rgba(255,255,255,0.65);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 500;
+  }
+  .top-actions {
+    display: flex;
+    gap: 8px;
+  }
+  .btn {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn:hover { background: var(--bg-soft); }
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255,255,255,0.2);
+  }
+  .btn-ghost:hover { background: rgba(255,255,255,0.08); }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+  .btn-primary:hover { background: var(--accent-deep); border-color: var(--accent-deep); }
+  .btn-danger {
+    color: var(--m-1);
+    border-color: transparent;
+  }
+  .btn-danger:hover { background: rgba(239, 68, 68, 0.08); }
+
+  /* STEPPER */
+  .stepper {
+    background: #fff;
+    border-bottom: 1px solid var(--line);
+    padding: 14px 32px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    overflow-x: auto;
+  }
+  .step {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-muted);
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s ease;
+  }
+  .step:hover { background: var(--bg-soft); }
+  .step.active {
+    background: var(--ink);
+    color: #fff;
+  }
+  .step.done {
+    color: var(--accent-deep);
+  }
+  .step-num {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    font-size: 11px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .step.active .step-num {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+  .step.done .step-num {
+    background: var(--accent);
+    color: #fff;
+  }
+  .step-arrow {
+    color: var(--ink-muted);
+    margin: 0 2px;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px;
+  }
+  .chapter-tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--accent-deep);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  h1.page-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 36px;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 8px;
+  }
+  .page-subtitle {
+    color: var(--ink-soft);
+    font-size: 15px;
+    margin-bottom: 28px;
+    max-width: 720px;
+  }
+
+  /* CARDS */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .card-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 500;
+    font-size: 20px;
+    letter-spacing: -0.01em;
+  }
+
+  /* FORM */
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+  .form-grid.full { grid-template-columns: 1fr; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: #fff;
+    transition: border-color 0.15s ease;
+  }
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0, 184, 169, 0.1);
+  }
+  .field textarea { resize: vertical; min-height: 70px; }
+
+  /* DIMENSION ROW */
+  .dimension {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: box-shadow 0.2s ease;
+  }
+  .dimension:hover { box-shadow: var(--shadow-lg); }
+  .dim-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    cursor: pointer;
+    border-left: 4px solid var(--dim-color, var(--accent));
+    background: #fff;
+    transition: background 0.15s ease;
+  }
+  .dim-header:hover { background: var(--bg-soft); }
+  .dim-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--dim-color);
+    opacity: 0.12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    position: relative;
+  }
+  .dim-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--dim-color);
+    opacity: 1;
+    -webkit-mask: var(--icon-mask) center / 18px no-repeat;
+            mask: var(--icon-mask) center / 18px no-repeat;
+  }
+  .dim-title-block { flex: 1; min-width: 0; }
+  .dim-title {
+    font-family: 'Fraunces', serif;
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 2px;
+  }
+  .dim-question {
+    font-size: 13px;
+    color: var(--ink-muted);
+  }
+  .dim-score-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    background: var(--bg-soft);
+    border-radius: 999px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+  .dim-score-pill.scored {
+    background: rgba(0, 184, 169, 0.08);
+    color: var(--accent-deep);
+  }
+  .dim-score-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--ink-muted);
+  }
+  .dim-score-pill.scored .dim-score-dot { background: var(--accent); }
+  .dim-chevron {
+    color: var(--ink-muted);
+    transition: transform 0.2s ease;
+  }
+  .dimension.open .dim-chevron { transform: rotate(90deg); }
+  .dim-body {
+    display: none;
+    padding: 0 22px 22px 22px;
+    border-top: 1px solid var(--line-soft);
+    background: var(--bg-soft);
+  }
+  .dimension.open .dim-body { display: block; }
+
+  /* CURRENT VS TARGET */
+  .ct-strip {
+    display: grid;
+    grid-template-columns: 1fr 24px 1fr;
+    gap: 12px;
+    align-items: center;
+    padding: 16px 18px;
+    background: #fff;
+    border-radius: 6px;
+    margin: 18px 0;
+    border: 1px solid var(--line-soft);
+  }
+  .ct-side label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+    display: block;
+  }
+  .ct-side .ct-value {
+    font-size: 13px;
+    color: var(--ink);
+    font-weight: 500;
+    line-height: 1.4;
+  }
+  .ct-arrow {
+    text-align: center;
+    color: var(--ink-muted);
+    font-size: 16px;
+  }
+
+  /* SUB-QUESTIONS */
+  .subq {
+    background: #fff;
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 14px 16px;
+    margin-bottom: 8px;
+  }
+  .subq-text {
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 10px;
+    line-height: 1.5;
+  }
+  .maturity-scale {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+  }
+  .mat-btn {
+    border: 1px solid var(--line);
+    background: #fff;
+    padding: 8px 6px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--ink-soft);
+    transition: all 0.12s ease;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .mat-btn:hover { border-color: var(--ink-soft); }
+  .mat-btn strong {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--ink);
+  }
+  .mat-btn.selected {
+    color: #fff;
+    border-color: transparent;
+  }
+  .mat-btn.selected strong { color: #fff; }
+  .mat-btn.selected[data-level="1"] { background: var(--m-1); }
+  .mat-btn.selected[data-level="2"] { background: var(--m-2); }
+  .mat-btn.selected[data-level="3"] { background: var(--m-3); }
+  .mat-btn.selected[data-level="4"] { background: var(--m-4); }
+  .mat-btn.selected[data-level="5"] { background: var(--m-5); }
+
+  .evidence-row {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .evidence-row textarea {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ink);
+    background: #fff;
+    min-height: 32px;
+    resize: vertical;
+  }
+  .evidence-row textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .evidence-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+    margin-top: 12px;
+  }
+
+  /* NAV */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+  }
+
+  /* RESULTS */
+  .results-hero {
+    background: var(--bg);
+    color: #fff;
+    border-radius: 8px;
+    padding: 32px;
+    margin-bottom: 20px;
+    border-top: 3px solid var(--accent);
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 32px;
+  }
+  .overall-score {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+  .score-ring {
+    width: 130px;
+    height: 130px;
+    flex-shrink: 0;
+  }
+  .score-label {
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 6px;
+  }
+  .score-value {
+    font-family: 'Fraunces', serif;
+    font-size: 48px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .score-text {
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    align-self: center;
+  }
+  .stat-tile {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+  .stat-label {
+    font-size: 10px;
+    color: rgba(255,255,255,0.55);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 4px;
+  }
+  .stat-value {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 500;
+  }
+  .stat-value.danger { color: #fca5a5; }
+  .stat-value.warn { color: #fcd34d; }
+  .stat-value.good { color: #86efac; }
+
+  /* MATURITY MAP */
+  .maturity-map { padding: 8px 0; }
+  .map-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 110px;
+    gap: 16px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .map-row:last-child { border-bottom: none; }
+  .map-dim-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .map-bar-wrapper {
+    background: var(--bg-soft);
+    height: 28px;
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+  }
+  .map-bar {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 0.6s ease;
+    position: relative;
+  }
+  .map-target-marker {
+    position: absolute;
+    top: -3px;
+    bottom: -3px;
+    width: 2px;
+    background: var(--ink);
+    z-index: 2;
+  }
+  .map-target-marker::after {
+    content: 'TARGET';
+    position: absolute;
+    top: -16px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: var(--ink-soft);
+  }
+  .map-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: right;
+    color: var(--ink-soft);
+  }
+  .map-score strong {
+    color: var(--ink);
+    font-size: 15px;
+  }
+
+  /* GAP REGISTER */
+  .gap-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .gap-table th {
+    text-align: left;
+    padding: 10px 12px;
+    background: var(--bg-soft);
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-bottom: 1px solid var(--line);
+  }
+  .gap-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+  }
+  .gap-table tr:last-child td { border-bottom: none; }
+  .risk-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .risk-high { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+  .risk-med { background: rgba(244, 165, 34, 0.15); color: #b45309; }
+  .risk-low { background: rgba(132, 204, 22, 0.15); color: #4d7c0f; }
+  .risk-none { background: var(--bg-soft); color: var(--ink-muted); }
+
+  /* GxP APPLICABILITY */
+  .gxp-question {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+  .gxp-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    border-radius: 50%;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 8px;
+    flex-shrink: 0;
+  }
+  .gxp-q-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.45;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: flex-start;
+  }
+  .gxp-q-text > span:last-child { flex: 1; padding-top: 3px; }
+  .gxp-examples {
+    background: var(--bg-soft);
+    border-radius: 4px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+    border-left: 3px solid var(--accent);
+  }
+  .gxp-examples-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+  .gxp-examples ul {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .gxp-examples li { margin-bottom: 2px; }
+  .gxp-controls {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    gap: 10px;
+    align-items: center;
+  }
+  .yn-btn {
+    padding: 8px 18px;
+    border: 1px solid var(--line);
+    background: #fff;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    color: var(--ink-soft);
+  }
+  .yn-btn:hover { border-color: var(--ink-soft); }
+  .yn-btn.selected-yes {
+    background: var(--m-4);
+    color: #fff;
+    border-color: var(--m-4);
+  }
+  .yn-btn.selected-no {
+    background: var(--ink-soft);
+    color: #fff;
+    border-color: var(--ink-soft);
+  }
+  .gxp-comment {
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: var(--ink);
+    background: #fff;
+    width: 100%;
+  }
+  .gxp-comment:focus { outline: none; border-color: var(--accent); }
+
+  .gxp-verdict {
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .gxp-verdict.regulated {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(244, 165, 34, 0.08));
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+  .gxp-verdict.not-regulated {
+    background: rgba(132, 204, 22, 0.06);
+    border: 1px solid rgba(132, 204, 22, 0.2);
+  }
+  .gxp-verdict.pending {
+    background: var(--bg-soft);
+    border: 1px solid var(--line);
+  }
+  .verdict-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+  .gxp-verdict.regulated .verdict-icon { background: rgba(239, 68, 68, 0.15); }
+  .gxp-verdict.not-regulated .verdict-icon { background: rgba(132, 204, 22, 0.15); }
+  .gxp-verdict.pending .verdict-icon { background: var(--line); }
+  .verdict-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: 4px;
+  }
+  .verdict-text {
+    font-family: 'Fraunces', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .verdict-sub {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+  .gxp-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .gxp-badge.regulated { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+  .gxp-badge.high { background: rgba(220, 38, 38, 0.15); color: #991b1b; }
+  .gxp-badge.not-regulated { background: rgba(132, 204, 22, 0.15); color: #4d7c0f; }
+  .gxp-badge.pending { background: var(--bg-soft); color: var(--ink-muted); }
+
+  /* HIDDEN STEPS */
+  .step-panel { display: none; }
+  .step-panel.active { display: block; }
+
+  /* RECS */
+  .rec-item {
+    padding: 14px 16px;
+    border-left: 3px solid var(--accent);
+    background: #fff;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    box-shadow: var(--shadow);
+  }
+  .rec-priority {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 6px;
+  }
+  .rec-priority.p1 { background: rgba(239, 68, 68, 0.1); color: #b91c1c; }
+  .rec-priority.p2 { background: rgba(244, 165, 34, 0.12); color: #b45309; }
+  .rec-priority.p3 { background: rgba(59, 110, 247, 0.1); color: #1d4ed8; }
+  .rec-dim {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-bottom: 4px;
+  }
+  .rec-text {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 24px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    background: var(--bg-soft);
+    height: 6px;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
+  .progress-fill {
+    background: var(--accent);
+    height: 100%;
+    transition: width 0.3s ease;
+    border-radius: 999px;
+  }
+  .progress-text {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 768px) {
+    main { padding: 20px 16px; }
+    .top-bar { padding: 16px 20px; }
+    .stepper { padding: 12px 16px; }
+    .form-grid { grid-template-columns: 1fr; }
+    h1.page-title { font-size: 26px; }
+    .hero-grid { grid-template-columns: 1fr; }
+    .map-row { grid-template-columns: 1fr; gap: 6px; }
+    .maturity-scale { grid-template-columns: repeat(5, 1fr); }
+    .mat-btn { font-size: 9px; padding: 6px 2px; }
+  }
+
+  @media print {
+    .top-bar, .stepper, .nav-row, .top-actions, .btn { display: none !important; }
+    body { background: #fff; }
+    .card { box-shadow: none; border: 1px solid #ddd; page-break-inside: avoid; }
+    .step-panel { display: block !important; }
+    .results-hero { background: #fff !important; color: #000 !important; }
+    .results-hero * { color: #000 !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top-bar">
+  <div class="brand">
+    <span class="brand-mark">SRMtech</span>
+    <span class="brand-divider"></span>
+    <span class="brand-sub">SQA Assessment · UCA Framework</span>
+  </div>
+  <div class="top-actions">
+    <button class="btn btn-ghost" onclick="saveDraft()">💾 Save Draft</button>
+    <button class="btn btn-ghost" onclick="loadDraft()">📂 Load Draft</button>
+    <button class="btn btn-ghost" onclick="resetAll()">↺ Reset</button>
+  </div>
+</header>
+
+<nav class="stepper" id="stepper"></nav>
+
+<main>
+
+  <!-- STEP 1: PROJECT INTAKE -->
+  <section class="step-panel active" data-step="1">
+    <div class="chapter-tag">Chapter 1 · Assess</div>
+    <h1 class="page-title">Project Intake & Scope</h1>
+    <p class="page-subtitle">Begin by capturing the context for this assessment. This metadata anchors the maturity map, gap register, and recommendations to a specific business unit and engagement.</p>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Engagement Details</div></div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Project / Initiative Name</label>
+          <input type="text" id="f-project" placeholder="e.g. SQA Transformation – Phase 1" />
+        </div>
+        <div class="field">
+          <label>Business Unit / Division</label>
+          <input type="text" id="f-bu" placeholder="e.g. Software Quality Assurance" />
+        </div>
+        <div class="field">
+          <label>Assessment Date</label>
+          <input type="date" id="f-date" />
+        </div>
+        <div class="field">
+          <label>Regulatory Scope</label>
+          <select id="f-regscope">
+            <option value="">Select…</option>
+            <option>GxP (Pharma)</option>
+            <option>SOX</option>
+            <option>HIPAA</option>
+            <option>GDPR</option>
+            <option>21 CFR Part 11</option>
+            <option>ISO 27001</option>
+            <option>Multiple</option>
+            <option>Non-regulated</option>
+          </select>
+        </div>
+      </div>
+      <div class="field" style="margin-top:16px;">
+        <label>Context & Drivers</label>
+        <textarea id="f-context" placeholder="What is prompting this assessment? Audit findings, M&A, transformation mandate, AI tool adoption, etc."></textarea>
+      </div>
+    </div>
+
+    <div class="nav-row">
+      <div></div>
+      <button class="btn btn-primary" onclick="goStep(2)">Begin GxP Applicability →</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: GxP APPLICABILITY -->
+  <section class="step-panel" data-step="2">
+    <div class="chapter-tag">Chapter 1 · Assess · Step 1 of 2</div>
+    <h1 class="page-title">GxP Applicability Screen</h1>
+    <p class="page-subtitle">Determine whether the system falls under GxP regulation. Answer Yes or No to each question. A single Yes classifies the system as GxP-regulated. SaMD findings are flagged as GxP-High and require enhanced controls.</p>
+
+    <div class="card" style="background: var(--bg); color: #fff; border: none; padding: 18px 24px;">
+      <div style="font-size: 12px; color: rgba(255,255,255,0.7); line-height: 1.6;">
+        <strong style="color: #fff;">Definition — "product":</strong> commercial or investigational finished or unfinished drug product, API, or medical device. References for follow-on activity: Risk Classification, Computer System Life Cycle, Computer System Risk Management, internal System Life Cycle Process.
+      </div>
+    </div>
+
+    <div id="gxp-questions-container"></div>
+
+    <div id="gxp-verdict-container"></div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goStep(1)">← Back to Intake</button>
+      <button class="btn btn-primary" onclick="goStep(3)">Continue to Maturity Assessment →</button>
+    </div>
+  </section>
+
+  <!-- STEP 3: MATURITY ASSESSMENT -->
+  <section class="step-panel" data-step="3">
+    <div class="chapter-tag">Chapter 1 · Assess · Step 2 of 2</div>
+    <h1 class="page-title">Maturity Assessment — Reading the Current Landscape</h1>
+    <p class="page-subtitle">For each dimension, score the diagnostic questions on a 1–5 maturity scale and capture supporting evidence. Click any dimension to expand.</p>
+
+    <div id="gxp-status-banner"></div>
+
+    <div class="card" style="background: var(--bg); color: #fff; border: none;">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:16px;">
+        <div>
+          <div style="font-size:11px; letter-spacing:0.18em; text-transform:uppercase; color: rgba(255,255,255,0.6); margin-bottom:4px;">Completion</div>
+          <div style="font-family: 'Fraunces', serif; font-size: 22px;" id="completion-text">0 of 0 questions scored</div>
+        </div>
+        <div style="flex:1; max-width:300px;">
+          <div class="progress-bar" style="background: rgba(255,255,255,0.1);"><div class="progress-fill" id="progress-fill" style="width:0%;"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dimensions-container"></div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goStep(2)">← Back to GxP Applicability</button>
+      <button class="btn btn-primary" onclick="goStep(4)">View Results →</button>
+    </div>
+  </section>
+
+  <!-- STEP 4: RESULTS -->
+  <section class="step-panel" data-step="4">
+    <div class="chapter-tag">Chapter 1 · Assess · Output</div>
+    <h1 class="page-title">Scored Maturity Map & Findings</h1>
+    <p class="page-subtitle">The evidence base for all transformation recommendations. Export this view for stakeholder review.</p>
+
+    <div id="gxp-outcome-card"></div>
+
+    <div class="results-hero" id="gxp-rar-hero">
+      <div class="hero-grid">
+        <div class="overall-score">
+          <svg class="score-ring" viewBox="0 0 120 120" id="rar-ring">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+            <circle id="rar-ring-fill" cx="60" cy="60" r="52" fill="none" stroke="#84cc16" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)" stroke-linecap="round" style="transition: stroke-dashoffset 1s ease;"/>
+            <text x="60" y="58" text-anchor="middle" fill="#fff" font-family="Fraunces, serif" font-size="28" font-weight="500" id="rar-ring-score">—</text>
+            <text x="60" y="76" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="9" letter-spacing="2">RAR / 100</text>
+          </svg>
+          <div>
+            <div class="score-label">GxP Risk Assessment Result (RAR)</div>
+            <div class="score-value" id="rar-band">—</div>
+            <div class="score-text" id="rar-narrative">Complete the GxP Applicability Screen to compute the RAR score.</div>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-tile">
+            <div class="stat-label">GxP Triggers</div>
+            <div class="stat-value" id="rar-triggers">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Risk Class</div>
+            <div class="stat-value" id="rar-class" style="font-size: 22px;">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Submission Impact</div>
+            <div class="stat-value" id="rar-submission" style="font-size: 22px;">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">SaMD / Audit Scope</div>
+            <div class="stat-value" id="rar-samd" style="font-size: 22px;">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="results-hero">
+      <div class="hero-grid">
+        <div class="overall-score">
+          <svg class="score-ring" viewBox="0 0 120 120" id="score-ring">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="10"/>
+            <circle id="ring-fill" cx="60" cy="60" r="52" fill="none" stroke="#00b8a9" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7" transform="rotate(-90 60 60)" stroke-linecap="round" style="transition: stroke-dashoffset 1s ease;"/>
+            <text x="60" y="58" text-anchor="middle" fill="#fff" font-family="Fraunces, serif" font-size="28" font-weight="500" id="ring-score">—</text>
+            <text x="60" y="76" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="Inter, sans-serif" font-size="9" letter-spacing="2">OVERALL</text>
+          </svg>
+          <div>
+            <div class="score-label">Overall Maturity</div>
+            <div class="score-value" id="overall-band">—</div>
+            <div class="score-text" id="overall-narrative">Complete the assessment to view results.</div>
+          </div>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-tile">
+            <div class="stat-label">Critical Gaps</div>
+            <div class="stat-value danger" id="stat-critical">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Moderate Gaps</div>
+            <div class="stat-value warn" id="stat-moderate">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Strengths</div>
+            <div class="stat-value good" id="stat-strengths">—</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Avg. Gap to Target</div>
+            <div class="stat-value" id="stat-gap">—</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Maturity Map — Current vs. Target</div>
+      </div>
+      <div class="maturity-map" id="maturity-map"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Risk-Ranked Gap Register</div>
+      </div>
+      <div style="overflow-x: auto;">
+        <table class="gap-table" id="gap-table">
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>Finding</th>
+              <th>Current</th>
+              <th>Target</th>
+              <th>Gap</th>
+              <th>Risk</th>
+            </tr>
+          </thead>
+          <tbody id="gap-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Prioritized Recommendations</div>
+      </div>
+      <div id="recommendations"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn" onclick="goStep(3)">← Back to Maturity Assessment</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="window.print()">🖨 Print / PDF</button>
+        <button class="btn" onclick="exportJSON()">⬇ Export JSON</button>
+        <button class="btn btn-primary" onclick="exportCSV()">⬇ Export Gap Register (CSV)</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>SRMtech · SQA Transformation · UCA (Unified Control Architecture) · Confidential</footer>
+
+<script>
+/* ============================================================
+   DATA MODEL — Assessment Framework Definition
+   ============================================================ */
+
+const FRAMEWORK = [
+  {
+    id: 'policy',
+    name: 'Policy & Governance',
+    color: 'var(--c-policy)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><path d=%22M12 2L4 6v6c0 5 3.5 9 8 10 4.5-1 8-5 8-10V6l-8-4z%22/></svg>')",
+    diagnostic: 'Are controls defined, documented, and enforceable?',
+    current: 'Ad-hoc SOPs, no unified framework',
+    target: 'UCA-governed policy hierarchy',
+    examples: 'Computer System Life Cycle policy · Risk Classification SOPs · Computer System Risk Management procedures · GxP Applicability Assessment templates · System Life Cycle Process',
+    questions: [
+      'Is there a documented control framework spanning all SQA activities including GxP applicability, risk classification, and system life-cycle management?',
+      'Are SOPs and templates (e.g., GxP applicability assessments, risk rationalization, validation plans) version-controlled and centrally accessible?',
+      'Is policy ownership and accountability clearly assigned across Business System Owner, IT System Owner, and SQA roles?',
+      'Are policies reviewed and updated on a defined cadence, with revision history captured and approved through formal change control?'
+    ]
+  },
+  {
+    id: 'controls',
+    name: 'Controls Posture',
+    color: 'var(--c-controls)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><rect x=%223%22 y=%223%22 width=%2218%22 height=%2218%22 rx=%222%22/><path d=%22M9 12l2 2 4-4%22/></svg>')",
+    diagnostic: 'Are controls tested, evidenced, and continuously monitored?',
+    current: 'Manual, periodic test cycles',
+    target: 'Automated, always-on monitoring',
+    examples: 'Validation lifecycle automation · Continuous compliance monitoring · CSV / CSA automated evidence capture · Pipeline-embedded control checks',
+    questions: [
+      'Are validation and control tests automated where technically feasible (CSV/CSA, smoke, regression, integration)?',
+      'Is control evidence captured and stored systematically, with full traceability to requirements and risk?',
+      'Are control failures detected in near real-time with automated escalation rather than at periodic review?',
+      'Is there continuous monitoring of regulated systems versus point-in-time validation only at release?'
+    ]
+  },
+  {
+    id: 'risk',
+    name: 'Risk Intelligence',
+    color: 'var(--c-risk)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><circle cx=%2212%22 cy=%2212%22 r=%225%22/><circle cx=%2212%22 cy=%2212%22 r=%221.5%22 fill=%22currentColor%22/></svg>')",
+    diagnostic: 'Does the organization know its live risk exposure at any point?',
+    current: 'Reactive defect tracking',
+    target: 'Real-time risk signal dashboard',
+    examples: 'Risk classification by system criticality · Product Quality / Efficacy impact scoring · Adverse impact signals · Risk-ranked defect trends',
+    questions: [
+      'Is there a real-time risk dashboard surfacing exposure across regulated and non-regulated systems for SQA stakeholders?',
+      'Are risk signals aggregated from validation, defect, deviation (NC), and CAPA data sources?',
+      'Is risk exposure quantified by product-quality, patient-safety, and data-integrity impact rather than count alone?',
+      'Are risk thresholds defined with automated escalation tied to GxP severity and regulatory exposure?'
+    ]
+  },
+  {
+    id: 'ai',
+    name: 'AI & Technology Readiness',
+    color: 'var(--c-ai)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><path d=%22M12 2L2 22h20L12 2z%22/><path d=%22M12 9v5%22/><circle cx=%2212%22 cy=%2217.5%22 r=%221%22 fill=%22currentColor%22/></svg>')",
+    diagnostic: 'Are AI tools governed, validated, and monitored?',
+    current: 'Ungoverned AI tool adoption',
+    target: 'GxP-validated AI ops framework',
+    examples: 'Approved AI tool registry · LLM output validation harnesses · Model drift detection · Predicate-rule alignment for SaMD-adjacent AI',
+    questions: [
+      'Is there an approved-tool registry with GxP applicability status and validation evidence for each AI/LLM tool?',
+      'Are AI/LLM outputs validated against deterministic acceptance criteria before use in regulated activity?',
+      'Is model drift, hallucination rate, and post-deployment performance continuously monitored?',
+      'Are data privacy, intellectual property, and 21 CFR Part 11 / Annex 11 risks assessed before AI tool adoption?'
+    ]
+  },
+  {
+    id: 'audit',
+    name: 'Audit & Compliance',
+    color: 'var(--c-audit)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><circle cx=%2212%22 cy=%2212%22 r=%229%22/><circle cx=%2212%22 cy=%2212%22 r=%223%22 fill=%22currentColor%22/></svg>')",
+    diagnostic: 'Can evidence be produced on demand for any control?',
+    current: 'Reactive evidence gathering during audit',
+    target: 'On-demand evidence with full traceability',
+    examples: 'Inspection-ready evidence vault · Trace matrix automation · Signature manifest (manual + electronic) · CAPA closure dashboards',
+    questions: [
+      'Can audit evidence (validation summary, signatures, change records) be retrieved within 24 hours of request?',
+      'Is there end-to-end traceability from regulatory requirement to test evidence to electronic signature?',
+      'Are audit findings tracked to closure through formal CAPA with documented root cause analysis?',
+      'Is the organization continuously audit-ready (any time, any system) versus mobilizing per inspection?'
+    ]
+  },
+  {
+    id: 'quality',
+    name: 'Quality Engineering',
+    color: 'var(--c-quality)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><path d=%22M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z%22/><polyline points=%2214 2 14 8 20 8%22/></svg>')",
+    diagnostic: 'Is quality engineered in or inspected in?',
+    current: 'Late-stage quality gates, high rework',
+    target: 'Shift-left quality with engineered controls',
+    examples: 'CSA-driven critical-thinking · Pipeline quality gates · Test coverage at build time · Engineered controls vs. inspected controls',
+    questions: [
+      'Are quality and validation controls embedded in CI/CD pipelines for regulated and non-regulated systems alike?',
+      'Is test coverage measured, gated at build time, and risk-prioritized per CSA principles?',
+      'Are defects detected before integration and qualification phases rather than during UAT or PQ?',
+      'Are developers and configurators accountable for first-pass quality outcomes with formal sign-off?'
+    ]
+  },
+  {
+    id: 'data',
+    name: 'Data Integrity & Lifecycle',
+    color: 'var(--c-data)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><ellipse cx=%2212%22 cy=%225%22 rx=%229%22 ry=%223%22/><path d=%22M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5%22/><path d=%22M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3%22/></svg>')",
+    diagnostic: 'Is data integrity (ALCOA+) demonstrable across the lifecycle?',
+    current: 'Manual data review, integrity gaps',
+    target: 'Automated ALCOA+ checks with audit trail',
+    examples: 'ALCOA+ enforcement · 21 CFR Part 11 / Annex 11 audit trails · Electronic signature manifests · Regulatory submission data (IND/NDA) integrity · RIMS / archival systems',
+    questions: [
+      'Are ALCOA+ principles (Attributable, Legible, Contemporaneous, Original, Accurate +Complete +Consistent +Enduring +Available) enforced systemically?',
+      'Are audit trails enabled, protected, and periodically reviewed on all GxP systems and on systems contributing to regulatory submissions?',
+      'Is data integrity validated at each lifecycle stage — capture, processing, archival, retrieval — including for archival systems (e.g., RIMS, Stream)?',
+      'Are data exceptions and electronic-signature anomalies investigated and closed through formal CAPA?'
+    ]
+  },
+  {
+    id: 'vendor',
+    name: 'Vendor & Third-Party Oversight',
+    color: 'var(--c-vendor)',
+    iconMask: "url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22currentColor%22 stroke-width=%222%22><path d=%22M20 21v-2a4 4 0 00-3-3.87%22/><path d=%22M4 21v-2a4 4 0 013-3.87%22/><circle cx=%2212%22 cy=%227%22 r=%224%22/><path d=%22M16 3.13a4 4 0 010 7.75%22/></svg>')",
+    diagnostic: 'Are third-party risks assessed, monitored, and controlled?',
+    current: 'One-time vendor qualification',
+    target: 'Continuous vendor risk monitoring',
+    examples: 'SaaS vendor qualification for GxP use · Cloud platform GxP attestations · Supplier audit cadence · Contingency / exit plans for critical SaMD providers',
+    questions: [
+      'Are critical vendors (especially those hosting GxP data or providing SaMD components) qualified against documented criteria?',
+      'Is vendor performance monitored against SLAs, including GxP-relevant metrics (availability, audit trail integrity, breach notification)?',
+      'Are vendor security, GxP, and 21 CFR Part 11 compliance posture re-assessed periodically with documented evidence?',
+      'Is there a vendor exit and contingency plan for critical regulated systems, including data return and migration assurance?'
+    ]
+  }
+];
+
+/* GxP Applicability questions, sourced from the GxP Applicability Assessment Template (QPP06-04-001-T04). Each Yes classifies the system as GxP-regulated; Q4 = Yes further classifies as GxP-High. */
+const GXP_QUESTIONS = [
+  {
+    id: 'q1',
+    text: 'Is the system and/or data used for GxP purposes?',
+    examples: [
+      'Business decisions that may impact Product Quality or Efficacy',
+      'Data from the system used in another GxP system for GxP purposes',
+      'Data used to make Quality decisions',
+      'Manages incoming product, manufacture, testing, release, distribution, or post-market control',
+      'Manages, automates, or organizes patient data or health information (conditions, disease, communication)',
+      'Employs electronic-signature capability subject to 21 CFR Part 11 or Annex 11',
+      'Manages authentication of a Software as a Medical Device (SaMD)',
+      'Assists HCPs in making clinical decisions (e.g., disease screening applications)'
+    ]
+  },
+  {
+    id: 'q2',
+    text: 'Does data from the system become part of a GxP-regulated submission or registration?',
+    examples: [
+      'Regulatory filings (IND, NDA, etc.)',
+      'Adverse-impact / claims reporting',
+      'Data archival systems (e.g., RIMS, Stream, NuGenesis)',
+      'Personnel and training systems',
+      'Non-conformity (NC) / CAPA reporting',
+      'Complaints and product action',
+      'SLC documentation and change control',
+      'Systems supporting buildings, facilities, utilities, equipment, validation',
+      'Clinical research, purchasing, lab / production / process / packaging / labeling / distribution controls',
+      'GLP lab systems'
+    ]
+  },
+  {
+    id: 'q3',
+    text: 'Is the system the official, auditable record or archive of GxP-regulated activity or data?',
+    examples: [
+      'System of record for GxP transactions',
+      'Long-term archive for regulated electronic records',
+      'Source of truth for inspection and audit retrieval'
+    ]
+  },
+  {
+    id: 'q4',
+    text: 'Is the software considered a Software as a Medical Device (SaMD), or a SaMD under enforcement discretion?',
+    note: 'If Yes, the system is classified as GxP-High.',
+    isHighRiskTrigger: true,
+    examples: [
+      'Apps that assist a patient in self-managing disease or condition (injection trackers, dose calculators, medication reminders)',
+      'Apps that organize or track patient-reported health information (patient-reported outcomes, disease assessment tools, general wellness / lifestyle apps)',
+      'Apps that give patient or HCP access to patient health conditions or treatment information (patient diaries, patient information leaflets, personal health records, electronic health records)'
+    ]
+  }
+];
+
+const MATURITY_LEVELS = [
+  { level: 1, label: 'Initial', desc: 'Ad-hoc, undocumented' },
+  { level: 2, label: 'Repeatable', desc: 'Documented but inconsistent' },
+  { level: 3, label: 'Defined', desc: 'Standardized & deployed' },
+  { level: 4, label: 'Managed', desc: 'Measured & optimized' },
+  { level: 5, label: 'Optimizing', desc: 'Continuous improvement' }
+];
+
+const MATURITY_BANDS = [
+  { min: 0, max: 1.5, label: 'Foundational', narrative: 'The organization operates with ad-hoc, undocumented practices. Transformation must begin with policy and control definition.' },
+  { min: 1.5, max: 2.5, label: 'Emerging', narrative: 'Documented practices exist but lack consistency and automation. Material risk remains in audit and operational continuity.' },
+  { min: 2.5, max: 3.5, label: 'Established', narrative: 'Standardized practices are deployed. The next leap is measurement, automation, and continuous monitoring.' },
+  { min: 3.5, max: 4.5, label: 'Advanced', narrative: 'Controls are measured and optimized. Focus shifts to predictive risk intelligence and AI-driven assurance.' },
+  { min: 4.5, max: 5.1, label: 'Leading', narrative: 'Operating at the frontier of SQA maturity with continuous, AI-augmented assurance. Sustain through innovation and benchmarking.' }
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let state = {
+  step: 1,
+  meta: {},
+  gxp: {}, // { qId: { answer: 'yes'|'no'|null, comment: string } }
+  scores: {}, // { dimId: { qIdx: level } }
+  evidence: {} // { dimId: { qIdx: text } }
+};
+
+const TARGET_LEVEL = 4; // Target maturity is "Managed" per framework
+
+/* ============================================================
+   STEPPER
+   ============================================================ */
+const STEPS = [
+  { num: 1, label: 'Intake' },
+  { num: 2, label: 'GxP Applicability' },
+  { num: 3, label: 'Maturity Assessment' },
+  { num: 4, label: 'Results' }
+];
+
+function renderStepper() {
+  const el = document.getElementById('stepper');
+  el.innerHTML = STEPS.map((s, i) => {
+    const status = state.step === s.num ? 'active' : (state.step > s.num ? 'done' : '');
+    return `
+      ${i > 0 ? '<span class="step-arrow">›</span>' : ''}
+      <div class="step ${status}" onclick="goStep(${s.num})">
+        <span class="step-num">${state.step > s.num ? '✓' : s.num}</span>
+        <span>${s.label}</span>
+      </div>
+    `;
+  }).join('');
+}
+
+function goStep(n) {
+  state.step = n;
+  document.querySelectorAll('.step-panel').forEach(p => {
+    p.classList.toggle('active', parseInt(p.dataset.step) === n);
+  });
+  renderStepper();
+  if (n === 2) renderGxpVerdict();
+  if (n === 3) renderGxpStatusBanner();
+  if (n === 4) renderResults();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ============================================================
+   DIMENSIONS RENDER
+   ============================================================ */
+function renderDimensions() {
+  const container = document.getElementById('dimensions-container');
+  container.innerHTML = FRAMEWORK.map(dim => {
+    const scores = state.scores[dim.id] || {};
+    const scoredCount = Object.values(scores).filter(v => v).length;
+    const total = dim.questions.length;
+    const isComplete = scoredCount === total;
+
+    return `
+      <div class="dimension" data-dim="${dim.id}" style="--dim-color: ${dim.color};">
+        <div class="dim-header" onclick="toggleDim('${dim.id}')">
+          <div class="dim-icon" style="--dim-color: ${dim.color}; --icon-mask: ${dim.iconMask};"></div>
+          <div class="dim-title-block">
+            <div class="dim-title">${dim.name}</div>
+            <div class="dim-question">${dim.diagnostic}</div>
+          </div>
+          <div class="dim-score-pill ${isComplete ? 'scored' : ''}">
+            <span class="dim-score-dot"></span>
+            <span>${scoredCount}/${total} scored</span>
+          </div>
+          <svg class="dim-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+        </div>
+        <div class="dim-body">
+          <div class="ct-strip">
+            <div class="ct-side">
+              <label>Current State Anchor</label>
+              <div class="ct-value">${dim.current}</div>
+            </div>
+            <div class="ct-arrow">→</div>
+            <div class="ct-side">
+              <label>Target State</label>
+              <div class="ct-value">${dim.target}</div>
+            </div>
+          </div>
+
+          ${dim.examples ? `
+            <div class="gxp-examples" style="margin-bottom: 14px;">
+              <div class="gxp-examples-label">Illustrative Scope · GxP & SQA Anchors</div>
+              <div style="font-size: 12px; color: var(--ink-soft); line-height: 1.55;">${dim.examples}</div>
+            </div>
+          ` : ''}
+
+          <div class="evidence-label">Diagnostic Questions — Score 1 (Initial) to 5 (Optimizing)</div>
+          ${dim.questions.map((q, qi) => `
+            <div class="subq">
+              <div class="subq-text"><strong>Q${qi + 1}.</strong> ${q}</div>
+              <div class="maturity-scale">
+                ${MATURITY_LEVELS.map(m => {
+                  const selected = (scores[qi] === m.level) ? 'selected' : '';
+                  return `
+                    <button class="mat-btn ${selected}" data-level="${m.level}"
+                      onclick="setScore('${dim.id}', ${qi}, ${m.level})">
+                      <strong>${m.level}</strong>${m.label}
+                    </button>
+                  `;
+                }).join('')}
+              </div>
+              <textarea class="evidence-input" placeholder="Evidence / notes (optional)"
+                oninput="setEvidence('${dim.id}', ${qi}, this.value)"
+                data-ev="${dim.id}-${qi}">${(state.evidence[dim.id]?.[qi]) || ''}</textarea>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  updateProgress();
+}
+
+function toggleDim(id) {
+  document.querySelectorAll('.dimension').forEach(d => {
+    if (d.dataset.dim === id) d.classList.toggle('open');
+  });
+}
+
+function setScore(dimId, qIdx, level) {
+  if (!state.scores[dimId]) state.scores[dimId] = {};
+  state.scores[dimId][qIdx] = level;
+
+  // Update just this group of buttons
+  const dim = document.querySelector(`.dimension[data-dim="${dimId}"]`);
+  if (dim) {
+    const subqs = dim.querySelectorAll('.subq');
+    const subq = subqs[qIdx];
+    if (subq) {
+      subq.querySelectorAll('.mat-btn').forEach(b => {
+        b.classList.toggle('selected', parseInt(b.dataset.level) === level);
+      });
+    }
+    // Update pill
+    const scores = state.scores[dimId];
+    const scoredCount = Object.values(scores).filter(v => v).length;
+    const total = FRAMEWORK.find(d => d.id === dimId).questions.length;
+    const pill = dim.querySelector('.dim-score-pill');
+    pill.classList.toggle('scored', scoredCount === total);
+    pill.querySelector('span:last-child').textContent = `${scoredCount}/${total} scored`;
+  }
+  updateProgress();
+}
+
+function setEvidence(dimId, qIdx, text) {
+  if (!state.evidence[dimId]) state.evidence[dimId] = {};
+  state.evidence[dimId][qIdx] = text;
+}
+
+function updateProgress() {
+  let scored = 0;
+  let total = 0;
+  FRAMEWORK.forEach(d => {
+    total += d.questions.length;
+    const s = state.scores[d.id] || {};
+    scored += Object.values(s).filter(v => v).length;
+  });
+  const pct = total ? (scored / total) * 100 : 0;
+  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('completion-text').textContent = `${scored} of ${total} questions scored`;
+}
+
+/* ============================================================
+   GxP APPLICABILITY
+   ============================================================ */
+function renderGxpQuestions() {
+  const container = document.getElementById('gxp-questions-container');
+  if (!container) return;
+  container.innerHTML = GXP_QUESTIONS.map((q, idx) => {
+    const cur = state.gxp[q.id] || {};
+    const ansYes = cur.answer === 'yes' ? 'selected-yes' : '';
+    const ansNo = cur.answer === 'no' ? 'selected-no' : '';
+    const highRiskNote = q.isHighRiskTrigger
+      ? `<div style="font-size:11px; color:#b91c1c; margin-top:6px; font-weight:600;">⚠ ${q.note}</div>` : '';
+    return `
+      <div class="gxp-question">
+        <div class="gxp-q-text">
+          <span class="gxp-num">${idx + 1}</span>
+          <span>${q.text}${highRiskNote}</span>
+        </div>
+        <div class="gxp-examples">
+          <div class="gxp-examples-label">Examples / Indicators</div>
+          <ul>${q.examples.map(e => `<li>${e}</li>`).join('')}</ul>
+        </div>
+        <div class="gxp-controls">
+          <button class="yn-btn ${ansYes}" onclick="setGxpAnswer('${q.id}', 'yes')">Yes</button>
+          <button class="yn-btn ${ansNo}" onclick="setGxpAnswer('${q.id}', 'no')">No</button>
+          <input type="text" class="gxp-comment" placeholder="Comment / justification (optional)"
+                 value="${(cur.comment || '').replace(/"/g, '&quot;')}"
+                 oninput="setGxpComment('${q.id}', this.value)" />
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function setGxpAnswer(qId, ans) {
+  if (!state.gxp[qId]) state.gxp[qId] = {};
+  state.gxp[qId].answer = ans;
+  renderGxpQuestions();
+  renderGxpVerdict();
+}
+
+function setGxpComment(qId, val) {
+  if (!state.gxp[qId]) state.gxp[qId] = {};
+  state.gxp[qId].comment = val;
+}
+
+function computeGxpVerdict() {
+  const answers = GXP_QUESTIONS.map(q => ({
+    id: q.id,
+    answer: state.gxp[q.id]?.answer || null,
+    isHighRiskTrigger: q.isHighRiskTrigger
+  }));
+  const answered = answers.filter(a => a.answer !== null).length;
+  const yesCount = answers.filter(a => a.answer === 'yes').length;
+  const samdYes = answers.find(a => a.isHighRiskTrigger)?.answer === 'yes';
+
+  if (answered < GXP_QUESTIONS.length) {
+    return { status: 'pending', regulated: null, high: false, yesCount, answered, total: GXP_QUESTIONS.length };
+  }
+  if (yesCount === 0) {
+    return { status: 'not-regulated', regulated: false, high: false, yesCount, answered, total: GXP_QUESTIONS.length };
+  }
+  return { status: 'regulated', regulated: true, high: samdYes, yesCount, answered, total: GXP_QUESTIONS.length };
+}
+
+/* RAR (Risk Assessment Result) — 0–100 composite score derived from the four
+   GxP applicability questions. Each Yes contributes 25 points. A SaMD Yes (Q4)
+   auto-promotes to Critical regardless of total, reflecting enhanced controls.
+   Bands: 0 Not Regulated · 1–24 Low · 25–49 Moderate · 50–74 High · 75–100 Critical. */
+const RAR_WEIGHTS = { q1: 25, q2: 25, q3: 25, q4: 25 };
+
+function computeRar() {
+  const verdict = computeGxpVerdict();
+  if (verdict.status === 'pending') {
+    return { status: 'pending', score: null, band: '—', class: '—', narrative: 'Complete the GxP Applicability Screen to compute the RAR score.', color: 'var(--m-3)', submission: '—', samd: '—', triggers: '—' };
+  }
+
+  let score = 0;
+  GXP_QUESTIONS.forEach(q => {
+    if (state.gxp[q.id]?.answer === 'yes') score += RAR_WEIGHTS[q.id] || 0;
+  });
+
+  const q1Yes = state.gxp.q1?.answer === 'yes';
+  const q2Yes = state.gxp.q2?.answer === 'yes';
+  const q3Yes = state.gxp.q3?.answer === 'yes';
+  const q4Yes = state.gxp.q4?.answer === 'yes';
+
+  let band, klass, color, narrative;
+  if (score === 0) {
+    band = 'Not Regulated';
+    klass = 'None';
+    color = 'var(--m-5)';
+    narrative = 'No GxP triggers identified. System operates outside regulated scope; standard quality controls apply.';
+  } else if (q4Yes) {
+    band = 'Critical · SaMD';
+    klass = 'Critical';
+    color = 'var(--m-1)';
+    narrative = 'SaMD classification triggers enhanced controls regardless of score: heightened validation, 21 CFR Part 11 / Annex 11 conformance, and product-quality risk management.';
+  } else if (score >= 75) {
+    band = 'Critical';
+    klass = 'Critical';
+    color = 'var(--m-1)';
+    narrative = 'Multiple regulated triggers including official record status. Treat as inspection-critical; sequence remediation as P1 in the transformation roadmap.';
+  } else if (score >= 50) {
+    band = 'High Risk';
+    klass = 'High';
+    color = 'var(--m-2)';
+    narrative = 'Substantial GxP exposure across multiple categories. Complete Risk Rationalization and apply full regulated-system controls.';
+  } else if (score >= 25) {
+    band = 'Moderate Risk';
+    klass = 'Moderate';
+    color = 'var(--m-3)';
+    narrative = 'Single significant GxP trigger. Document the scope precisely; apply targeted regulated-system controls aligned to the trigger.';
+  } else {
+    band = 'Low Risk';
+    klass = 'Low';
+    color = 'var(--m-4)';
+    narrative = 'Boundary case with limited regulatory exposure. Confirm classification with QA and document the rationale in the assessment record.';
+  }
+
+  return {
+    status: 'computed',
+    score,
+    band,
+    class: klass,
+    color,
+    narrative,
+    triggers: verdict.yesCount,
+    submission: q2Yes ? 'Yes' : 'No',
+    samd: q4Yes ? 'SaMD' : (q3Yes ? 'Record of Truth' : 'No')
+  };
+}
+
+function renderRar() {
+  const r = computeRar();
+  const ring = document.getElementById('rar-ring-fill');
+  const score = document.getElementById('rar-ring-score');
+  const band = document.getElementById('rar-band');
+  const narrative = document.getElementById('rar-narrative');
+  if (!ring) return;
+
+  if (r.status === 'pending') {
+    score.textContent = '—';
+    ring.setAttribute('stroke-dashoffset', '326.7');
+  } else {
+    score.textContent = r.score;
+    const circumference = 326.7;
+    const offset = circumference - (r.score / 100) * circumference;
+    ring.setAttribute('stroke-dashoffset', offset);
+    ring.setAttribute('stroke', r.color);
+  }
+
+  band.textContent = r.band;
+  narrative.textContent = r.narrative;
+
+  // Stat tiles
+  document.getElementById('rar-triggers').textContent = r.triggers;
+  const classEl = document.getElementById('rar-class');
+  classEl.textContent = r.class;
+  // Color the risk class label by severity
+  const klassColors = { Critical: '#fca5a5', High: '#fcd34d', Moderate: '#fde68a', Low: '#bef264', None: '#86efac', '—': '#fff' };
+  classEl.style.color = klassColors[r.class] || '#fff';
+
+  document.getElementById('rar-submission').textContent = r.submission;
+  document.getElementById('rar-submission').style.color = r.submission === 'Yes' ? '#fcd34d' : (r.submission === 'No' ? '#86efac' : '#fff');
+
+  document.getElementById('rar-samd').textContent = r.samd;
+  document.getElementById('rar-samd').style.color = r.samd === 'SaMD' ? '#fca5a5' : (r.samd === 'Record of Truth' ? '#fcd34d' : '#86efac');
+}
+
+function renderGxpVerdict() {
+  const container = document.getElementById('gxp-verdict-container');
+  if (!container) return;
+  const v = computeGxpVerdict();
+  let inner = '';
+  if (v.status === 'pending') {
+    inner = `
+      <div class="gxp-verdict pending">
+        <div class="verdict-icon">⌛</div>
+        <div>
+          <div class="verdict-label">Awaiting Input</div>
+          <div class="verdict-text">${v.answered} of ${v.total} questions answered</div>
+          <div class="verdict-sub">Answer all four questions to determine GxP regulatory scope.</div>
+        </div>
+      </div>`;
+  } else if (v.status === 'not-regulated') {
+    inner = `
+      <div class="gxp-verdict not-regulated">
+        <div class="verdict-icon">✓</div>
+        <div>
+          <div class="verdict-label">Outcome</div>
+          <div class="verdict-text">System is NOT GxP-Regulated</div>
+          <div class="verdict-sub">All four questions answered No. Maturity assessment may proceed under non-regulated controls. Document the rationale and revisit if system scope changes.</div>
+        </div>
+      </div>`;
+  } else {
+    inner = `
+      <div class="gxp-verdict regulated">
+        <div class="verdict-icon">!</div>
+        <div>
+          <div class="verdict-label">Outcome</div>
+          <div class="verdict-text">System IS GxP-Regulated ${v.high ? '· GxP-High (SaMD)' : ''}</div>
+          <div class="verdict-sub">${v.yesCount} of ${v.total} question(s) answered Yes. ${v.high
+            ? 'SaMD classification triggers enhanced controls — apply heightened validation rigor, 21 CFR Part 11 / Annex 11 conformance, and product-quality risk management.'
+            : 'Complete Risk Rationalization (e.g., Application Risk Rationalization template) and proceed to the maturity assessment with regulated-system controls in scope.'}</div>
+        </div>
+      </div>`;
+  }
+  container.innerHTML = inner;
+}
+
+function renderGxpStatusBanner() {
+  const el = document.getElementById('gxp-status-banner');
+  if (!el) return;
+  const v = computeGxpVerdict();
+  if (v.status === 'pending') {
+    el.innerHTML = `
+      <div class="card" style="border-left: 4px solid var(--c-risk); padding: 14px 18px; margin-bottom: 12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="gxp-badge pending">GxP Status · Pending</span>
+          <span style="font-size: 13px; color: var(--ink-soft);">Complete the GxP Applicability Screen before relying on these maturity results for a regulated-system decision.</span>
+        </div>
+      </div>`;
+  } else if (v.status === 'not-regulated') {
+    el.innerHTML = `
+      <div class="card" style="border-left: 4px solid var(--m-4); padding: 14px 18px; margin-bottom: 12px;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="gxp-badge not-regulated">GxP Status · Not Regulated</span>
+          <span style="font-size: 13px; color: var(--ink-soft);">Maturity findings inform standard quality improvement; regulatory controls do not formally apply.</span>
+        </div>
+      </div>`;
+  } else {
+    const cls = v.high ? 'high' : 'regulated';
+    const label = v.high ? 'GxP-High · SaMD' : 'GxP-Regulated';
+    el.innerHTML = `
+      <div class="card" style="border-left: 4px solid var(--m-1); padding: 14px 18px; margin-bottom: 12px;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap: wrap;">
+          <span class="gxp-badge ${cls}">${label}</span>
+          <span style="font-size: 13px; color: var(--ink-soft);">Apply regulated-system controls (validation, 21 CFR Part 11 / Annex 11, ALCOA+, audit trail) when interpreting these maturity findings.</span>
+        </div>
+      </div>`;
+  }
+}
+
+/* ============================================================
+   COMPUTATION
+   ============================================================ */
+function computeDimScore(dimId) {
+  const scores = state.scores[dimId];
+  if (!scores) return null;
+  const vals = Object.values(scores).filter(v => v);
+  if (!vals.length) return null;
+  return vals.reduce((a, b) => a + b, 0) / vals.length;
+}
+
+function computeOverall() {
+  const dimScores = FRAMEWORK.map(d => computeDimScore(d.id)).filter(s => s !== null);
+  if (!dimScores.length) return null;
+  return dimScores.reduce((a, b) => a + b, 0) / dimScores.length;
+}
+
+function getRiskLevel(gap) {
+  if (gap >= 2.5) return { tag: 'risk-high', label: 'High' };
+  if (gap >= 1.5) return { tag: 'risk-med', label: 'Medium' };
+  if (gap > 0) return { tag: 'risk-low', label: 'Low' };
+  return { tag: 'risk-none', label: 'On Target' };
+}
+
+function getMaturityColor(score) {
+  if (score < 1.5) return 'var(--m-1)';
+  if (score < 2.5) return 'var(--m-2)';
+  if (score < 3.5) return 'var(--m-3)';
+  if (score < 4.5) return 'var(--m-4)';
+  return 'var(--m-5)';
+}
+
+/* ============================================================
+   RESULTS RENDER
+   ============================================================ */
+function renderResults() {
+  const overall = computeOverall();
+
+  // GxP RAR Score Panel
+  renderRar();
+
+  // GxP Outcome Card
+  const v = computeGxpVerdict();
+  const gxpCard = document.getElementById('gxp-outcome-card');
+  if (gxpCard) {
+    let badge = '', text = '', sub = '', iconCls = 'pending', icon = '⌛';
+    if (v.status === 'pending') {
+      badge = `<span class="gxp-badge pending">GxP Applicability · Pending</span>`;
+      text = `${v.answered} of ${v.total} questions answered`;
+      sub = 'GxP applicability has not been determined. Findings cannot drive a regulated-system decision.';
+    } else if (v.status === 'not-regulated') {
+      badge = `<span class="gxp-badge not-regulated">Not GxP-Regulated</span>`;
+      text = 'System operates outside GxP scope';
+      sub = 'Maturity findings apply as standard quality and operational improvement.';
+      iconCls = 'not-regulated'; icon = '✓';
+    } else {
+      badge = `<span class="gxp-badge ${v.high ? 'high' : 'regulated'}">${v.high ? 'GxP-High · SaMD' : 'GxP-Regulated'}</span>`;
+      text = v.high ? 'System is GxP-Regulated · classified as SaMD' : 'System is GxP-Regulated';
+      sub = v.high
+        ? 'Enhanced controls apply. Maturity gaps in Audit & Compliance, Data Integrity, Risk Intelligence, and Quality Engineering should be treated as Priority 1 regardless of computed risk band.'
+        : 'Regulated-system controls (validation, 21 CFR Part 11 / Annex 11 conformance, ALCOA+, audit trail) frame the interpretation of these findings.';
+      iconCls = 'regulated'; icon = '!';
+    }
+    gxpCard.innerHTML = `
+      <div class="gxp-verdict ${iconCls}" style="margin-bottom: 20px;">
+        <div class="verdict-icon">${icon}</div>
+        <div style="flex:1;">
+          <div style="margin-bottom: 6px;">${badge}</div>
+          <div class="verdict-text">${text}</div>
+          <div class="verdict-sub">${sub}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Hero
+  const ringFill = document.getElementById('ring-fill');
+  const ringScore = document.getElementById('ring-score');
+  const band = document.getElementById('overall-band');
+  const narrative = document.getElementById('overall-narrative');
+
+  if (overall === null) {
+    ringScore.textContent = '—';
+    band.textContent = '—';
+    narrative.textContent = 'No questions scored yet. Return to the assessment to begin.';
+    ringFill.setAttribute('stroke-dashoffset', '326.7');
+  } else {
+    ringScore.textContent = overall.toFixed(1);
+    const circumference = 326.7;
+    const offset = circumference - (overall / 5) * circumference;
+    ringFill.setAttribute('stroke-dashoffset', offset);
+    ringFill.setAttribute('stroke', getMaturityColor(overall));
+    const bandObj = MATURITY_BANDS.find(b => overall >= b.min && overall < b.max) || MATURITY_BANDS[0];
+    band.textContent = bandObj.label;
+    narrative.textContent = bandObj.narrative;
+  }
+
+  // Stats
+  let critical = 0, moderate = 0, strengths = 0, gapSum = 0, gapCount = 0;
+  FRAMEWORK.forEach(d => {
+    const s = computeDimScore(d.id);
+    if (s === null) return;
+    const gap = TARGET_LEVEL - s;
+    gapSum += Math.max(gap, 0);
+    gapCount++;
+    if (gap >= 2.5) critical++;
+    else if (gap >= 1.5) moderate++;
+    if (s >= 4) strengths++;
+  });
+
+  document.getElementById('stat-critical').textContent = critical;
+  document.getElementById('stat-moderate').textContent = moderate;
+  document.getElementById('stat-strengths').textContent = strengths;
+  document.getElementById('stat-gap').textContent = gapCount ? (gapSum / gapCount).toFixed(1) : '—';
+
+  // Maturity Map
+  const mapEl = document.getElementById('maturity-map');
+  mapEl.innerHTML = FRAMEWORK.map(d => {
+    const score = computeDimScore(d.id);
+    const pct = score ? (score / 5) * 100 : 0;
+    const targetPct = (TARGET_LEVEL / 5) * 100;
+    const color = score ? getMaturityColor(score) : 'var(--line)';
+    return `
+      <div class="map-row">
+        <div class="map-dim-label" style="border-left: 3px solid ${d.color}; padding-left: 10px;">${d.name}</div>
+        <div class="map-bar-wrapper">
+          <div class="map-target-marker" style="left: ${targetPct}%;"></div>
+          <div class="map-bar" style="width: ${pct}%; background: ${color};"></div>
+        </div>
+        <div class="map-score">
+          ${score ? `<strong>${score.toFixed(1)}</strong> / ${TARGET_LEVEL}` : '<span style="color: var(--ink-muted);">Not scored</span>'}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  // Gap Register
+  const gapRows = FRAMEWORK.map(d => {
+    const score = computeDimScore(d.id);
+    if (score === null) return null;
+    const gap = TARGET_LEVEL - score;
+    const risk = getRiskLevel(gap);
+    return {
+      dim: d.name,
+      finding: gap > 0 ? d.current : `Operating at or above target — ${d.target}`,
+      current: score.toFixed(1),
+      target: TARGET_LEVEL,
+      gap: gap.toFixed(1),
+      risk
+    };
+  }).filter(r => r).sort((a, b) => parseFloat(b.gap) - parseFloat(a.gap));
+
+  const tbody = document.getElementById('gap-tbody');
+  if (!gapRows.length) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 24px; color: var(--ink-muted);">No scored dimensions yet.</td></tr>`;
+  } else {
+    tbody.innerHTML = gapRows.map(r => `
+      <tr>
+        <td><strong>${r.dim}</strong></td>
+        <td>${r.finding}</td>
+        <td>${r.current}</td>
+        <td>${r.target}</td>
+        <td>${r.gap > 0 ? '+' + r.gap : r.gap}</td>
+        <td><span class="risk-tag ${r.risk.tag}">${r.risk.label}</span></td>
+      </tr>
+    `).join('');
+  }
+
+  // Recommendations
+  const recsEl = document.getElementById('recommendations');
+  const recs = gapRows.filter(r => parseFloat(r.gap) > 0).map((r, i) => {
+    let priority = 'p3', priLabel = 'P3 · Standard';
+    if (r.risk.label === 'High') { priority = 'p1'; priLabel = 'P1 · Critical'; }
+    else if (r.risk.label === 'Medium') { priority = 'p2'; priLabel = 'P2 · Important'; }
+
+    const dim = FRAMEWORK.find(f => f.name === r.dim);
+    return `
+      <div class="rec-item" style="border-left-color: ${dim.color};">
+        <span class="rec-priority ${priority}">${priLabel}</span>
+        <div class="rec-dim">${r.dim}</div>
+        <div class="rec-text">Close the maturity gap from <strong>${r.current}</strong> to target <strong>${r.target}</strong> by transitioning from "${dim.current}" toward "${dim.target}". Embed this stream within the UCA governance model and sequence it as part of the Chapter 2 (Design) workstream.</div>
+      </div>
+    `;
+  }).join('');
+  recsEl.innerHTML = recs || '<div style="text-align:center; padding: 24px; color: var(--ink-muted);">No prioritized gaps. The organization is operating at or above target across scored dimensions.</div>';
+}
+
+/* ============================================================
+   PERSISTENCE
+   ============================================================ */
+function captureMeta() {
+  state.meta = {
+    project: document.getElementById('f-project').value,
+    bu: document.getElementById('f-bu').value,
+    date: document.getElementById('f-date').value,
+    regscope: document.getElementById('f-regscope').value,
+    context: document.getElementById('f-context').value
+  };
+}
+
+function applyMeta() {
+  document.getElementById('f-project').value = state.meta.project || '';
+  document.getElementById('f-bu').value = state.meta.bu || '';
+  document.getElementById('f-date').value = state.meta.date || '';
+  document.getElementById('f-regscope').value = state.meta.regscope || '';
+  document.getElementById('f-context').value = state.meta.context || '';
+}
+
+function saveDraft() {
+  captureMeta();
+  try {
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const proj = (state.meta.project || 'SQA-Assessment').replace(/[^a-z0-9]/gi, '_');
+    a.href = url;
+    a.download = `${proj}_draft_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    alert('Could not save draft: ' + e.message);
+  }
+}
+
+function loadDraft() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const loaded = JSON.parse(ev.target.result);
+        state = Object.assign({ step: 1, meta: {}, gxp: {}, scores: {}, evidence: {} }, loaded);
+        if (!state.gxp) state.gxp = {};
+        applyMeta();
+        renderDimensions();
+        renderGxpQuestions();
+        renderGxpVerdict();
+        goStep(state.step || 1);
+      } catch (err) {
+        alert('Invalid draft file: ' + err.message);
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function resetAll() {
+  if (!confirm('Reset all assessment data? This cannot be undone.')) return;
+  state = { step: 1, meta: {}, gxp: {}, scores: {}, evidence: {} };
+  applyMeta();
+  renderDimensions();
+  renderGxpQuestions();
+  renderGxpVerdict();
+  goStep(1);
+}
+
+function exportJSON() {
+  captureMeta();
+  const overall = computeOverall();
+  const verdict = computeGxpVerdict();
+  const rar = computeRar();
+  const report = {
+    framework: 'SRMtech UCA — SQA Assessment',
+    generated_at: new Date().toISOString(),
+    metadata: state.meta,
+    gxp_applicability: {
+      status: verdict.status,
+      regulated: verdict.regulated,
+      gxp_high_samd: verdict.high,
+      yes_count: verdict.yesCount,
+      answered: verdict.answered,
+      total_questions: verdict.total,
+      rar_score: rar.score,
+      rar_band: rar.band,
+      rar_class: rar.class,
+      rar_submission_impact: rar.submission,
+      rar_samd_or_audit_scope: rar.samd,
+      questions: GXP_QUESTIONS.map(q => ({
+        question: q.text,
+        is_high_risk_trigger: !!q.isHighRiskTrigger,
+        weight: RAR_WEIGHTS[q.id] || 0,
+        answer: state.gxp[q.id]?.answer || null,
+        comment: state.gxp[q.id]?.comment || ''
+      }))
+    },
+    overall_maturity: overall ? overall.toFixed(2) : null,
+    target_maturity: TARGET_LEVEL,
+    dimensions: FRAMEWORK.map(d => {
+      const score = computeDimScore(d.id);
+      return {
+        dimension: d.name,
+        diagnostic: d.diagnostic,
+        current_anchor: d.current,
+        target_anchor: d.target,
+        examples: d.examples || '',
+        score: score ? score.toFixed(2) : null,
+        gap: score !== null ? (TARGET_LEVEL - score).toFixed(2) : null,
+        questions: d.questions.map((q, i) => ({
+          question: q,
+          score: state.scores[d.id]?.[i] || null,
+          evidence: state.evidence[d.id]?.[i] || ''
+        }))
+      };
+    })
+  };
+  const blob = new Blob([JSON.stringify(report, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const proj = (state.meta.project || 'SQA-Assessment').replace(/[^a-z0-9]/gi, '_');
+  a.href = url;
+  a.download = `${proj}_report_${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function exportCSV() {
+  captureMeta();
+  const rows = [['Dimension', 'Question', 'Current Anchor', 'Target Anchor', 'Score (1-5)', 'Target', 'Gap', 'Risk', 'Evidence']];
+  FRAMEWORK.forEach(d => {
+    d.questions.forEach((q, qi) => {
+      const score = state.scores[d.id]?.[qi] || '';
+      const ev = (state.evidence[d.id]?.[qi] || '').replace(/"/g, '""');
+      const gap = score ? TARGET_LEVEL - score : '';
+      const risk = score ? getRiskLevel(gap).label : '';
+      rows.push([d.name, q, d.current, d.target, score, TARGET_LEVEL, gap, risk, ev]);
+    });
+  });
+  const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  const proj = (state.meta.project || 'SQA-Assessment').replace(/[^a-z0-9]/gi, '_');
+  a.href = url;
+  a.download = `${proj}_gap_register_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById('f-date').valueAsDate = new Date();
+renderStepper();
+renderDimensions();
+renderGxpQuestions();
+renderGxpVerdict();
+</script>
+
+</body>
+</html>
