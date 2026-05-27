@@ -1,0 +1,2620 @@
+<!DOCTYPE html>
+<!-- saved from url=(0064)file:///C:/Users/prakash.venkatesh/Downloads/UCA_Platform_7.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UCA Platform — Unified Control Architecture</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#060E1E;--navy2:#0A1628;--navy3:#0D1F3C;--navy4:#1A2A40;
+  --teal:#00B4A6;--tealdk:#007A74;--teallt:#E1F5EE;
+  --gold:#E8A000;--goldlt:#FFFBEB;
+  --blue:#2563EB;--bluelt:#EFF6FF;--bluemid:#1E40AF;
+  --green:#16A34A;--greenlt:#DCFCE7;--greendk:#14532D;
+  --amber:#D97706;--amberlt:#FFFBEB;--amberdk:#78350F;
+  --red:#DC2626;--redlt:#FEF2F2;--reddk:#7F1D1D;
+  --purple:#7C3AED;--purplelt:#EDE9FE;
+  --white:#FFFFFF;--offwhite:#F1F5F9;--page:#F1F5F9;
+  --border:#E2E8F0;--slate:#374151;--muted:#6B7280;--hint:#9CA3AF;
+  --layerA:#2563EB;--layerAbg:#EFF6FF;--layerAdk:#1E3A6E;
+  --layerB:#00B4A6;--layerBbg:#E1F5EE;--layerBdk:#071A18;
+  --layerC:#E8A000;--layerCbg:#FFFBEB;--layerCdk:#78350F;
+  --layerD:#E05A3A;--layerDbg:#FEF0EB;--layerDdk:#7C2010;
+}
+body{font-family:'DM Sans',sans-serif;background:var(--page);color:var(--slate);min-height:100vh;overflow-x:hidden}
+
+/* ── LAYOUT ──────────────────────────────────────────────────── */
+.app{display:grid;grid-template-columns:220px 1fr;grid-template-rows:54px 1fr;min-height:100vh}
+
+/* ── TOPBAR ──────────────────────────────────────────────────── */
+.topbar{
+  grid-column:1/-1;background:var(--navy);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;border-bottom:2px solid var(--teal);
+  position:sticky;top:0;z-index:200;
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.logo{width:32px;height:32px;background:var(--teal);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:15px;color:var(--navy);font-weight:600}
+.brand-name{font-size:15px;font-weight:600;color:var(--white)}
+.brand-sub{font-size:10px;color:var(--teal);letter-spacing:.08em;font-weight:500}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.time-badge{font-family:'DM Mono',monospace;font-size:11px;color:var(--hint);
+  background:var(--navy3);padding:4px 10px;border-radius:6px}
+.org-badge{font-size:10px;font-weight:600;letter-spacing:.1em;
+  color:var(--teal);border:1px solid var(--teal);padding:3px 10px;border-radius:20px}
+
+/* ── SIDEBAR ──────────────────────────────────────────────────── */
+.sidebar{
+  background:var(--navy2);padding:16px 0;
+  border-right:1px solid var(--navy3);
+  display:flex;flex-direction:column;gap:2px;
+}
+.nav-section{font-size:9px;font-weight:600;letter-spacing:.12em;
+  color:var(--hint);padding:10px 18px 4px;text-transform:uppercase}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 18px;cursor:pointer;font-size:13px;
+  color:var(--hint);transition:all .18s;border:none;background:none;
+  width:100%;text-align:left;font-family:'DM Sans',sans-serif;
+}
+.nav-item:hover{color:var(--white);background:var(--navy3)}
+.nav-item.active{color:var(--teal);background:var(--navy3);border-left:3px solid var(--teal);padding-left:15px}
+.nav-icon{font-size:15px;width:18px;text-align:center}
+.nav-count{margin-left:auto;background:var(--navy4);color:var(--hint);
+  font-size:10px;padding:1px 7px;border-radius:10px;font-family:'DM Mono',monospace}
+.nav-count.alert{background:var(--red);color:var(--white)}
+
+/* ── MAIN CONTENT ─────────────────────────────────────────────── */
+.main{padding:28px;overflow-y:auto;max-height:calc(100vh - 54px)}
+.page{display:none}
+.page.active{display:block}
+.page-hdr{margin-bottom:24px}
+.page-title{font-family:'Playfair Display',serif;font-size:24px;color:var(--navy);font-weight:500;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--muted)}
+
+/* ── STAT CARDS ──────────────────────────────────────────────── */
+.stat-row{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:24px}
+.stat{background:var(--white);border:1px solid var(--border);border-radius:10px;
+  padding:16px;border-top:3px solid var(--teal)}
+.stat-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:500;color:var(--navy)}
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.04em;margin-top:3px}
+.stat-trend{font-size:11px;margin-top:6px;font-weight:600}
+.stat-trend.up{color:var(--green)}
+.stat-trend.dn{color:var(--red)}
+.stat-trend.nt{color:var(--muted)}
+
+/* ── CARDS / PANELS ──────────────────────────────────────────── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:18px}
+.card-hdr{padding:14px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:14px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:8px}
+.card-body{padding:18px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.three-col{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+
+/* ── LAYER TILES ─────────────────────────────────────────────── */
+.layer-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.layer-tile{border-radius:10px;padding:18px;cursor:pointer;transition:transform .15s,box-shadow .15s;border:1px solid transparent}
+.layer-tile:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+.layer-tile.A{background:var(--layerAbg);border-color:#BFDBFE}
+.layer-tile.B{background:var(--layerBbg);border-color:#99F6E4}
+.layer-tile.C{background:var(--layerCbg);border-color:#FDE68A}
+.layer-tile.D{background:var(--layerDbg);border-color:#FED7C3}
+.layer-id{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;
+  justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:600;margin-bottom:10px}
+.A .layer-id{background:var(--layerA);color:var(--white)}
+.B .layer-id{background:var(--layerB);color:var(--white)}
+.C .layer-id{background:var(--layerC);color:var(--navy)}
+.D .layer-id{background:var(--layerD);color:var(--white)}
+.layer-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.layer-desc{font-size:11px;color:var(--muted);margin-bottom:10px}
+.layer-meta{display:flex;gap:8px;flex-wrap:wrap}
+.layer-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.A .layer-badge{background:var(--bluelt);color:var(--bluemid)}
+.B .layer-badge{background:var(--teallt);color:var(--tealdk)}
+.C .layer-badge{background:var(--amberlt);color:var(--amberdk)}
+.D .layer-badge{background:var(--layerDbg);color:var(--layerDdk)}
+
+/* ── CONTROLS TABLE ──────────────────────────────────────────── */
+.ctrl-table{width:100%;border-collapse:collapse}
+.ctrl-table th{padding:9px 14px;text-align:left;font-size:11px;font-weight:600;
+  letter-spacing:.05em;color:var(--muted);background:var(--offwhite);
+  border-bottom:1px solid var(--border)}
+.ctrl-table td{padding:11px 14px;border-bottom:1px solid var(--border);font-size:13px}
+.ctrl-table tr:last-child td{border-bottom:none}
+.ctrl-table tr:hover td{background:var(--offwhite)}
+.ctrl-id{font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.ctrl-id.A{color:var(--layerA)}
+.ctrl-id.B{color:var(--layerB)}
+.ctrl-id.C{color:var(--layerC)}
+.ctrl-id.D{color:var(--layerD)}
+
+/* ── STATUS BADGES ───────────────────────────────────────────── */
+.badge{display:inline-flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px}
+.badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge.pass   {background:var(--greenlt);color:var(--greendk)}
+.badge.pass::before{background:var(--green)}
+.badge.fail   {background:var(--redlt);  color:var(--reddk)}
+.badge.fail::before{background:var(--red)}
+.badge.amber  {background:var(--amberlt);color:var(--amberdk)}
+.badge.amber::before{background:var(--amber)}
+.badge.na     {background:var(--offwhite);color:var(--muted)}
+.badge.na::before{background:var(--muted)}
+.badge.critical{background:var(--redlt);color:var(--reddk)}
+.badge.major   {background:var(--amberlt);color:var(--amberdk)}
+.badge.minor   {background:var(--bluelt);color:var(--bluemid)}
+
+/* ── PROGRESS BARS ───────────────────────────────────────────── */
+.prog-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.prog-lbl{width:140px;font-size:12px;color:var(--slate);flex-shrink:0}
+.prog-bar-wrap{flex:1;background:var(--border);border-radius:4px;height:8px;overflow:hidden}
+.prog-bar{height:100%;border-radius:4px;transition:width .6s ease}
+.prog-pct{width:38px;font-size:12px;font-weight:600;text-align:right}
+
+/* ── RISK HEATMAP ────────────────────────────────────────────── */
+.heatmap{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.heat-cell{border-radius:6px;padding:10px 8px;text-align:center;font-size:10px;font-weight:600;cursor:pointer;transition:transform .12s}
+.heat-cell:hover{transform:scale(1.05)}
+.heat-0{background:#DCFCE7;color:#14532D}
+.heat-1{background:#FEF9C3;color:#713F12}
+.heat-2{background:#FEF3C7;color:#78350F}
+.heat-3{background:#FFEDD5;color:#7C2D12}
+.heat-4{background:#FEE2E2;color:#7F1D1D}
+.heat-5{background:#DC2626;color:#FFFFFF}
+
+/* ── FORMS ───────────────────────────────────────────────────── */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.form-row.full{grid-template-columns:1fr}
+.form-group label{display:block;font-size:12px;font-weight:600;
+  color:var(--slate);margin-bottom:5px}
+.form-group input,
+.form-group select,
+.form-group textarea{
+  width:100%;border:1px solid var(--border);border-radius:7px;
+  padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;
+  color:var(--slate);background:var(--white);outline:none;transition:border-color .2s}
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus{border-color:var(--teal)}
+.form-group textarea{min-height:80px;resize:vertical}
+.reg-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.reg-check{display:flex;align-items:center;gap:7px;padding:7px 10px;
+  border:1px solid var(--border);border-radius:7px;cursor:pointer;font-size:12px;transition:all .15s}
+.reg-check input{width:14px;height:14px;cursor:pointer;accent-color:var(--teal)}
+.reg-check:has(input:checked){background:var(--teallt);border-color:var(--teal);color:var(--tealdk)}
+
+/* ── BUTTONS ─────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;
+  border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+  font-family:'DM Sans',sans-serif;border:none;transition:all .18s}
+.btn-primary{background:var(--teal);color:var(--white)}
+.btn-primary:hover{background:var(--tealdk)}
+.btn-secondary{background:transparent;color:var(--slate);border:1px solid var(--border)}
+.btn-secondary:hover{border-color:var(--teal);color:var(--teal)}
+.btn-danger{background:var(--red);color:var(--white)}
+.btn-danger:hover{background:#B91C1C}
+.btn-sm{padding:6px 13px;font-size:12px}
+.btn-row{display:flex;gap:10px;margin-top:16px}
+
+/* ── MODAL ───────────────────────────────────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(6,14,30,.75);
+  z-index:500;display:flex;align-items:center;justify-content:center}
+.modal-bg.hidden{display:none}
+.modal{background:var(--white);border-radius:14px;width:620px;max-height:85vh;
+  overflow-y:auto;border:1px solid var(--border)}
+.modal-hdr{padding:20px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--white)}
+.modal-title{font-family:'Playfair Display',serif;font-size:19px;color:var(--navy)}
+.modal-close{background:none;border:none;font-size:20px;cursor:pointer;color:var(--muted)}
+.modal-body{padding:22px 24px}
+
+/* ── TEST RUNNER ─────────────────────────────────────────────── */
+.test-card{border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:12px;transition:border-color .2s}
+.test-card:hover{border-color:var(--teal)}
+.test-card-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.test-ctrl{font-family:'DM Mono',monospace;font-size:11px;font-weight:500}
+.test-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:4px}
+.test-due{font-size:11px;color:var(--muted)}
+.test-actions{display:flex;gap:8px;margin-top:10px}
+
+/* ── EVIDENCE TABLE ──────────────────────────────────────────── */
+.ev-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.ev-item:last-child{border-bottom:none}
+.ev-icon{width:36px;height:36px;border-radius:8px;background:var(--offwhite);
+  display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.ev-name{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.ev-meta{font-size:11px;color:var(--muted)}
+.ev-regs{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.reg-tag{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;
+  background:var(--offwhite);color:var(--slate)}
+
+/* ── DASHBOARD CHART ─────────────────────────────────────────── */
+.donut-wrap{position:relative;width:120px;height:120px}
+.donut-wrap svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-pct{font-family:'Playfair Display',serif;font-size:22px;font-weight:500;color:var(--navy)}
+.donut-sub{font-size:10px;color:var(--muted)}
+
+/* ── TOAST ───────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy);color:var(--white);
+  padding:11px 18px;border-radius:8px;font-size:13px;z-index:999;
+  border-left:3px solid var(--teal);opacity:0;transition:opacity .3s;pointer-events:none;max-width:340px}
+.toast.show{opacity:1}
+.toast.err{border-left-color:var(--red)}
+.toast.ok{border-left-color:var(--green)}
+
+/* ── MISC ────────────────────────────────────────────────────── */
+.search-bar{display:flex;align-items:center;gap:10px;background:var(--white);
+  border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin-bottom:16px}
+.search-bar input{border:none;outline:none;font-family:'DM Sans',sans-serif;
+  font-size:13px;flex:1;color:var(--slate)}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:5px 14px;border-radius:20px;border:1px solid var(--border);
+  background:var(--white);font-size:12px;font-weight:500;cursor:pointer;
+  transition:all .15s;font-family:'DM Sans',sans-serif;color:var(--slate)}
+.filter-btn.active,.filter-btn:hover{border-color:var(--teal);color:var(--teal);background:var(--teallt)}
+.section-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px}
+.divider{height:1px;background:var(--border);margin:18px 0}
+.empty-state{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:42px;margin-bottom:12px}
+.empty-title{font-size:15px;font-weight:600;color:var(--slate);margin-bottom:6px}
+.inline-row{display:flex;align-items:center;justify-content:space-between}
+.chip{font-size:10px;padding:3px 9px;border-radius:20px;font-weight:600}
+.chip.A{background:var(--bluelt);color:var(--bluemid)}
+.chip.B{background:var(--teallt);color:var(--tealdk)}
+.chip.C{background:var(--amberlt);color:var(--amberdk)}
+.chip.D{background:var(--layerDbg);color:var(--layerDdk)}
+.drift-bar{height:4px;border-radius:2px;margin-top:6px;transition:width .5s}
+table.mapping-tbl{width:100%;border-collapse:collapse;font-size:12px}
+table.mapping-tbl th{background:var(--navy);color:var(--white);padding:8px 12px;text-align:left;font-size:11px}
+table.mapping-tbl td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+table.mapping-tbl tr:nth-child(even) td{background:var(--offwhite)}
+.full-badge{background:var(--greenlt);color:var(--greendk);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.partial-badge{background:var(--amberlt);color:var(--amberdk);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.na-badge{background:var(--offwhite);color:var(--muted);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.alert-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.alert-item:last-child{border-bottom:none}
+.alert-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.alert-title{font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px}
+.alert-meta{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="app">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="logo">U</div>
+    <div>
+      <div class="brand-name">UCA Platform</div>
+      <div class="brand-sub">UNIFIED CONTROL ARCHITECTURE · SRMTECH · LS CLIENT SQA</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="time-badge" id="timeBadge">11:37:28</div>
+    <div class="org-badge">LS Client · QA</div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="nav-section">Overview</div>
+  <button class="nav-item active" onclick="nav(&#39;dashboard&#39;)">
+    <span class="nav-icon">◈</span> Dashboard
+  </button>
+  <button class="nav-item" onclick="nav(&#39;posture&#39;)">
+    <span class="nav-icon">◎</span> Control Posture
+    <span class="nav-count alert" id="nc-posture">4</span>
+  </button>
+
+  <div class="nav-section">Assessments</div>
+  <button class="nav-item" onclick="nav(&#39;gxp-assess&#39;)">
+    <span class="nav-icon">✎</span> GxP Applicability
+  </button>
+  <button class="nav-item" onclick="nav(&#39;maturity&#39;)">
+    <span class="nav-icon">◧</span> Maturity Assessment
+  </button>
+
+  <div class="nav-section">Controls</div>
+  <button class="nav-item" onclick="nav(&#39;controls&#39;)">
+    <span class="nav-icon">☰</span> All Controls
+    <span class="nav-count" id="nc-controls">15</span>
+  </button>
+  <button class="nav-item" onclick="nav(&#39;add-control&#39;)">
+    <span class="nav-icon">＋</span> Add Control
+  </button>
+  <button class="nav-item" onclick="nav(&#39;mapping&#39;)">
+    <span class="nav-icon">⊞</span> Reg. Mapping
+  </button>
+
+  <div class="nav-section">Testing</div>
+  <button class="nav-item" onclick="nav(&#39;tests&#39;)">
+    <span class="nav-icon">◫</span> Test Runner
+    <span class="nav-count alert" id="nc-tests">7</span>
+  </button>
+  <button class="nav-item" onclick="nav(&#39;evidence&#39;)">
+    <span class="nav-icon">◉</span> Evidence Vault
+  </button>
+
+  <div class="nav-section">Intelligence</div>
+  <button class="nav-item" onclick="nav(&#39;risk&#39;)">
+    <span class="nav-icon">◬</span> Risk Register
+  </button>
+  <button class="nav-item" onclick="nav(&#39;alerts&#39;)">
+    <span class="nav-icon">⚑</span> Drift Alerts
+    <span class="nav-count alert" id="nc-alerts">3</span>
+  </button>
+  <button class="nav-item" onclick="nav(&#39;report&#39;)">
+    <span class="nav-icon">⬇</span> Audit Report
+  </button>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: DASHBOARD
+══════════════════════════════════════════════════════════════ -->
+<div class="page active" id="page-dashboard">
+  <div class="page-hdr">
+    <div class="page-title">Quality Intelligence Dashboard</div>
+    <div class="page-sub">Live UCA control posture · LS Client SQA · Last updated <span id="lastUpdated">11:37:02</span></div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat" style="border-top-color:var(--green)">
+      <div class="stat-val" id="stat-pass">11</div>
+      <div class="stat-lbl">CONTROLS PASSING</div>
+      <div class="stat-trend up" id="stat-pass-t">+2 this week</div>
+    </div>
+    <div class="stat" style="border-top-color:var(--amber)">
+      <div class="stat-val" id="stat-amber">3</div>
+      <div class="stat-lbl">AMBER — REVIEW</div>
+      <div class="stat-trend nt">Stable</div>
+    </div>
+    <div class="stat" style="border-top-color:var(--red)">
+      <div class="stat-val" id="stat-fail">1</div>
+      <div class="stat-lbl">FAILING / DRIFTED</div>
+      <div class="stat-trend dn" id="stat-fail-t">1 need attention</div>
+    </div>
+    <div class="stat" style="border-top-color:var(--blue)">
+      <div class="stat-val" id="stat-coverage">73%</div>
+      <div class="stat-lbl">REG. COVERAGE</div>
+      <div class="stat-trend up">+4% vs last quarter</div>
+    </div>
+    <div class="stat" style="border-top-color:var(--purple)">
+      <div class="stat-val" id="stat-open-capa">6</div>
+      <div class="stat-lbl">OPEN CAPAs</div>
+      <div class="stat-trend dn" id="stat-capa-t">6 open items</div>
+    </div>
+  </div>
+
+  <!-- Layer summary -->
+  <div class="layer-grid" id="layerSummary">
+      <div class="layer-tile A" onclick="nav(&#39;controls&#39;);filterControls(&#39;A&#39;,null)">
+        <div class="layer-id">A</div>
+        <div class="layer-name">Technology Policy &amp; Governance</div>
+        <div class="layer-desc">Authoritative layer — defines what good looks like</div>
+        <div class="layer-meta">
+          <span class="layer-badge">5 controls</span>
+          
+          <span class="layer-badge" style="background:var(--amberlt);color:var(--amberdk)">1 amber</span>
+          
+        </div>
+      </div>
+      <div class="layer-tile B" onclick="nav(&#39;controls&#39;);filterControls(&#39;B&#39;,null)">
+        <div class="layer-id">B</div>
+        <div class="layer-name">Controls Assurance</div>
+        <div class="layer-desc">Continuous monitoring and evidence engine</div>
+        <div class="layer-meta">
+          <span class="layer-badge">4 controls</span>
+          <span class="layer-badge" style="background:var(--redlt);color:var(--reddk)">1 failing</span>
+          <span class="layer-badge" style="background:var(--amberlt);color:var(--amberdk)">1 amber</span>
+          
+        </div>
+      </div>
+      <div class="layer-tile C" onclick="nav(&#39;controls&#39;);filterControls(&#39;C&#39;,null)">
+        <div class="layer-id">C</div>
+        <div class="layer-name">Technology Controls &amp; Risk Mgmt</div>
+        <div class="layer-desc">Decision authority — go/no-go and risk intelligence</div>
+        <div class="layer-meta">
+          <span class="layer-badge">3 controls</span>
+          
+          <span class="layer-badge" style="background:var(--amberlt);color:var(--amberdk)">1 amber</span>
+          
+        </div>
+      </div>
+      <div class="layer-tile D" onclick="nav(&#39;controls&#39;);filterControls(&#39;D&#39;,null)">
+        <div class="layer-id">D</div>
+        <div class="layer-name">Compliance, Evidence &amp; Audit</div>
+        <div class="layer-desc">Closes the loop — audit-ready evidence</div>
+        <div class="layer-meta">
+          <span class="layer-badge">3 controls</span>
+          
+          
+          <span class="layer-badge" style="background:var(--greenlt);color:var(--greendk)">All passing</span>
+        </div>
+      </div></div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-title">📊 Regulatory library coverage</div>
+      </div>
+      <div class="card-body" id="regCoverage">
+      <div class="prog-row">
+        <div class="prog-lbl">FDA 21 CFR Part 11</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:84%;background:var(--blue)"></div></div>
+        <div class="prog-pct" style="color:var(--blue)">84%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-lbl">EU Annex 11</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:89%;background:var(--teal)"></div></div>
+        <div class="prog-pct" style="color:var(--teal)">89%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-lbl">MHRA</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:77%;background:var(--layerD)"></div></div>
+        <div class="prog-pct" style="color:var(--layerD)">77%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-lbl">ICH Q10</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:83%;background:var(--purple)"></div></div>
+        <div class="prog-pct" style="color:var(--purple)">83%</div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-lbl">GAMP 5 / CSA</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:77%;background:var(--amber)"></div></div>
+        <div class="prog-pct" style="color:var(--amber)">77%</div>
+      </div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr">
+        <div class="card-title">⚡ Recent drift alerts</div>
+        <button class="btn btn-secondary btn-sm" onclick="nav(&#39;alerts&#39;)">View all</button>
+      </div>
+      <div class="card-body" id="dashAlerts">
+      <div class="alert-item">
+        <div class="alert-dot" style="background:var(--red)"></div>
+        <div>
+          <div class="alert-title">REV-001 — Audit trail review overdue</div>
+          <div class="alert-meta">Last review 72 days ago. Monthly review SLA exceeded by 42 days. CAPA-019 raised...</div>
+          <div class="alert-meta" style="margin-top:2px">🕐 2026-04-10</div>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot" style="background:var(--amber)"></div>
+        <div>
+          <div class="alert-title">VAL-001 — Validation expiry approaching</div>
+          <div class="alert-meta">System validation documentation for Veeva Vault v24.3 expires in 18 days. Re-val...</div>
+          <div class="alert-meta" style="margin-top:2px">🕐 2026-04-08</div>
+        </div>
+      </div>
+      <div class="alert-item">
+        <div class="alert-dot" style="background:var(--amber)"></div>
+        <div>
+          <div class="alert-title">AI-001 — AI model drift signal</div>
+          <div class="alert-meta">Risk Scorer model output distribution has shifted 18% from baseline. Performance...</div>
+          <div class="alert-meta" style="margin-top:2px">🕐 2026-04-05</div>
+        </div>
+      </div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-title">🔬 Control status by layer</div>
+      <button class="btn btn-secondary btn-sm" onclick="nav(&#39;controls&#39;)">Manage controls</button>
+    </div>
+    <div class="card-body">
+      <table class="ctrl-table" id="dashControlTable">
+        <thead><tr>
+          <th>Control ID</th><th>Name</th><th>Layer</th>
+          <th>Risk</th><th>Last Test</th><th>Status</th>
+        </tr></thead>
+        <tbody id="dashControlBody"><tr>
+      <td><span class="ctrl-id A">ACC-001</span></td>
+      <td style="font-weight:500">System Access Restriction</td>
+      <td><span class="chip A">A</span></td>
+      <td><span class="badge critical">Critical</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-04-01</td>
+      <td><span class="badge pass">Pass</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id A">AUD-001</span></td>
+      <td style="font-weight:500">Audit Trail Integrity</td>
+      <td><span class="chip A">A</span></td>
+      <td><span class="badge critical">Critical</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-03-15</td>
+      <td><span class="badge pass">Pass</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id A">CHG-001</span></td>
+      <td style="font-weight:500">Change Control Management</td>
+      <td><span class="chip A">A</span></td>
+      <td><span class="badge critical">Critical</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-03-20</td>
+      <td><span class="badge pass">Pass</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id A">VAL-001</span></td>
+      <td style="font-weight:500">System Validation Lifecycle</td>
+      <td><span class="chip A">A</span></td>
+      <td><span class="badge critical">Critical</span></td>
+      <td style="font-size:12px;color:var(--muted)">2025-10-01</td>
+      <td><span class="badge amber">Amber</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id A">RET-001</span></td>
+      <td style="font-weight:500">Record Retention &amp; Retrievability</td>
+      <td><span class="chip A">A</span></td>
+      <td><span class="badge major">Major</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-04-05</td>
+      <td><span class="badge pass">Pass</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id B">MON-001</span></td>
+      <td style="font-weight:500">L2 Controls Monitoring</td>
+      <td><span class="chip B">B</span></td>
+      <td><span class="badge critical">Critical</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-04-10</td>
+      <td><span class="badge pass">Pass</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id B">EV-001</span></td>
+      <td style="font-weight:500">Evidence Automation</td>
+      <td><span class="chip B">B</span></td>
+      <td><span class="badge major">Major</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-04-12</td>
+      <td><span class="badge pass">Pass</span></td>
+    </tr><tr>
+      <td><span class="ctrl-id B">CAP-001</span></td>
+      <td style="font-weight:500">CAPA Closed-Loop Integration</td>
+      <td><span class="chip B">B</span></td>
+      <td><span class="badge major">Major</span></td>
+      <td style="font-size:12px;color:var(--muted)">2026-03-01</td>
+      <td><span class="badge amber">Amber</span></td>
+    </tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: CONTROL POSTURE
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-posture">
+  <div class="page-hdr">
+    <div class="page-title">Control Posture</div>
+    <div class="page-sub">Real-time status across all UCA layers</div>
+  </div>
+  <div class="layer-grid" id="postureLayerGrid"></div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">🗺 Full posture map</div></div>
+    <div class="card-body">
+      <table class="ctrl-table">
+        <thead><tr><th>ID</th><th>Control Name</th><th>Layer</th><th>Category</th><th>Risk</th><th>Test Freq.</th><th>Last Run</th><th>Status</th><th>Drift</th></tr></thead>
+        <tbody id="postureBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: ALL CONTROLS
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-controls">
+  <div class="page-hdr inline-row">
+    <div>
+      <div class="page-title">All Controls</div>
+      <div class="page-sub">Define and manage UCA controls across all four layers</div>
+    </div>
+    <button class="btn btn-primary" onclick="nav(&#39;add-control&#39;)">＋ Add Control</button>
+  </div>
+  <div class="search-bar">
+    <span style="color:var(--muted)">🔍</span>
+    <input type="text" id="ctrlSearch" placeholder="Search controls by ID, name, or category..." oninput="renderControls()">
+  </div>
+  <div class="filter-row" id="ctrlFilters">
+    <button class="filter-btn active" onclick="filterControls(&#39;all&#39;,this)">All</button>
+    <button class="filter-btn" onclick="filterControls(&#39;A&#39;,this)">Layer A</button>
+    <button class="filter-btn" onclick="filterControls(&#39;B&#39;,this)">Layer B</button>
+    <button class="filter-btn" onclick="filterControls(&#39;C&#39;,this)">Layer C</button>
+    <button class="filter-btn" onclick="filterControls(&#39;D&#39;,this)">Layer D</button>
+    <button class="filter-btn" onclick="filterControls(&#39;Critical&#39;,this)">Critical</button>
+    <button class="filter-btn" onclick="filterControls(&#39;Major&#39;,this)">Major</button>
+  </div>
+  <div class="card">
+    <div class="card-body" style="padding:0">
+      <table class="ctrl-table">
+        <thead><tr><th>ID</th><th>Control Name</th><th>Layer</th><th>Category</th><th>Risk</th><th>Regulations</th><th>Status</th><th>Actions</th></tr></thead>
+        <tbody id="controlsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: ADD CONTROL
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-add-control">
+  <div class="page-hdr">
+    <div class="page-title" id="addCtrlTitle">Add New Control</div>
+    <div class="page-sub">Define a new UCA control with regulatory mappings and test requirements</div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">Control Definition</div></div>
+    <div class="card-body">
+      <input type="hidden" id="editCtrlId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Control ID *</label>
+          <input type="text" id="fCtrlId" placeholder="e.g. ACC-001">
+        </div>
+        <div class="form-group">
+          <label>UCA Layer *</label>
+          <select id="fLayer">
+            <option value="">Select layer...</option>
+            <option value="A">A — Technology Policy &amp; Process Governance</option>
+            <option value="B">B — Controls Assurance</option>
+            <option value="C">C — Technology Controls &amp; Risk Management</option>
+            <option value="D">D — Compliance, Evidence &amp; Audit</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Control Name *</label>
+          <input type="text" id="fCtrlName" placeholder="e.g. System Access Restriction">
+        </div>
+      </div>
+      <div class="form-row full">
+        <div class="form-group">
+          <label>Control Statement *</label>
+          <textarea id="fStatement" placeholder="The system shall..."></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Category</label>
+          <input type="text" id="fCategory" placeholder="e.g. Access &amp; Identity Management">
+        </div>
+        <div class="form-group">
+          <label>Risk Tier *</label>
+          <select id="fRisk">
+            <option value="">Select...</option>
+            <option value="Critical">Critical</option>
+            <option value="Major">Major</option>
+            <option value="Minor">Minor</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Test Frequency</label>
+          <select id="fFreq">
+            <option value="Monthly">Monthly</option>
+            <option value="Quarterly">Quarterly</option>
+            <option value="Annually">Annually</option>
+            <option value="Continuous">Continuous</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Evidence Type</label>
+          <input type="text" id="fEvidence" placeholder="e.g. Access log extract, User report">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">Regulatory Mappings</div></div>
+    <div class="card-body">
+      <div class="reg-checks">
+        <label class="reg-check"><input type="checkbox" id="r1" value="21 CFR Part 11"> 21 CFR Part 11</label>
+        <label class="reg-check"><input type="checkbox" id="r2" value="EU Annex 11"> EU Annex 11</label>
+        <label class="reg-check"><input type="checkbox" id="r3" value="GAMP 5"> GAMP 5</label>
+        <label class="reg-check"><input type="checkbox" id="r4" value="ICH Q10"> ICH Q10</label>
+        <label class="reg-check"><input type="checkbox" id="r5" value="MHRA"> MHRA</label>
+        <label class="reg-check"><input type="checkbox" id="r6" value="ISO 13485"> ISO 13485</label>
+        <label class="reg-check"><input type="checkbox" id="r7" value="IEC 62304"> IEC 62304</label>
+        <label class="reg-check"><input type="checkbox" id="r8" value="HIPAA"> HIPAA</label>
+        <label class="reg-check"><input type="checkbox" id="r9" value="ICH Q9"> ICH Q9</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="saveControl()">💾 Save Control</button>
+    <button class="btn btn-secondary" onclick="nav(&#39;controls&#39;)">Cancel</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: REGULATORY MAPPING
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-mapping">
+  <div class="page-hdr">
+    <div class="page-title">Regulatory Mapping Library</div>
+    <div class="page-sub">UCA control cross-mapping to all applicable regulatory frameworks</div>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterMapping(&#39;all&#39;,this)">All Frameworks</button>
+    <button class="filter-btn" onclick="filterMapping(&#39;21 CFR Part 11&#39;,this)">21 CFR Part 11</button>
+    <button class="filter-btn" onclick="filterMapping(&#39;EU Annex 11&#39;,this)">EU Annex 11</button>
+    <button class="filter-btn" onclick="filterMapping(&#39;GAMP 5&#39;,this)">GAMP 5</button>
+    <button class="filter-btn" onclick="filterMapping(&#39;ICH Q10&#39;,this)">ICH Q10</button>
+    <button class="filter-btn" onclick="filterMapping(&#39;MHRA&#39;,this)">MHRA</button>
+    <button class="filter-btn" onclick="filterMapping(&#39;ISO 13485&#39;,this)">ISO 13485</button>
+  </div>
+  <div class="card">
+    <div class="card-body" style="padding:0">
+      <table class="mapping-tbl">
+        <thead><tr><th>Control ID</th><th>Control Name</th><th>Layer</th><th>Framework</th><th>Section</th><th>Requirement</th><th>Satisfaction</th></tr></thead>
+        <tbody id="mappingBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: TEST RUNNER
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-tests">
+  <div class="page-hdr inline-row">
+    <div>
+      <div class="page-title">Test Runner</div>
+      <div class="page-sub">Execute control tests and record results</div>
+    </div>
+    <button class="btn btn-primary" onclick="runAllDue()">▶ Run All Due Tests</button>
+  </div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterTests(&#39;all&#39;,this)">All</button>
+    <button class="filter-btn" onclick="filterTests(&#39;due&#39;,this)">Due Now</button>
+    <button class="filter-btn" onclick="filterTests(&#39;pass&#39;,this)">Passed</button>
+    <button class="filter-btn" onclick="filterTests(&#39;fail&#39;,this)">Failed</button>
+  </div>
+  <div id="testsList"></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: EVIDENCE VAULT
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-evidence">
+  <div class="page-hdr">
+    <div class="page-title">Evidence Vault</div>
+    <div class="page-sub">Audit-ready evidence packages generated from control test execution</div>
+  </div>
+  <div class="card">
+    <div class="card-hdr">
+      <div class="card-title">📦 Evidence packages</div>
+      <div style="font-size:12px;color:var(--muted)" id="evCount"></div>
+    </div>
+    <div class="card-body" id="evidenceList"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: RISK REGISTER
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-risk">
+  <div class="page-hdr">
+    <div class="page-title">Risk Register</div>
+    <div class="page-sub">Live risk register tied to UCA control evidence</div>
+  </div>
+  <div class="two-col">
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">🗺 Risk heatmap</div></div>
+      <div class="card-body">
+        <div style="display:flex;gap:8px;font-size:10px;color:var(--muted);margin-bottom:8px">
+          <span>Impact →</span>
+        </div>
+        <div id="riskHeatmap"></div>
+        <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap" id="heatLegend"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr"><div class="card-title">📋 Risk items</div></div>
+      <div class="card-body" id="riskList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: DRIFT ALERTS
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-alerts">
+  <div class="page-hdr">
+    <div class="page-title">Drift Alerts</div>
+    <div class="page-sub">Controls that have drifted from their validated baseline</div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">⚡ Active drift signals</div></div>
+    <div class="card-body" id="alertsList"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: AUDIT REPORT
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-report">
+  <div class="page-hdr">
+    <div class="page-title">Audit Report Generator</div>
+    <div class="page-sub">Generate audit-ready evidence packages</div>
+  </div>
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">Report configuration</div></div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Report scope</label>
+          <select id="rptScope">
+            <option value="all">All controls</option>
+            <option value="A">Layer A only</option>
+            <option value="B">Layer B only</option>
+            <option value="C">Layer C only</option>
+            <option value="D">Layer D only</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Regulatory framework focus</label>
+          <select id="rptFramework">
+            <option value="all">All frameworks</option>
+            <option value="21 CFR Part 11">21 CFR Part 11</option>
+            <option value="EU Annex 11">EU Annex 11</option>
+            <option value="GAMP 5">GAMP 5</option>
+            <option value="MHRA">MHRA</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="generateReport()">⬇ Generate Audit Report</button>
+    </div>
+  </div>
+  <div class="card" id="reportPreview" style="display:none">
+    <div class="card-hdr">
+      <div class="card-title">Report preview</div>
+      <button class="btn btn-primary btn-sm" onclick="downloadReport()">⬇ Download</button>
+    </div>
+    <div class="card-body" id="reportBody" style="font-family:&#39;DM Mono&#39;,monospace;font-size:12px;white-space:pre-wrap;color:var(--slate);max-height:500px;overflow-y:auto"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: GxP APPLICABILITY ASSESSMENT
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-gxp-assess">
+  <div class="page-hdr">
+    <div class="page-title">GxP Applicability Assessment</div>
+    <div class="page-sub">Determine whether a system requires GxP validation and which regulations apply</div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">✎ System under assessment</div></div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group"><label>System name *</label><input type="text" id="gxpSysName" placeholder="e.g. Veeva Vault v24.3"></div>
+        <div class="form-group"><label>System owner</label><input type="text" id="gxpSysOwner" placeholder="e.g. QA Lead — BTS"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Department / function</label><input type="text" id="gxpDept" placeholder="e.g. Quality Assurance"></div>
+        <div class="form-group"><label>Assessment date</label><input type="date" id="gxpDate"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">📋 GxP applicability questionnaire</div>
+      <div style="font-size:11px;color:var(--muted)">Answer each question — the system auto-calculates GxP determination</div>
+    </div>
+    <div class="card-body" id="gxpQuestions"></div>
+  </div>
+
+  <div class="card" id="gxpResultCard" style="display:none">
+    <div class="card-hdr"><div class="card-title">📊 Assessment result</div></div>
+    <div class="card-body" id="gxpResult"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="runGxpAssessment()">▶ Run Assessment</button>
+    <button class="btn btn-secondary" onclick="resetGxpAssessment()">↺ Reset</button>
+    <button class="btn btn-secondary" onclick="downloadGxpReport()">⬇ Download Report</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════
+     PAGE: MATURITY ASSESSMENT
+══════════════════════════════════════════════════════════════ -->
+<div class="page" id="page-maturity">
+  <div class="page-hdr">
+    <div class="page-title">UCA Maturity Assessment</div>
+    <div class="page-sub">Assess organisational readiness and maturity across the four UCA governance layers</div>
+  </div>
+
+  <div class="card">
+    <div class="card-hdr"><div class="card-title">◧ Organisation details</div></div>
+    <div class="card-body">
+      <div class="form-row">
+        <div class="form-group"><label>Organisation / BU</label><input type="text" id="matOrg" placeholder="e.g. LS Client — Quality Assurance"></div>
+        <div class="form-group"><label>Assessed by</label><input type="text" id="matAssessor" placeholder="e.g. SRMtech QA Practice"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Assessment date</label><input type="date" id="matDate"></div>
+        <div class="form-group"><label>Scope</label>
+          <select id="matScope"><option value="full">Full organisation</option><option value="dept">Single department</option><option value="system">Single system</option></select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="maturityLayers"></div>
+
+  <div class="card" id="matResultCard" style="display:none">
+    <div class="card-hdr"><div class="card-title">📊 Maturity scorecard</div></div>
+    <div class="card-body" id="matResult"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="runMaturityAssessment()">▶ Calculate Maturity</button>
+    <button class="btn btn-secondary" onclick="resetMaturity()">↺ Reset</button>
+    <button class="btn btn-secondary" onclick="downloadMaturityReport()">⬇ Download Report</button>
+  </div>
+</div>
+
+</main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg hidden" id="modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-title" id="modalTitle">Control Details</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ───────────────────────────────────────────────────────
+const LAYERS = {
+  A:{name:'Technology Policy & Governance',   desc:'Authoritative layer — defines what good looks like',color:'var(--layerA)'},
+  B:{name:'Controls Assurance',               desc:'Continuous monitoring and evidence engine',          color:'var(--layerB)'},
+  C:{name:'Technology Controls & Risk Mgmt',  desc:'Decision authority — go/no-go and risk intelligence',color:'var(--layerC)'},
+  D:{name:'Compliance, Evidence & Audit',     desc:'Closes the loop — audit-ready evidence',             color:'var(--layerD)'},
+};
+
+const REG_COLORS = {
+  '21 CFR Part 11':'var(--blue)','EU Annex 11':'var(--teal)',
+  'GAMP 5':'var(--amber)','ICH Q10':'var(--purple)',
+  'MHRA':'var(--red)','ISO 13485':'var(--green)',
+  'IEC 62304':'var(--slate)','HIPAA':'var(--layerD)','ICH Q9':'var(--hint)',
+};
+
+// ── CONTROLS DATA ──────────────────────────────────────────────
+let controls = [
+  {id:'ACC-001',layer:'A',name:'System Access Restriction',category:'Access & Identity',risk:'Critical',freq:'Monthly',
+   statement:'The system shall restrict access to authorised individuals only, enforced through a defined authentication mechanism, with all access events recorded in a tamper-evident audit log.',
+   regs:['21 CFR Part 11','EU Annex 11','ISO 13485','GAMP 5','MHRA'],
+   status:'pass',lastTest:'2026-04-01',drift:5,capa:0,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.10(d)',req:'Limit system access to authorised individuals',sat:'Full'},
+     {framework:'EU Annex 11',section:'§12.1',req:'Physical/logical controls to restrict access',sat:'Full'},
+     {framework:'ISO 13485',section:'§4.2.4',req:'Control of records — access restriction',sat:'Full'},
+     {framework:'GAMP 5',section:'§6.3',req:'Access controls for GxP computerised systems',sat:'Full'},
+     {framework:'MHRA',section:'§6.2',req:'User access management and periodic review',sat:'Full'},
+   ]},
+  {id:'AUD-001',layer:'A',name:'Audit Trail Integrity',category:'Data Integrity',risk:'Critical',freq:'Quarterly',
+   statement:'The system shall maintain a computer-generated, tamper-evident audit trail capturing all create, read, update, and delete operations on GxP records.',
+   regs:['21 CFR Part 11','EU Annex 11','ISO 13485','HIPAA','MHRA'],
+   status:'pass',lastTest:'2026-03-15',drift:8,capa:0,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.10(e)',req:'Computer-generated audit trails for GxP records',sat:'Full'},
+     {framework:'EU Annex 11',section:'§9',req:'Audit trails — electronic records',sat:'Full'},
+     {framework:'ISO 13485',section:'§4.2.5',req:'Records shall remain identifiable',sat:'Full'},
+     {framework:'HIPAA',section:'§164.312(b)',req:'Audit controls — hardware, software, procedural',sat:'Full'},
+     {framework:'MHRA',section:'§10.2',req:'Data integrity — audit trail review',sat:'Partial'},
+   ]},
+  {id:'CHG-001',layer:'A',name:'Change Control Management',category:'Change Management',risk:'Critical',freq:'Quarterly',
+   statement:'All changes to validated GxP systems shall be initiated through a formal change request, assessed for GxP impact, approved by qualified personnel, and closed with documented evidence.',
+   regs:['EU Annex 11','GAMP 5','ICH Q10','ISO 13485','MHRA'],
+   status:'pass',lastTest:'2026-03-20',drift:12,capa:1,
+   mappings:[
+     {framework:'EU Annex 11',section:'§10',req:'Change and configuration management',sat:'Full'},
+     {framework:'GAMP 5',section:'§8',req:'Operation — change control',sat:'Full'},
+     {framework:'ICH Q10',section:'§3.2',req:'Change management system',sat:'Full'},
+     {framework:'ISO 13485',section:'§7.3.9',req:'Control of design and development changes',sat:'Full'},
+     {framework:'MHRA',section:'§7.1',req:'Change control for validated systems',sat:'Full'},
+   ]},
+  {id:'VAL-001',layer:'A',name:'System Validation Lifecycle',category:'Validation',risk:'Critical',freq:'Annually',
+   statement:'All GxP computerised systems shall be validated before use and maintained in a validated state, with validation activities proportionate to risk documented in a Validation Master Plan.',
+   regs:['21 CFR Part 11','EU Annex 11','GAMP 5','ISO 13485','MHRA'],
+   status:'amber',lastTest:'2025-10-01',drift:35,capa:1,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.10(a)',req:'Validation of systems to ensure accuracy',sat:'Full'},
+     {framework:'EU Annex 11',section:'§4',req:'System validation — validation documentation',sat:'Full'},
+     {framework:'GAMP 5',section:'§5',req:'System validation — lifecycle approach',sat:'Full'},
+     {framework:'ISO 13485',section:'§7.5.6',req:'Validation of processes',sat:'Full'},
+     {framework:'MHRA',section:'§12',req:'Validation — computerised system validation',sat:'Full'},
+   ]},
+  {id:'RET-001',layer:'A',name:'Record Retention & Retrievability',category:'Records Management',risk:'Major',freq:'Quarterly',
+   statement:'All GxP records shall be retained for the period required by applicable regulation, stored to ensure legibility, integrity, and retrievability on demand throughout the retention period.',
+   regs:['21 CFR Part 11','EU Annex 11','ISO 13485','HIPAA','GAMP 5','MHRA'],
+   status:'pass',lastTest:'2026-04-05',drift:3,capa:0,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.10(b)',req:'Generate accurate and complete copies',sat:'Full'},
+     {framework:'EU Annex 11',section:'§17',req:'Archiving — data accessible throughout retention',sat:'Full'},
+     {framework:'ISO 13485',section:'§4.2.5',req:'Records remain legible and retrievable',sat:'Full'},
+     {framework:'HIPAA',section:'§164.530(j)',req:'Retention of documentation — minimum 6 years',sat:'Full'},
+   ]},
+  {id:'MON-001',layer:'B',name:'L2 Controls Monitoring',category:'Continuous Monitoring',risk:'Critical',freq:'Monthly',
+   statement:'All UCA controls shall be monitored continuously with automated test execution, results flowing to the dashboard in real time, and exceptions escalated within defined SLAs.',
+   regs:['EU Annex 11','GAMP 5','ICH Q10'],
+   status:'pass',lastTest:'2026-04-10',drift:2,capa:0,
+   mappings:[
+     {framework:'EU Annex 11',section:'§11',req:'Periodic evaluation of computerised systems',sat:'Full'},
+     {framework:'GAMP 5',section:'§7',req:'Operation — periodic review',sat:'Full'},
+     {framework:'ICH Q10',section:'§3.1',req:'Process performance and product quality monitoring',sat:'Full'},
+   ]},
+  {id:'EV-001',layer:'B',name:'Evidence Automation',category:'Audit Readiness',risk:'Major',freq:'Continuous',
+   statement:'Test execution shall automatically generate structured evidence packages tagged with regulatory references, stored in a tamper-evident vault with access-controlled retrieval.',
+   regs:['21 CFR Part 11','EU Annex 11','GAMP 5'],
+   status:'pass',lastTest:'2026-04-12',drift:1,capa:0,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.10(b)',req:'Ability to generate accurate copies of records',sat:'Full'},
+     {framework:'EU Annex 11',section:'§17',req:'Archiving',sat:'Full'},
+     {framework:'GAMP 5',section:'§10',req:'Records and data preservation',sat:'Full'},
+   ]},
+  {id:'CAP-001',layer:'B',name:'CAPA Closed-Loop Integration',category:'CAPA Management',risk:'Major',freq:'Quarterly',
+   statement:'Every control test failure or drift signal shall automatically generate a CAPA record linked to the failing control, with owner assignment, target date, and re-test requirement on closure.',
+   regs:['ICH Q10','ISO 13485','GAMP 5'],
+   status:'amber',lastTest:'2026-03-01',drift:28,capa:2,
+   mappings:[
+     {framework:'ICH Q10',section:'§3.2.2',req:'Corrective action and preventive action',sat:'Full'},
+     {framework:'ISO 13485',section:'§8.5.2',req:'Corrective action',sat:'Full'},
+     {framework:'GAMP 5',section:'§8.4',req:'Non-conformance and corrective action',sat:'Full'},
+   ]},
+  {id:'REV-001',layer:'B',name:'Audit Trail Review',category:'Audit Readiness',risk:'Major',freq:'Monthly',
+   statement:'Audit trails shall be routinely reviewed for anomalies, with review frequency proportionate to system risk, findings documented, and evidence of review retained.',
+   regs:['MHRA','21 CFR Part 11','EU Annex 11'],
+   status:'fail',lastTest:'2026-02-15',drift:72,capa:1,
+   mappings:[
+     {framework:'MHRA',section:'§10.2',req:'Audit trail review — routine review required',sat:'Full'},
+     {framework:'21 CFR Part 11',section:'§11.10(e)',req:'Audit trail maintenance and review',sat:'Partial'},
+     {framework:'EU Annex 11',section:'§9',req:'Audit trail review',sat:'Full'},
+   ]},
+  {id:'RSK-001',layer:'C',name:'Live Risk Intelligence',category:'Risk Management',risk:'Critical',freq:'Monthly',
+   statement:'Risk registers shall be connected to UCA control evidence and updated automatically as controls pass, fail, or drift, providing operational rather than theoretical risk visibility.',
+   regs:['ICH Q9','ICH Q10','GAMP 5'],
+   status:'pass',lastTest:'2026-04-08',drift:6,capa:0,
+   mappings:[
+     {framework:'ICH Q9',section:'§3',req:'Quality risk management process',sat:'Full'},
+     {framework:'ICH Q10',section:'§3.2.3',req:'Risk management in change control',sat:'Full'},
+     {framework:'GAMP 5',section:'§5.4',req:'Risk assessment — formal process',sat:'Full'},
+   ]},
+  {id:'AI-001',layer:'C',name:'AI Model Governance',category:'AI Ops',risk:'Critical',freq:'Monthly',
+   statement:'All AI models used in GxP decision support shall be inventoried, validated at deployment, monitored continuously for drift, subject to formal change control, and risk-accepted by a named owner.',
+   regs:['GAMP 5','21 CFR Part 11','ICH Q10'],
+   status:'amber',lastTest:'2026-03-28',drift:18,capa:1,
+   mappings:[
+     {framework:'GAMP 5',section:'§5.5',req:'Software classification and validation',sat:'Full'},
+     {framework:'21 CFR Part 11',section:'§11.10(a)',req:'Validation to ensure accuracy',sat:'Full'},
+     {framework:'ICH Q10',section:'§3.2',req:'Change management',sat:'Partial'},
+   ]},
+  {id:'GNG-001',layer:'C',name:'Go/No-Go Authority',category:'Decision Governance',risk:'Critical',freq:'Quarterly',
+   statement:'Formal go/no-go decision authority shall be defined, documented, and exercised for all system deployments, major changes, and AI model activations in GxP environments.',
+   regs:['ICH Q10','EU Annex 11','GAMP 5'],
+   status:'pass',lastTest:'2026-03-10',drift:14,capa:0,
+   mappings:[
+     {framework:'ICH Q10',section:'§2.1',req:'Quality responsibilities and authority',sat:'Full'},
+     {framework:'EU Annex 11',section:'§5',req:'Suppliers and service providers',sat:'Partial'},
+     {framework:'GAMP 5',section:'§8.2',req:'Release for use',sat:'Full'},
+   ]},
+  {id:'TRC-001',layer:'D',name:'Traceability Matrix',category:'Traceability',risk:'Major',freq:'Quarterly',
+   statement:'Every document shall link to a UCA control, every control shall link to a regulatory obligation, and the full traceability chain shall be maintained and audit-ready on demand.',
+   regs:['EU Annex 11','GAMP 5','ICH Q10'],
+   status:'pass',lastTest:'2026-04-03',drift:4,capa:0,
+   mappings:[
+     {framework:'EU Annex 11',section:'§4.8',req:'Bidirectional traceability',sat:'Full'},
+     {framework:'GAMP 5',section:'Appendix M6',req:'Traceability matrix',sat:'Full'},
+     {framework:'ICH Q10',section:'§4.2',req:'Document and data control',sat:'Full'},
+   ]},
+  {id:'SIG-001',layer:'D',name:'Electronic Signature Controls',category:'e-Signatures',risk:'Critical',freq:'Quarterly',
+   statement:'Electronic signatures shall be uniquely linked to the signatory, include printed name, date/time, and meaning, be non-repudiable, and comply with 21 CFR Part 11 §11.50 requirements.',
+   regs:['21 CFR Part 11','EU Annex 11','ISO 13485'],
+   status:'pass',lastTest:'2026-03-25',drift:9,capa:0,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.50',req:'Electronic signature components and controls',sat:'Full'},
+     {framework:'EU Annex 11',section:'§12.2',req:'Electronic signatures',sat:'Full'},
+     {framework:'ISO 13485',section:'§4.2.4',req:'Control of records — signatures',sat:'Full'},
+   ]},
+  {id:'BCK-001',layer:'D',name:'Backup & Recovery',category:'Business Continuity',risk:'Major',freq:'Monthly',
+   statement:'GxP system data shall be backed up on a defined schedule to a geographically separate location, with restoration tested quarterly to confirm recoverability within RTO and RPO targets.',
+   regs:['21 CFR Part 11','EU Annex 11','GAMP 5'],
+   status:'pass',lastTest:'2026-04-07',drift:7,capa:0,
+   mappings:[
+     {framework:'21 CFR Part 11',section:'§11.10(c)',req:'Protection of records — accurate retrieval',sat:'Full'},
+     {framework:'EU Annex 11',section:'§7.1',req:'Data storage — backup in separate location',sat:'Full'},
+     {framework:'GAMP 5',section:'§9.3',req:'Backup and recovery procedures',sat:'Full'},
+   ]},
+];
+
+// ── RISK DATA ──────────────────────────────────────────────────
+const risks = [
+  {id:'R-001',ctrl:'VAL-001',title:'Validation gap — Veeva Vault v24.3',impact:4,likelihood:3,tier:'High',status:'Open',owner:'QA Lead'},
+  {id:'R-002',ctrl:'REV-001',title:'Audit trail review overdue — 72 days',impact:5,likelihood:4,tier:'Critical',status:'Open CAPA',owner:'Val Eng.'},
+  {id:'R-003',ctrl:'AI-001',title:'AI model drift detected — Risk Scorer',impact:3,likelihood:3,tier:'Medium',status:'Under review',owner:'AI Ops'},
+  {id:'R-004',ctrl:'CAP-001',title:'CAPA closure rate below target',impact:3,likelihood:2,tier:'Medium',status:'Monitoring',owner:'QA Lead'},
+  {id:'R-005',ctrl:'CHG-001',title:'Change request backlog — 12 items',impact:2,likelihood:2,tier:'Low',status:'Monitoring',owner:'IT Mgr'},
+];
+
+// ── ALERTS DATA ────────────────────────────────────────────────
+const alerts = [
+  {ctrl:'REV-001',title:'Audit trail review overdue',detail:'Last review 72 days ago. Monthly review SLA exceeded by 42 days. CAPA-019 raised.',severity:'critical',date:'2026-04-10'},
+  {ctrl:'VAL-001',title:'Validation expiry approaching',detail:'System validation documentation for Veeva Vault v24.3 expires in 18 days. Re-validation required.',severity:'major',date:'2026-04-08'},
+  {ctrl:'AI-001',title:'AI model drift signal',detail:'Risk Scorer model output distribution has shifted 18% from baseline. Performance degradation detected.',severity:'major',date:'2026-04-05'},
+  {ctrl:'CAP-001',title:'CAPA SLA approaching',detail:'2 open CAPAs approaching their target resolution dates within 7 days.',severity:'minor',date:'2026-04-03'},
+];
+
+// ── EVIDENCE DATA ──────────────────────────────────────────────
+let evidencePackages = [];
+
+// ── STATE ──────────────────────────────────────────────────────
+let currentPage = 'dashboard';
+let ctrlFilter = 'all';
+let testFilter = 'all';
+let mappingFilter = 'all';
+
+// ── NAVIGATION ─────────────────────────────────────────────────
+function nav(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => {
+    if (n.textContent.trim().toLowerCase().replace(/[^a-z]/g,'').includes(page.replace('-',''))) n.classList.add('active');
+  });
+  currentPage = page;
+  render();
+}
+
+// ── RENDER ROUTER ──────────────────────────────────────────────
+function render() {
+  switch(currentPage) {
+    case 'dashboard':   renderDashboard(); break;
+    case 'posture':     renderPosture(); break;
+    case 'controls':    renderControls(); break;
+    case 'mapping':     renderMapping(); break;
+    case 'tests':       renderTests(); break;
+    case 'evidence':    renderEvidence(); break;
+    case 'risk':        renderRisk(); break;
+    case 'alerts':      renderAlerts(); break;
+    case 'gxp-assess':  renderGxpQuestions(); break;
+    case 'maturity':    renderMaturityQuestions(); break;
+  }
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────
+function renderDashboard() {
+  const pass  = controls.filter(c=>c.status==='pass').length;
+  const amber = controls.filter(c=>c.status==='amber').length;
+  const fail  = controls.filter(c=>c.status==='fail').length;
+  const capa  = controls.reduce((a,c)=>a+c.capa,0);
+  const total = controls.length;
+  const coverage = Math.round((pass/total)*100);
+
+  document.getElementById('stat-pass').textContent = pass;
+  document.getElementById('stat-amber').textContent = amber;
+  document.getElementById('stat-fail').textContent = fail;
+  document.getElementById('stat-coverage').textContent = coverage+'%';
+  document.getElementById('stat-open-capa').textContent = capa;
+  document.getElementById('stat-fail-t').textContent = fail > 0 ? `${fail} need attention` : 'All clear';
+  document.getElementById('stat-fail-t').className = 'stat-trend ' + (fail>0?'dn':'up');
+  document.getElementById('stat-capa-t').textContent = capa > 0 ? `${capa} open items` : 'None open';
+  document.getElementById('stat-capa-t').className = 'stat-trend ' + (capa>0?'dn':'up');
+  document.getElementById('lastUpdated').textContent = new Date().toLocaleTimeString();
+
+  // Layer summary
+  const lg = document.getElementById('layerSummary');
+  lg.innerHTML = '';
+  Object.entries(LAYERS).forEach(([id,l]) => {
+    const lCtrls = controls.filter(c=>c.layer===id);
+    const lPass = lCtrls.filter(c=>c.status==='pass').length;
+    const lFail = lCtrls.filter(c=>c.status==='fail').length;
+    const lAmber= lCtrls.filter(c=>c.status==='amber').length;
+    lg.innerHTML += `
+      <div class="layer-tile ${id}" onclick="nav('controls');filterControls('${id}',null)">
+        <div class="layer-id">${id}</div>
+        <div class="layer-name">${l.name}</div>
+        <div class="layer-desc">${l.desc}</div>
+        <div class="layer-meta">
+          <span class="layer-badge">${lCtrls.length} controls</span>
+          ${lFail>0?`<span class="layer-badge" style="background:var(--redlt);color:var(--reddk)">${lFail} failing</span>`:''}
+          ${lAmber>0?`<span class="layer-badge" style="background:var(--amberlt);color:var(--amberdk)">${lAmber} amber</span>`:''}
+          ${lFail===0&&lAmber===0?`<span class="layer-badge" style="background:var(--greenlt);color:var(--greendk)">All passing</span>`:''}
+        </div>
+      </div>`;
+  });
+
+  // Regulatory coverage bars
+  const rc = document.getElementById('regCoverage');
+  const frameworks = ['FDA 21 CFR Part 11','EU Annex 11','MHRA','ICH Q10','GAMP 5 / CSA'];
+  const fKeys      = ['21 CFR Part 11',    'EU Annex 11','MHRA', 'ICH Q10','GAMP 5'];
+  const baseScores = [96,92,84,91,78];
+  const colors     = ['var(--blue)','var(--teal)','var(--layerD)','var(--purple)','var(--amber)'];
+  rc.innerHTML = '';
+  frameworks.forEach((f,i) => {
+    const covered = controls.filter(c=>c.regs.includes(fKeys[i])&&c.status==='pass').length;
+    const total2  = controls.filter(c=>c.regs.includes(fKeys[i])).length;
+    const pct = total2>0 ? Math.round((covered/total2)*100*0.4+baseScores[i]*0.6) : baseScores[i];
+    rc.innerHTML += `
+      <div class="prog-row">
+        <div class="prog-lbl">${f}</div>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:${pct}%;background:${colors[i]}"></div></div>
+        <div class="prog-pct" style="color:${colors[i]}">${pct}%</div>
+      </div>`;
+  });
+
+  // Alerts
+  const da = document.getElementById('dashAlerts');
+  da.innerHTML = '';
+  alerts.slice(0,3).forEach(a => {
+    const sc = a.severity==='critical'?'var(--red)':a.severity==='major'?'var(--amber)':'var(--blue)';
+    da.innerHTML += `
+      <div class="alert-item">
+        <div class="alert-dot" style="background:${sc}"></div>
+        <div>
+          <div class="alert-title">${a.ctrl} — ${a.title}</div>
+          <div class="alert-meta">${a.detail.substring(0,80)}...</div>
+          <div class="alert-meta" style="margin-top:2px">🕐 ${a.date}</div>
+        </div>
+      </div>`;
+  });
+
+  // Controls table (top 8)
+  const tb = document.getElementById('dashControlBody');
+  tb.innerHTML = '';
+  controls.slice(0,8).forEach(c => {
+    tb.innerHTML += `<tr>
+      <td><span class="ctrl-id ${c.layer}">${c.id}</span></td>
+      <td style="font-weight:500">${c.name}</td>
+      <td><span class="chip ${c.layer}">${c.layer}</span></td>
+      <td><span class="badge ${c.risk.toLowerCase()}">${c.risk}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${c.lastTest}</td>
+      <td><span class="badge ${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td>
+    </tr>`;
+  });
+
+  // Nav counts
+  document.getElementById('nc-controls').textContent = controls.length;
+  const due = controls.filter(c=>isDue(c)).length;
+  document.getElementById('nc-tests').textContent = due;
+  document.getElementById('nc-tests').className = 'nav-count' + (due>0?' alert':'');
+  document.getElementById('nc-posture').textContent = fail+amber;
+  document.getElementById('nc-posture').className = 'nav-count' + (fail>0?' alert':'');
+  document.getElementById('nc-alerts').textContent = alerts.filter(a=>a.severity==='critical'||a.severity==='major').length;
+}
+
+// ── POSTURE ────────────────────────────────────────────────────
+function renderPosture() {
+  const lg = document.getElementById('postureLayerGrid');
+  lg.innerHTML = '';
+  Object.entries(LAYERS).forEach(([id,l]) => {
+    const lc = controls.filter(c=>c.layer===id);
+    const lp = lc.filter(c=>c.status==='pass').length;
+    lg.innerHTML += `
+      <div class="layer-tile ${id}">
+        <div class="layer-id">${id}</div>
+        <div class="layer-name">${l.name}</div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <span class="layer-badge" style="background:var(--greenlt);color:var(--greendk)">${lp} pass</span>
+          <span class="layer-badge" style="background:var(--amberlt);color:var(--amberdk)">${lc.filter(c=>c.status==='amber').length} amber</span>
+          <span class="layer-badge" style="background:var(--redlt);color:var(--reddk)">${lc.filter(c=>c.status==='fail').length} fail</span>
+        </div>
+      </div>`;
+  });
+
+  const tb = document.getElementById('postureBody');
+  tb.innerHTML = '';
+  controls.forEach(c => {
+    const driftColor = c.drift<10?'var(--green)':c.drift<30?'var(--amber)':'var(--red)';
+    tb.innerHTML += `<tr>
+      <td><span class="ctrl-id ${c.layer}">${c.id}</span></td>
+      <td style="font-weight:500">${c.name}</td>
+      <td><span class="chip ${c.layer}">${c.layer}</span></td>
+      <td style="font-size:12px;color:var(--muted)">${c.category}</td>
+      <td><span class="badge ${c.risk.toLowerCase()}">${c.risk}</span></td>
+      <td style="font-size:12px">${c.freq}</td>
+      <td style="font-size:12px;color:var(--muted)">${c.lastTest}</td>
+      <td><span class="badge ${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td>
+      <td>
+        <div style="font-size:11px;color:${driftColor};font-weight:600">${c.drift}%</div>
+        <div class="drift-bar" style="width:${Math.min(c.drift,100)}%;background:${driftColor}"></div>
+      </td>
+    </tr>`;
+  });
+}
+
+// ── CONTROLS ───────────────────────────────────────────────────
+let ctrlFilterVal = 'all';
+function filterControls(val, btn) {
+  ctrlFilterVal = val;
+  if(btn) {
+    document.querySelectorAll('#ctrlFilters .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderControls();
+}
+
+function renderControls() {
+  const q = (document.getElementById('ctrlSearch')?.value||'').toLowerCase();
+  let list = controls.filter(c => {
+    const matchFilter = ctrlFilterVal==='all' || c.layer===ctrlFilterVal || c.risk===ctrlFilterVal;
+    const matchSearch = !q || c.id.toLowerCase().includes(q) || c.name.toLowerCase().includes(q) || c.category.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  const tb = document.getElementById('controlsBody');
+  if(!tb) return;
+  tb.innerHTML = '';
+  if(list.length===0) {
+    tb.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--muted)">No controls match your filter</td></tr>`;
+    return;
+  }
+  list.forEach(c => {
+    const regTags = c.regs.slice(0,3).map(r=>`<span class="reg-tag">${r}</span>`).join('')+(c.regs.length>3?`<span class="reg-tag">+${c.regs.length-3}</span>`:'');
+    tb.innerHTML += `<tr>
+      <td><span class="ctrl-id ${c.layer}">${c.id}</span></td>
+      <td><div style="font-weight:500;font-size:13px">${c.name}</div><div style="font-size:11px;color:var(--muted)">${c.category}</div></td>
+      <td><span class="chip ${c.layer}">${c.layer}</span></td>
+      <td style="font-size:12px">${c.category}</td>
+      <td><span class="badge ${c.risk.toLowerCase()}">${c.risk}</span></td>
+      <td><div style="display:flex;gap:4px;flex-wrap:wrap">${regTags}</div></td>
+      <td><span class="badge ${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span></td>
+      <td>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="viewControl('${c.id}')">View</button>
+          <button class="btn btn-secondary btn-sm" onclick="editControl('${c.id}')">Edit</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteControl('${c.id}')">Del</button>
+        </div>
+      </td>
+    </tr>`;
+  });
+}
+
+// ── ADD / EDIT / DELETE CONTROL ────────────────────────────────
+function saveControl() {
+  const id = document.getElementById('fCtrlId').value.trim();
+  const name = document.getElementById('fCtrlName').value.trim();
+  const layer = document.getElementById('fLayer').value;
+  const risk = document.getElementById('fRisk').value;
+  const statement = document.getElementById('fStatement').value.trim();
+  if(!id||!name||!layer||!risk||!statement) { toast('Please fill all required fields','err'); return; }
+  const regs = ['r1','r2','r3','r4','r5','r6','r7','r8','r9'].filter(r=>document.getElementById(r)?.checked).map(r=>document.getElementById(r).value);
+  const editId = document.getElementById('editCtrlId').value;
+  const ctrl = {
+    id,layer,name,category:document.getElementById('fCategory').value||'General',
+    risk,freq:document.getElementById('fFreq').value||'Quarterly',
+    statement,regs,status:'pass',
+    lastTest:new Date().toISOString().split('T')[0],
+    drift:0,capa:0,mappings:[],
+  };
+  if(editId) {
+    const idx = controls.findIndex(c=>c.id===editId);
+    if(idx>=0) controls[idx]={...controls[idx],...ctrl,id:controls[idx].id};
+    toast('Control updated successfully','ok');
+  } else {
+    if(controls.find(c=>c.id===id)) { toast('Control ID already exists','err'); return; }
+    controls.push(ctrl);
+    toast('Control added successfully','ok');
+  }
+  document.getElementById('editCtrlId').value='';
+  document.getElementById('addCtrlTitle').textContent='Add New Control';
+  clearForm();
+  nav('controls');
+}
+
+function editControl(id) {
+  const c = controls.find(x=>x.id===id);
+  if(!c) return;
+  document.getElementById('editCtrlId').value = c.id;
+  document.getElementById('addCtrlTitle').textContent = 'Edit Control — '+c.id;
+  document.getElementById('fCtrlId').value = c.id;
+  document.getElementById('fCtrlName').value = c.name;
+  document.getElementById('fLayer').value = c.layer;
+  document.getElementById('fRisk').value = c.risk;
+  document.getElementById('fStatement').value = c.statement;
+  document.getElementById('fCategory').value = c.category;
+  document.getElementById('fFreq').value = c.freq;
+  document.getElementById('fEvidence').value = c.evidenceType||'';
+  ['r1','r2','r3','r4','r5','r6','r7','r8','r9'].forEach(r=>{
+    const el=document.getElementById(r);
+    if(el) el.checked = c.regs.includes(el.value);
+  });
+  nav('add-control');
+}
+
+function deleteControl(id) {
+  if(!confirm(`Delete control ${id}? This cannot be undone.`)) return;
+  controls = controls.filter(c=>c.id!==id);
+  toast('Control deleted','ok');
+  renderControls();
+}
+
+function clearForm() {
+  ['fCtrlId','fCtrlName','fCategory','fEvidence','fStatement'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['fLayer','fRisk','fFreq'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['r1','r2','r3','r4','r5','r6','r7','r8','r9'].forEach(r=>{const el=document.getElementById(r);if(el)el.checked=false;});
+}
+
+function viewControl(id) {
+  const c = controls.find(x=>x.id===id);
+  if(!c) return;
+  const mapRows = c.mappings.map(m=>`
+    <tr>
+      <td style="font-weight:600;color:var(--teal)">${m.framework}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${m.section}</td>
+      <td>${m.req}</td>
+      <td><span class="${m.sat==='Full'?'full-badge':m.sat==='Partial'?'partial-badge':'na-badge'}">${m.sat}</span></td>
+    </tr>`).join('');
+  showModal(`${c.id} — ${c.name}`,`
+    <div style="margin-bottom:16px">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+        <span class="chip ${c.layer}">Layer ${c.layer}</span>
+        <span class="badge ${c.risk.toLowerCase()}">${c.risk}</span>
+        <span class="badge ${c.status}">${c.status}</span>
+      </div>
+      <div style="background:var(--offwhite);border-radius:8px;padding:12px;font-size:13px;color:var(--slate);line-height:1.6;margin-bottom:14px">${c.statement}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:4px"><strong>Category:</strong> ${c.category} &nbsp;|&nbsp; <strong>Test frequency:</strong> ${c.freq} &nbsp;|&nbsp; <strong>Last test:</strong> ${c.lastTest}</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:14px"><strong>Drift:</strong> ${c.drift}% &nbsp;|&nbsp; <strong>Open CAPAs:</strong> ${c.capa}</div>
+    </div>
+    ${mapRows.length>0?`<div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Regulatory mappings</div>
+    <table class="mapping-tbl"><thead><tr><th>Framework</th><th>Section</th><th>Requirement</th><th>Satisfaction</th></tr></thead><tbody>${mapRows}</tbody></table>`:'<div style="color:var(--muted);font-size:13px">No regulatory mappings defined for this control.</div>'}
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn btn-primary btn-sm" onclick="runTest('${c.id}');closeModal()">▶ Run Test</button>
+      <button class="btn btn-secondary btn-sm" onclick="editControl('${c.id}');closeModal()">Edit</button>
+    </div>
+  `);
+}
+
+// ── REGULATORY MAPPING ─────────────────────────────────────────
+function filterMapping(val, btn) {
+  mappingFilter = val;
+  if(btn) {
+    document.querySelectorAll('.filter-row .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+  renderMapping();
+}
+
+function renderMapping() {
+  const tb = document.getElementById('mappingBody');
+  if(!tb) return;
+  tb.innerHTML = '';
+  let rows = [];
+  controls.forEach(c => {
+    if(c.mappings && c.mappings.length>0) {
+      c.mappings.forEach(m => {
+        if(mappingFilter==='all' || m.framework===mappingFilter) {
+          rows.push({ctrl:c, map:m});
+        }
+      });
+    } else if(c.regs.length>0 && (mappingFilter==='all' || c.regs.includes(mappingFilter))) {
+      c.regs.forEach(r => {
+        if(mappingFilter==='all'||r===mappingFilter) {
+          rows.push({ctrl:c, map:{framework:r,section:'—',req:'See control statement',sat:'Full'}});
+        }
+      });
+    }
+  });
+  if(rows.length===0) {
+    tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--muted)">No mappings for this filter</td></tr>';
+    return;
+  }
+  rows.forEach(({ctrl:c,map:m}) => {
+    tb.innerHTML += `<tr>
+      <td><span class="ctrl-id ${c.layer}">${c.id}</span></td>
+      <td style="font-weight:500">${c.name}</td>
+      <td><span class="chip ${c.layer}">${c.layer}</span></td>
+      <td style="font-weight:600;font-size:12px;color:var(--teal)">${m.framework}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px">${m.section}</td>
+      <td style="font-size:12px">${m.req}</td>
+      <td><span class="${m.sat==='Full'?'full-badge':m.sat==='Partial'?'partial-badge':'na-badge'}">${m.sat}</span></td>
+    </tr>`;
+  });
+}
+
+// ── TEST RUNNER ────────────────────────────────────────────────
+function isDue(c) {
+  const last = new Date(c.lastTest);
+  const now = new Date();
+  const days = Math.floor((now-last)/(1000*60*60*24));
+  const thresholds = {Monthly:30,Quarterly:90,Annually:365,Continuous:1};
+  return days >= (thresholds[c.freq]||90);
+}
+
+function filterTests(val, btn) {
+  testFilter = val;
+  document.querySelectorAll('#page-tests .filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderTests();
+}
+
+function renderTests() {
+  const tl = document.getElementById('testsList');
+  if(!tl) return;
+  let list = controls;
+  if(testFilter==='due') list = controls.filter(c=>isDue(c));
+  else if(testFilter==='pass') list = controls.filter(c=>c.status==='pass');
+  else if(testFilter==='fail') list = controls.filter(c=>c.status==='fail'||c.status==='amber');
+  tl.innerHTML = '';
+  if(list.length===0) { tl.innerHTML='<div class="empty-state"><div class="empty-icon">✓</div><div class="empty-title">No tests in this category</div></div>'; return; }
+  list.forEach(c => {
+    const due = isDue(c);
+    tl.innerHTML += `
+      <div class="test-card">
+        <div class="test-card-hdr">
+          <span class="test-ctrl ctrl-id ${c.layer}">${c.id}</span>
+          <span class="badge ${c.status}">${c.status.charAt(0).toUpperCase()+c.status.slice(1)}</span>
+        </div>
+        <div class="test-name">${c.name}</div>
+        <div class="test-due">${due?'⚠ Due now':'Last run: '+c.lastTest} &nbsp;·&nbsp; Frequency: ${c.freq} &nbsp;·&nbsp; Risk: ${c.risk}</div>
+        <div class="test-actions">
+          <button class="btn btn-primary btn-sm" onclick="runTest('${c.id}')">▶ Run Test</button>
+          <button class="btn btn-secondary btn-sm" onclick="viewControl('${c.id}')">View Control</button>
+          ${c.status==='fail'||c.status==='amber'?`<button class="btn btn-secondary btn-sm" onclick="raiseCapa('${c.id}')">Raise CAPA</button>`:''}
+        </div>
+      </div>`;
+  });
+}
+
+function runTest(id) {
+  const c = controls.find(x=>x.id===id);
+  if(!c) return;
+  const steps = [
+    'Connecting to system...',
+    `Executing ${c.id} test protocol...`,
+    'Comparing against validated baseline...',
+    'Checking regulatory evidence requirements...',
+    'Generating evidence package...',
+    'Test complete — packaging results...',
+  ];
+  let i = 0;
+  showModal(`Running test: ${c.id}`,`<div id="testProgress"><div style="font-family:'DM Mono',monospace;font-size:13px;color:var(--slate)" id="testLog"></div></div>`);
+  const interval = setInterval(()=>{
+    const log = document.getElementById('testLog');
+    if(!log) { clearInterval(interval); return; }
+    log.innerHTML += `<div style="padding:4px 0;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px"><span style="color:var(--green)">✓</span> ${steps[i]}</div>`;
+    i++;
+    if(i>=steps.length) {
+      clearInterval(interval);
+      // Determine result based on control state
+      const result = Math.random() > 0.25 ? 'pass' : (Math.random()>0.5?'amber':'fail');
+      c.status = result;
+      c.lastTest = new Date().toISOString().split('T')[0];
+      c.drift = result==='pass'?Math.floor(Math.random()*15):result==='amber'?Math.floor(Math.random()*30)+20:Math.floor(Math.random()*40)+40;
+      // Add evidence package
+      evidencePackages.unshift({
+        id:'EP-'+Date.now(),ctrl:c.id,name:c.name,layer:c.layer,
+        date:new Date().toISOString().split('T')[0],
+        result,regs:c.regs,
+        files:[`${c.id}_access_report.csv`,`${c.id}_test_log.txt`,`${c.id}_evidence_package.pdf`],
+      });
+      if(log) {
+        const rc = result==='pass'?'var(--green)':result==='amber'?'var(--amber)':'var(--red)';
+        const rl = result==='pass'?'PASSED':'FAILED/AMBER';
+        log.innerHTML += `<div style="margin-top:14px;padding:12px;background:${result==='pass'?'var(--greenlt)':'var(--redlt)'};border-radius:8px">
+          <div style="font-weight:600;color:${rc};font-size:14px">Test Result: ${rl}</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:4px">Evidence package generated — ${c.regs.length} regulatory frameworks covered</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:2px">Drift score: ${c.drift}%</div>
+          ${result!=='pass'?`<div style="font-size:12px;color:var(--red);margin-top:6px;font-weight:600">⚠ CAPA automatically raised</div>`:''}
+        </div>
+        <button class="btn btn-primary btn-sm" style="margin-top:12px" onclick="closeModal()">Close</button>`;
+        if(result!=='pass') c.capa++;
+      }
+      renderDashboard();
+    }
+  }, 700);
+}
+
+function runAllDue() {
+  const due = controls.filter(c=>isDue(c));
+  if(due.length===0) { toast('No tests due right now','ok'); return; }
+  toast(`Running ${due.length} due tests...`);
+  due.forEach((c,i) => setTimeout(()=>runTest(c.id), i*500));
+}
+
+function raiseCapa(id) {
+  const c = controls.find(x=>x.id===id);
+  if(!c) return;
+  c.capa++;
+  toast(`CAPA raised for ${id} — assigned to control owner`,'ok');
+  renderTests();
+}
+
+// ── EVIDENCE VAULT ─────────────────────────────────────────────
+function renderEvidence() {
+  const el = document.getElementById('evidenceList');
+  const ec = document.getElementById('evCount');
+  if(!el) return;
+  if(ec) ec.textContent = `${evidencePackages.length} packages`;
+  if(evidencePackages.length===0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div class="empty-title">No evidence packages yet</div><div style="color:var(--muted);font-size:13px">Run control tests to generate evidence packages</div></div>`;
+    return;
+  }
+  el.innerHTML = '';
+  evidencePackages.forEach(ep => {
+    const regTags = ep.regs.map(r=>`<span class="reg-tag">${r}</span>`).join('');
+    el.innerHTML += `
+      <div class="ev-item">
+        <div class="ev-icon">${ep.result==='pass'?'✅':'⚠️'}</div>
+        <div style="flex:1">
+          <div class="ev-name">${ep.id} — ${ep.ctrl} · ${ep.name}</div>
+          <div class="ev-meta">Layer ${ep.layer} &nbsp;·&nbsp; Tested: ${ep.date} &nbsp;·&nbsp; <span class="badge ${ep.result}" style="font-size:10px">${ep.result}</span></div>
+          <div class="ev-regs">${regTags}</div>
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+            ${ep.files.map(f=>`<span style="font-size:11px;color:var(--teal);font-family:'DM Mono',monospace">📄 ${f}</span>`).join('')}
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="downloadEvidence('${ep.id}')">⬇</button>
+      </div>`;
+  });
+}
+
+function downloadEvidence(id) {
+  const ep = evidencePackages.find(e=>e.id===id);
+  if(!ep) return;
+  const content = [
+    '=== UCA EVIDENCE PACKAGE ===',
+    `Package ID:    ${ep.id}`,
+    `Control:       ${ep.ctrl} — ${ep.name}`,
+    `Layer:         ${ep.layer}`,
+    `Test date:     ${ep.date}`,
+    `Result:        ${ep.result.toUpperCase()}`,
+    '',
+    '--- REGULATORY FRAMEWORKS SATISFIED ---',
+    ...ep.regs.map(r=>`✓ ${r}`),
+    '',
+    '--- EVIDENCE FILES ---',
+    ...ep.files.map(f=>`📄 ${f}`),
+    '',
+    `Generated by: SRMtech UCA Platform · LS Client SQA · ${new Date().toISOString()}`,
+  ].join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type:'text/plain'}));
+  a.download = `${ep.id}_evidence_package.txt`;
+  a.click();
+  toast('Evidence package downloaded','ok');
+}
+
+// ── RISK REGISTER ──────────────────────────────────────────────
+function renderRisk() {
+  const hm = document.getElementById('riskHeatmap');
+  if(!hm) return;
+  const cells = Array(25).fill(null).map(()=>({items:[],level:0}));
+  risks.forEach(r => {
+    const idx = (r.impact-1)*5+(r.likelihood-1);
+    cells[idx].items.push(r);
+    cells[idx].level = Math.max(cells[idx].level, r.impact+r.likelihood-2);
+  });
+  hm.innerHTML = '';
+  hm.className = 'heatmap';
+  cells.forEach((cell,i) => {
+    const level = Math.min(Math.floor(cell.level/1.8),5);
+    hm.innerHTML += `<div class="heat-cell heat-${level}" ${cell.items.length>0?`title="${cell.items.map(r=>r.id+': '+r.title).join('\n')}"`:''}>${cell.items.length>0?cell.items.length:''}</div>`;
+  });
+
+  const rl = document.getElementById('riskList');
+  rl.innerHTML = '';
+  risks.forEach(r => {
+    const tc = r.tier==='Critical'?'var(--red)':r.tier==='High'?'var(--amber)':'var(--blue)';
+    rl.innerHTML += `
+      <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div style="font-family:'DM Mono',monospace;font-size:11px;color:var(--teal);flex-shrink:0;padding-top:2px">${r.id}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:600;color:var(--navy)">${r.title}</div>
+          <div style="font-size:11px;color:var(--muted)">Control: ${r.ctrl} &nbsp;·&nbsp; Owner: ${r.owner}</div>
+          <div style="margin-top:4px;display:flex;gap:6px">
+            <span style="font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;color:${tc};background:${tc}20">${r.tier}</span>
+            <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:var(--offwhite);color:var(--muted)">${r.status}</span>
+          </div>
+        </div>
+      </div>`;
+  });
+}
+
+// ── ALERTS ─────────────────────────────────────────────────────
+function renderAlerts() {
+  const al = document.getElementById('alertsList');
+  if(!al) return;
+  al.innerHTML = '';
+  alerts.forEach(a => {
+    const sc = a.severity==='critical'?'var(--red)':a.severity==='major'?'var(--amber)':'var(--blue)';
+    al.innerHTML += `
+      <div class="alert-item">
+        <div class="alert-dot" style="background:${sc}"></div>
+        <div style="flex:1">
+          <div class="alert-title">${a.ctrl} — ${a.title}</div>
+          <div class="alert-meta" style="line-height:1.5;margin-top:3px">${a.detail}</div>
+          <div style="margin-top:6px;display:flex;gap:8px;align-items:center">
+            <span class="badge ${a.severity}">${a.severity.charAt(0).toUpperCase()+a.severity.slice(1)}</span>
+            <span style="font-size:11px;color:var(--muted)">🕐 Detected: ${a.date}</span>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <button class="btn btn-secondary btn-sm" onclick="runTest('${a.ctrl}')">▶ Run Test</button>
+          <button class="btn btn-secondary btn-sm" onclick="raiseCapa('${a.ctrl}')">Raise CAPA</button>
+        </div>
+      </div>`;
+  });
+}
+
+// ── AUDIT REPORT ───────────────────────────────────────────────
+function generateReport() {
+  const scope = document.getElementById('rptScope').value;
+  const framework = document.getElementById('rptFramework').value;
+  let list = controls;
+  if(scope!=='all') list = list.filter(c=>c.layer===scope);
+  if(framework!=='all') list = list.filter(c=>c.regs.includes(framework));
+
+  const pass = list.filter(c=>c.status==='pass').length;
+  const fail = list.filter(c=>c.status==='fail').length;
+  const amber= list.filter(c=>c.status==='amber').length;
+
+  const lines = [
+    '╔══════════════════════════════════════════════════════════════╗',
+    '║         UCA PLATFORM — AUDIT READINESS REPORT               ║',
+    '║         SRMtech · LS Client SQA Transformation                 ║',
+    '╚══════════════════════════════════════════════════════════════╝',
+    '',
+    `Report date:    ${new Date().toISOString().split('T')[0]}`,
+    `Generated by:   UCA Platform v1.0`,
+    `Scope:          ${scope==='all'?'All layers':'Layer '+scope}`,
+    `Framework:      ${framework==='all'?'All frameworks':framework}`,
+    `Controls in scope: ${list.length}`,
+    '',
+    '── EXECUTIVE SUMMARY ─────────────────────────────────────────',
+    `Controls passing:  ${pass} / ${list.length} (${Math.round(pass/list.length*100)}%)`,
+    `Controls amber:    ${amber}`,
+    `Controls failing:  ${fail}`,
+    `Open CAPAs:        ${list.reduce((a,c)=>a+c.capa,0)}`,
+    '',
+    '── CONTROL STATUS ────────────────────────────────────────────',
+    ...list.map(c=>`  ${c.id.padEnd(10)} ${c.name.padEnd(40)} [${c.status.toUpperCase().padEnd(6)}] Drift: ${c.drift}%`),
+    '',
+    '── REGULATORY COVERAGE ───────────────────────────────────────',
+    ...['21 CFR Part 11','EU Annex 11','GAMP 5','ICH Q10','MHRA','ISO 13485'].map(f=>{
+      const fc = list.filter(c=>c.regs.includes(f));
+      const fp = fc.filter(c=>c.status==='pass').length;
+      return `  ${f.padEnd(20)} ${fc.length} controls mapped, ${fp} passing (${fc.length>0?Math.round(fp/fc.length*100):0}%)`;
+    }),
+    '',
+    '── FAILING / AMBER CONTROLS ──────────────────────────────────',
+    ...list.filter(c=>c.status!=='pass').map(c=>`  [${c.status.toUpperCase()}] ${c.id} — ${c.name}\n         Last test: ${c.lastTest}, Drift: ${c.drift}%`),
+    '',
+    '── REGULATORY FRAMEWORKS SATISFIED ───────────────────────────',
+    ...list.filter(c=>c.status==='pass').flatMap(c=>c.regs.map(r=>`  ✓ ${c.id} satisfies ${r}`)).slice(0,20),
+    '',
+    '══════════════════════════════════════════════════════════════',
+    'Note: This report is generated from the UCA Platform and',
+    'should be used alongside human QA review for regulatory',
+    'submissions. All evidence packages are available in the',
+    'Evidence Vault.',
+    '══════════════════════════════════════════════════════════════',
+  ].join('\n');
+
+  document.getElementById('reportBody').textContent = lines;
+  document.getElementById('reportPreview').style.display = '';
+  toast('Report generated','ok');
+}
+
+function downloadReport() {
+  const content = document.getElementById('reportBody').textContent;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([content],{type:'text/plain'}));
+  a.download = `UCA_Audit_Report_${new Date().toISOString().split('T')[0]}.txt`;
+  a.click();
+  toast('Report downloaded','ok');
+}
+
+// ── MODAL ──────────────────────────────────────────────────────
+function showModal(title, html) {
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalBody').innerHTML = html;
+  document.getElementById('modal').classList.remove('hidden');
+}
+function closeModal() { document.getElementById('modal').classList.add('hidden'); }
+
+// ── TOAST ──────────────────────────────────────────────────────
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type?' '+type:'');
+  setTimeout(()=>t.className='toast',3000);
+}
+
+// ── CLOCK ──────────────────────────────────────────────────────
+function updateClock() {
+  const el = document.getElementById('timeBadge');
+  if(el) el.textContent = new Date().toLocaleTimeString();
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ── GxP APPLICABILITY ASSESSMENT ───────────────────────────────
+const GXP_DIVISIONS = [
+  {div:'21 CFR Part 11',color:'var(--blue)',bg:'var(--bluelt)',icon:'§',
+   questions:[
+    {id:'g_cfr1',q:'Does this system manage electronic records that replace paper records?',w:3,
+     subs:[
+      {id:'g_cfr1a',q:'Are audit trails configured to capture who, what, when, and why for every record change?',w:3},
+      {id:'g_cfr1b',q:'Can the system generate accurate and complete copies of records in human-readable form?',w:2},
+      {id:'g_cfr1c',q:'Are records protected to enable retrieval throughout the required retention period?',w:2},
+     ]},
+    {id:'g_cfr2',q:'Are access controls enforced with unique user IDs and password policies?',w:3,
+     subs:[
+      {id:'g_cfr2a',q:'Is there a periodic user access review process (at least annually)?',w:2},
+      {id:'g_cfr2b',q:'Are failed login attempts logged and monitored?',w:2},
+      {id:'g_cfr2c',q:'Are deprovisioned accounts disabled within 24 hours of termination?',w:2},
+     ]},
+   ]},
+  {div:'eSignature',color:'var(--purple)',bg:'var(--purplelt)',icon:'✍',
+   questions:[
+    {id:'g_esig1',q:'Does this system use electronic signatures for approval or release decisions?',w:3,
+     subs:[
+      {id:'g_esig1a',q:'Do e-signatures include printed name, date/time, and meaning of signature?',w:3},
+      {id:'g_esig1b',q:'Are e-signatures uniquely linked to one individual and non-transferable?',w:3},
+      {id:'g_esig1c',q:'Is identity verified before e-signature authority is granted?',w:2},
+      {id:'g_esig1d',q:'Are e-signatures bound to their respective records to prevent copying or reassignment?',w:2},
+     ]},
+   ]},
+  {div:'Patient Safety',color:'var(--red)',bg:'var(--redlt)',icon:'♥',
+   questions:[
+    {id:'g_ps1',q:'Does this system generate or manage data related to patient safety?',w:3,
+     subs:[
+      {id:'g_ps1a',q:'Is this system used in pharmacovigilance, adverse event reporting, or safety monitoring?',w:3},
+      {id:'g_ps1b',q:'Could a failure in this system directly or indirectly harm a patient?',w:3},
+      {id:'g_ps1c',q:'Does this system support signal detection or safety risk assessment?',w:2},
+     ]},
+   ]},
+  {div:'GxP Usage',color:'var(--teal)',bg:'var(--teallt)',icon:'◈',
+   questions:[
+    {id:'g_gxp1',q:'Does this system directly affect product quality, purity, strength, or identity?',w:3,
+     subs:[
+      {id:'g_gxp1a',q:'Does this system support or automate manufacturing, packaging, or labelling processes?',w:2},
+      {id:'g_gxp1b',q:'Does this system manage or control laboratory testing, sampling, or results?',w:2},
+      {id:'g_gxp1c',q:'Is this system used for batch release or certificate of analysis generation?',w:3},
+     ]},
+    {id:'g_gxp2',q:'Does this system integrate with other validated or GxP-critical systems?',w:2,
+     subs:[
+      {id:'g_gxp2a',q:'Are data interfaces between systems validated and subject to change control?',w:2},
+      {id:'g_gxp2b',q:'Is data integrity maintained during transfer between systems (no data loss or transformation)?',w:3},
+     ]},
+   ]},
+  {div:'Regulatory',color:'var(--amber)',bg:'var(--amberlt)',icon:'⚖',
+   questions:[
+    {id:'g_reg1',q:'Does this system create, modify, store, or transmit data used in regulatory submissions?',w:3,
+     subs:[
+      {id:'g_reg1a',q:'Is this system subject to inspection by FDA, EMA, MHRA, or other health authorities?',w:3},
+      {id:'g_reg1b',q:'Does this system support clinical trial management or clinical data collection?',w:3},
+      {id:'g_reg1c',q:'Are there SOPs governing the use of this system in a regulated context?',w:2},
+     ]},
+   ]},
+  {div:'Official Record',color:'var(--green)',bg:'var(--greenlt)',icon:'📋',
+   questions:[
+    {id:'g_rec1',q:'Is data in this system considered the official record (source of truth) for any GxP process?',w:3,
+     subs:[
+      {id:'g_rec1a',q:'Does this system store data that must be retained for regulatory purposes?',w:2},
+      {id:'g_rec1b',q:'Are records required to meet ALCOA+ data integrity principles?',w:3},
+      {id:'g_rec1c',q:'Is there a defined retention period and is it enforced by the system?',w:2},
+      {id:'g_rec1d',q:'Can records be retrieved on demand in human-readable format throughout the retention period?',w:2},
+     ]},
+   ]},
+  {div:'SaMD / AI / Digital Health',color:'var(--coral)',bg:'var(--corallt)',icon:'🤖',
+   questions:[
+    {id:'g_ai1',q:'Does this system use AI or machine learning in any GxP decision-support capacity?',w:3,
+     subs:[
+      {id:'g_ai1a',q:'Is the AI model inventoried with version, training data source, and performance baseline?',w:3},
+      {id:'g_ai1b',q:'Is continuous monitoring in place to detect AI model drift?',w:3},
+      {id:'g_ai1c',q:'Is the AI model subject to formal change control when retrained or updated?',w:2},
+     ]},
+    {id:'g_ai2',q:'Is this software classified or classifiable as Software as a Medical Device (SaMD)?',w:3,
+     subs:[
+      {id:'g_ai2a',q:'Does this system perform diagnosis, treatment recommendation, or clinical decision support?',w:3},
+      {id:'g_ai2b',q:'Has a SaMD risk classification been performed (Class I/II/III or IIa/IIb/III)?',w:3},
+      {id:'g_ai2c',q:'Is post-market surveillance in place for this SaMD?',w:2},
+     ]},
+    {id:'g_ai3',q:'Is this system deployed in the cloud or managed by a third-party provider?',w:2,
+     subs:[
+      {id:'g_ai3a',q:'Has the cloud provider been qualified as a GxP supplier?',w:2},
+      {id:'g_ai3b',q:'Is data residency compliant with applicable regulations (EU data stays in EU, etc.)?',w:2},
+      {id:'g_ai3c',q:'Are SLAs defined for availability, backup, and incident response?',w:1},
+     ]},
+   ]},
+];
+
+// Custom questions added by user
+let customGxpQuestions = [];
+let customQCounter = 0;
+
+function getAllGxpQuestions() {
+  const all = [];
+  GXP_DIVISIONS.forEach(d => d.questions.forEach(q => {
+    all.push({...q, div:d.div, color:d.color, isParent:true});
+    if(q.subs) q.subs.forEach(s => all.push({...s, div:d.div, color:d.color, parentId:q.id, isParent:false}));
+  }));
+  customGxpQuestions.forEach(q => all.push(q));
+  return all;
+}
+
+function renderGxpQuestions() {
+  const el = document.getElementById('gxpQuestions');
+  if(!el) return;
+  let html = '';
+
+  GXP_DIVISIONS.forEach(d => {
+    const totalQs = d.questions.reduce((a,q) => a + 1 + (q.subs?q.subs.length:0), 0);
+    html += '<div style="margin-bottom:18px">';
+    html += '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:'+d.bg+';border-left:4px solid '+d.color+';border-radius:0 8px 8px 0;margin-bottom:10px">';
+    html += '<span style="font-size:16px">'+d.icon+'</span>';
+    html += '<span style="font-size:13px;font-weight:600;color:'+d.color+'">'+d.div+'</span>';
+    html += '<span style="font-size:11px;color:var(--muted);margin-left:auto">'+totalQs+' questions</span>';
+    html += '</div>';
+
+    d.questions.forEach((q,i) => {
+      // Parent question — always visible
+      html += renderParentQuestion(q, i, d.color);
+      // Sub-questions container — hidden by default, shown when parent = Yes
+      if(q.subs && q.subs.length > 0) {
+        html += '<div id="subs_'+q.id+'" style="display:none;margin-left:32px;padding-left:12px;border-left:2px solid '+d.color+';opacity:0;transition:opacity .3s">';
+        q.subs.forEach((s,j) => {
+          html += renderSubQuestion(s, j, d.color);
+        });
+        html += '</div>';
+      }
+    });
+
+    html += '</div>';
+  });
+
+  // Custom questions section
+  html += '<div style="margin-bottom:18px" id="customQSection">';
+  html += '<div style="display:flex;align-items:center;gap:8px;padding:10px 14px;background:var(--offwhite);border-left:4px solid var(--slate);border-radius:0 8px 8px 0;margin-bottom:10px">';
+  html += '<span style="font-size:16px">\uFF0B</span>';
+  html += '<span style="font-size:13px;font-weight:600;color:var(--navy)">Custom Questions</span>';
+  html += '<button onclick="addCustomGxpQuestion()" style="margin-left:auto;padding:4px 12px;border-radius:6px;border:1px solid var(--teal);background:var(--teallt);color:var(--teal);font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">\uFF0B Add Question</button>';
+  html += '</div>';
+  html += '<div id="customQList">'+(customGxpQuestions.length===0?'<div style="padding:12px;font-size:12px;color:var(--muted);text-align:center">No custom questions added yet. Click "Add Question" to create your own.</div>':'')+'</div>';
+  html += '</div>';
+
+  el.innerHTML = html;
+  if(customGxpQuestions.length > 0) renderCustomQuestions();
+}
+
+function renderParentQuestion(q, i, color) {
+  return '<div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">' +
+    '<div style="flex-shrink:0;width:28px;height:28px;border-radius:8px;background:'+color+';display:flex;align-items:center;justify-content:center">' +
+    '<span style="font-size:11px;font-weight:600;color:var(--white)">'+(i+1)+'</span></div>' +
+    '<div style="flex:1">' +
+    '<div style="font-size:13px;color:var(--navy);font-weight:600;margin-bottom:5px">'+q.q+'</div>' +
+    '<div style="font-size:10px;color:var(--muted);margin-bottom:5px">Weight: '+q.w+'/3' + (q.subs?' \u00B7 '+q.subs.length+' follow-up questions if Yes':'') + '</div>' +
+    '<div style="display:flex;gap:8px">' +
+    '<label style="display:flex;align-items:center;gap:5px;padding:6px 16px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s" onmouseenter="this.style.borderColor=\'var(--teal)\'" onmouseleave="this.style.borderColor=\'var(--border)\'">' +
+    '<input type="radio" name="'+q.id+'" value="yes" style="accent-color:var(--teal)" onchange="toggleSubs(\''+q.id+'\',true)"> Yes</label>' +
+    '<label style="display:flex;align-items:center;gap:5px;padding:6px 16px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s" onmouseenter="this.style.borderColor=\'var(--muted)\'" onmouseleave="this.style.borderColor=\'var(--border)\'">' +
+    '<input type="radio" name="'+q.id+'" value="no" style="accent-color:var(--muted)" onchange="toggleSubs(\''+q.id+'\',false)"> No</label>' +
+    '<label style="display:flex;align-items:center;gap:5px;padding:6px 16px;border:1.5px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;font-weight:500;transition:all .2s" onmouseenter="this.style.borderColor=\'var(--amber)\'" onmouseleave="this.style.borderColor=\'var(--border)\'">' +
+    '<input type="radio" name="'+q.id+'" value="unknown" style="accent-color:var(--amber)" onchange="toggleSubs(\''+q.id+'\',true)"> Unknown</label>' +
+    '</div></div></div>';
+}
+
+function renderSubQuestion(q, j, color) {
+  return '<div style="display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px dashed var(--border)">' +
+    '<div style="flex-shrink:0;width:22px;height:22px;border-radius:6px;background:'+color+';opacity:0.2;display:flex;align-items:center;justify-content:center">' +
+    '<span style="font-size:10px;font-weight:600;color:'+color+'">'+(j+1)+'</span></div>' +
+    '<div style="flex:1">' +
+    '<div style="font-size:12px;color:var(--slate);font-weight:500;margin-bottom:4px">'+q.q+'</div>' +
+    '<div style="font-size:9px;color:var(--muted);margin-bottom:4px">Follow-up \u00B7 Weight: '+q.w+'/3</div>' +
+    '<div style="display:flex;gap:6px">' +
+    '<label style="display:flex;align-items:center;gap:4px;padding:4px 12px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:11px;transition:all .15s">' +
+    '<input type="radio" name="'+q.id+'" value="yes" style="accent-color:var(--teal);width:12px;height:12px"> Yes</label>' +
+    '<label style="display:flex;align-items:center;gap:4px;padding:4px 12px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:11px;transition:all .15s">' +
+    '<input type="radio" name="'+q.id+'" value="no" style="accent-color:var(--muted);width:12px;height:12px"> No</label>' +
+    '<label style="display:flex;align-items:center;gap:4px;padding:4px 12px;border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:11px;transition:all .15s">' +
+    '<input type="radio" name="'+q.id+'" value="unknown" style="accent-color:var(--amber);width:12px;height:12px"> Unknown</label>' +
+    '</div></div></div>';
+}
+
+function toggleSubs(parentId, show) {
+  const subsEl = document.getElementById('subs_' + parentId);
+  if(!subsEl) return;
+  if(show) {
+    subsEl.style.display = 'block';
+    setTimeout(() => { subsEl.style.opacity = '1'; }, 20);
+  } else {
+    subsEl.style.opacity = '0';
+    setTimeout(() => {
+      subsEl.style.display = 'none';
+      // Clear sub-question answers when parent is No
+      subsEl.querySelectorAll('input[type=radio]').forEach(r => r.checked = false);
+    }, 300);
+  }
+}
+
+function addCustomGxpQuestion() {
+  customQCounter++;
+  const qId = 'g_custom_' + customQCounter;
+  customGxpQuestions.push({id:qId, q:'', w:2, div:'Custom', color:'var(--slate)'});
+  renderCustomQuestions();
+}
+
+function renderCustomQuestions() {
+  const el = document.getElementById('customQList');
+  if(!el) return;
+  if(customGxpQuestions.length === 0) {
+    el.innerHTML = '<div style="padding:12px;font-size:12px;color:var(--muted);text-align:center">No custom questions added yet.</div>';
+    return;
+  }
+  el.innerHTML = customGxpQuestions.map((q,i) => `
+    <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)">
+      <div style="flex-shrink:0;width:26px;height:26px;border-radius:7px;background:var(--offwhite);display:flex;align-items:center;justify-content:center">
+        <span style="font-size:11px;font-weight:600;color:var(--slate)">C${i+1}</span>
+      </div>
+      <div style="flex:1">
+        <input type="text" id="cq_text_${q.id}" value="${q.q}" placeholder="Enter your custom question..."
+          onchange="updateCustomQ('${q.id}',this.value)"
+          style="width:100%;border:1px solid var(--border);border-radius:6px;padding:7px 10px;font-size:13px;font-family:inherit;margin-bottom:6px;color:var(--navy)">
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:10px;color:var(--muted)">Weight:</span>
+          <select id="cq_w_${q.id}" onchange="updateCustomQWeight('${q.id}',this.value)"
+            style="border:1px solid var(--border);border-radius:4px;padding:3px 8px;font-size:11px;font-family:inherit">
+            <option value="1" ${q.w===1?'selected':''}>1 — Low</option>
+            <option value="2" ${q.w===2?'selected':''}>2 — Medium</option>
+            <option value="3" ${q.w===3?'selected':''}>3 — High</option>
+          </select>
+          <div style="display:flex;gap:6px;margin-left:8px">
+            <label style="display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px">
+              <input type="radio" name="${q.id}" value="yes" style="accent-color:var(--teal)"> Yes</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px">
+              <input type="radio" name="${q.id}" value="no" style="accent-color:var(--muted)"> No</label>
+            <label style="display:flex;align-items:center;gap:4px;padding:4px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:11px">
+              <input type="radio" name="${q.id}" value="unknown" style="accent-color:var(--amber)"> Unknown</label>
+          </div>
+          <button onclick="removeCustomQ('${q.id}')" style="margin-left:auto;padding:3px 10px;border-radius:4px;border:1px solid var(--red);background:var(--redlt);color:var(--red);font-size:10px;cursor:pointer;font-family:inherit">Remove</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function updateCustomQ(id, text) {
+  const q = customGxpQuestions.find(x=>x.id===id);
+  if(q) q.q = text;
+}
+function updateCustomQWeight(id, w) {
+  const q = customGxpQuestions.find(x=>x.id===id);
+  if(q) q.w = parseInt(w);
+}
+function removeCustomQ(id) {
+  customGxpQuestions = customGxpQuestions.filter(x=>x.id!==id);
+  renderCustomQuestions();
+}
+
+// (old renderGxpQuestions removed — replaced by division-based version above)
+
+function runGxpAssessment() {
+  const allQs = getAllGxpQuestions();
+  let totalScore = 0, maxScore = 0, yesCount = 0, unknownCount = 0;
+  const findings = [];
+  const regs = new Set();
+  const divScores = {};
+
+  allQs.forEach(q => {
+    const val = document.querySelector(`input[name="${q.id}"]:checked`)?.value;
+    maxScore += q.w;
+    const divName = q.div || 'Custom';
+    if(!divScores[divName]) divScores[divName] = {yes:0,no:0,unknown:0,total:0};
+    divScores[divName].total++;
+
+    if(val === 'yes') { totalScore += q.w; yesCount++; divScores[divName].yes++; }
+    else if(val === 'unknown') { totalScore += Math.ceil(q.w/2); unknownCount++; divScores[divName].unknown++; findings.push({q:q.q,note:'Unknown — requires investigation',cat:divName}); }
+    else { divScores[divName].no++; }
+
+    if(val === 'yes' || val === 'unknown') {
+      if(divName === '21 CFR Part 11' || divName === 'eSignature') regs.add('21 CFR Part 11');
+      if(divName === 'Regulatory') { regs.add('21 CFR Part 11'); regs.add('EU Annex 11'); regs.add('GAMP 5'); }
+      if(divName === 'Patient Safety') { regs.add('ICH Q10'); regs.add('ICH Q9'); regs.add('EU Annex 11'); }
+      if(divName === 'GxP Usage') { regs.add('GAMP 5'); regs.add('EU Annex 11'); regs.add('21 CFR Part 11'); }
+      if(divName === 'Official Record') { regs.add('21 CFR Part 11'); regs.add('EU Annex 11'); regs.add('MHRA'); }
+      if(divName === 'SaMD / AI / Digital Health') { regs.add('GAMP 5'); regs.add('EU AI Act'); regs.add('IEC 62304'); }
+    }
+  });
+
+  if(maxScore === 0) { toast('Please answer at least some questions', 'err'); return; }
+
+  const pct = Math.round(totalScore/maxScore*100);
+  const determination = pct >= 60 ? 'GxP-CRITICAL' : pct >= 30 ? 'GxP-RELEVANT' : 'NON-GxP';
+  const detColor = pct >= 60 ? '#DC2626' : pct >= 30 ? '#D97706' : '#16A34A';
+  const gamp = yesCount >= 15 ? 'Category 4 or 5' : yesCount >= 8 ? 'Category 3 or 4' : 'Category 1 or 3';
+  const sysName = document.getElementById('gxpSysName')?.value || 'Unnamed System';
+
+  // Division breakdown
+  const divBreakdown = Object.entries(divScores).map(([name,s]) => {
+    const divPct = s.total>0 ? Math.round(s.yes/s.total*100) : 0;
+    const divColor = divPct>=60?'var(--red)':divPct>=30?'var(--amber)':'var(--green)';
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+      <div style="width:150px;font-size:11px;font-weight:500;color:var(--slate)">${name}</div>
+      <div style="flex:1;background:var(--border);border-radius:3px;height:6px;overflow:hidden">
+        <div style="width:${divPct}%;height:100%;background:${divColor};border-radius:3px"></div>
+      </div>
+      <div style="width:40px;font-size:11px;font-weight:600;color:${divColor};text-align:right">${divPct}%</div>
+      <div style="width:60px;font-size:10px;color:var(--muted)">${s.yes}Y ${s.unknown}U ${s.no}N</div>
+    </div>`;
+  }).join('');
+
+  const el = document.getElementById('gxpResult');
+  el.innerHTML = `
+    <div style="display:flex;gap:20px;margin-bottom:18px">
+      <div style="flex:1;background:${pct>=60?'var(--redlt)':pct>=30?'var(--amberlt)':'var(--greenlt)'};border-radius:10px;padding:18px;text-align:center">
+        <div style="font-size:32px;font-weight:600;color:${detColor};font-family:'Playfair Display',serif">${determination}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">${sysName} — Score: ${pct}%</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">GAMP suggestion: ${gamp}</div>
+      </div>
+      <div style="flex:1.5;background:var(--offwhite);border-radius:10px;padding:14px">
+        <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px">Score by division</div>
+        ${divBreakdown}
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Applicable regulatory frameworks</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+      ${[...regs].map(r=>`<span style="font-size:11px;padding:4px 10px;border-radius:10px;background:var(--teallt);color:var(--tealdk);font-weight:600">${r}</span>`).join('')}
+      ${regs.size===0?'<span style="font-size:12px;color:var(--muted)">No specific frameworks triggered</span>':''}
+    </div>
+    ${findings.length>0?`<div style="font-size:13px;font-weight:600;color:var(--amber);margin-bottom:8px">\u26A0 Items requiring investigation (${findings.length})</div>
+    ${findings.map(f=>`<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:12px"><b>${f.cat}:</b> ${f.q}<br><span style="color:var(--amber)">${f.note}</span></div>`).join('')}`:''}
+    <div style="margin-top:16px;padding:12px;background:var(--teallt);border-radius:8px;border-left:3px solid var(--teal);font-size:12px;color:var(--tealdk)">
+      <b>Recommendation:</b> ${pct>=60?'This system requires full GxP validation under GAMP 5. Assign to UCA Layer A for control definition and regulatory mapping.':pct>=30?'This system has GxP relevance. Perform a detailed risk assessment to determine validation scope. Consider UCA Layer B for monitoring.':'This system does not appear to require GxP validation. Document the rationale and retain for audit purposes.'}
+    </div>`;
+  document.getElementById('gxpResultCard').style.display = '';
+  toast('GxP assessment complete \u2014 ' + determination, pct>=60?'err':'ok');
+}
+
+function resetGxpAssessment() {
+  const allQs = getAllGxpQuestions();
+  allQs.forEach(q => { document.querySelectorAll(`input[name="${q.id}"]`).forEach(r => r.checked = false); });
+  customGxpQuestions = [];
+  customQCounter = 0;
+  document.getElementById('gxpResultCard').style.display = 'none';
+  ['gxpSysName','gxpSysOwner','gxpDept'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ''; });
+  renderGxpQuestions();
+  toast('Assessment reset', 'ok');
+}
+
+function downloadGxpReport() {
+  const sysName = document.getElementById('gxpSysName')?.value || 'Unnamed System';
+  const sysOwner = document.getElementById('gxpSysOwner')?.value || 'Not specified';
+  const dept = document.getElementById('gxpDept')?.value || 'Not specified';
+  const assessDate = document.getElementById('gxpDate')?.value || new Date().toISOString().split('T')[0];
+
+  // Gather all answers
+  const allQs = getAllGxpQuestions();
+  let totalScore=0, maxScore=0, yesCount=0, noCount=0, unknownCount=0, naCount=0;
+  const divResults = {};
+  const findings = [];
+  const regs = new Set();
+
+  GXP_DIVISIONS.forEach(d => {
+    divResults[d.div] = {color:d.color.replace('var(--','').replace(')',''), icon:d.icon, yes:0, no:0, unknown:0, na:0, total:0, parentYes:[], questions:[]};
+  });
+
+  allQs.forEach(q => {
+    const val = document.querySelector('input[name="'+q.id+'"]:checked')?.value;
+    const div = q.div || 'Custom';
+    if(!divResults[div]) divResults[div] = {color:'slate',icon:'+',yes:0,no:0,unknown:0,na:0,total:0,parentYes:[],questions:[]};
+
+    // Skip sub-questions whose parent is "No"
+    if(q.parentId) {
+      const parentVal = document.querySelector('input[name="'+q.parentId+'"]:checked')?.value;
+      if(parentVal === 'no') {
+        divResults[div].questions.push({q:q.q, answer:'N/A (parent=No)', weight:q.w, isParent:false});
+        divResults[div].na++;
+        return;
+      }
+    }
+
+    maxScore += q.w;
+    divResults[div].total++;
+
+    if(val === 'yes') { totalScore += q.w; yesCount++; divResults[div].yes++; }
+    else if(val === 'unknown') { totalScore += Math.ceil(q.w/2); unknownCount++; divResults[div].unknown++; findings.push({div,q:q.q}); }
+    else if(val === 'no') { noCount++; divResults[div].no++; }
+    else { naCount++; divResults[div].na++; }
+
+    divResults[div].questions.push({q:q.q, answer:val||'Not answered', weight:q.w, isParent:q.isParent});
+
+    if(val === 'yes' || val === 'unknown') {
+      if(div.includes('21 CFR') || div.includes('eSignature')) regs.add('21 CFR Part 11');
+      if(div.includes('Regulatory')) { regs.add('21 CFR Part 11'); regs.add('EU Annex 11'); regs.add('GAMP 5'); }
+      if(div.includes('Patient Safety')) { regs.add('ICH Q10'); regs.add('GVP'); regs.add('EU Annex 11'); }
+      if(div.includes('GxP')) { regs.add('GAMP 5'); regs.add('EU Annex 11'); regs.add('21 CFR Part 11'); }
+      if(div.includes('Official Record')) { regs.add('21 CFR Part 11'); regs.add('EU Annex 11'); regs.add('MHRA'); }
+      if(div.includes('SaMD') || div.includes('AI')) { regs.add('GAMP 5'); regs.add('EU AI Act'); regs.add('IEC 62304'); }
+    }
+  });
+
+  const pct = maxScore > 0 ? Math.round(totalScore/maxScore*100) : 0;
+  const determination = pct >= 60 ? 'GxP-CRITICAL' : pct >= 30 ? 'GxP-RELEVANT' : 'NON-GxP';
+  const detColor = pct >= 60 ? '#DC2626' : pct >= 30 ? '#D97706' : '#16A34A';
+  const gamp = yesCount >= 15 ? 'Category 4 or 5 — Full lifecycle validation required' : yesCount >= 8 ? 'Category 3 or 4 — Configuration verification / standard validation' : 'Category 1 or 3 — Minimal validation';
+
+  // Color map for HTML
+  const colorMap = {blue:'#2563EB',purple:'#7C3AED',red:'#DC2626',teal:'#0D9488',amber:'#D97706',green:'#16A34A',coral:'#EA580C',slate:'#334155'};
+  const bgMap = {blue:'#DBEAFE',purple:'#EDE9FE',red:'#FEE2E2',teal:'#CCFBF1',amber:'#FEF3C7',green:'#DCFCE7',coral:'#FFEDD5',slate:'#F1F5F9'};
+
+  // Build HTML report
+  let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>GxP Applicability Assessment - '+sysName+'</title>';
+  html += '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#F7F8FC;color:#334155;line-height:1.6;padding:20px}';
+  html += '.container{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);overflow:hidden}';
+  html += '.header{background:#0D9488;padding:28px 32px;color:#fff}.header h1{font-size:22px;margin-bottom:4px}.header p{font-size:12px;opacity:0.85}';
+  html += '.meta{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;padding:18px 32px;background:#F0FDFA;border-bottom:1px solid #E2E8F0}';
+  html += '.meta-item{font-size:12px}.meta-item strong{display:block;color:#0F172A;font-size:13px}';
+  html += '.result-banner{padding:24px 32px;text-align:center;border-bottom:2px solid #E2E8F0}';
+  html += '.result-badge{display:inline-block;font-size:28px;font-weight:700;padding:8px 32px;border-radius:10px;margin-bottom:8px}';
+  html += '.score-row{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap}';
+  html += '.score-item{background:#F1F5F9;padding:8px 16px;border-radius:8px;font-size:12px;text-align:center}.score-item strong{display:block;font-size:18px}';
+  html += '.section{padding:20px 32px;border-bottom:1px solid #E2E8F0}';
+  html += '.section h2{font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}';
+  html += '.div-header{padding:8px 14px;border-radius:6px;margin:12px 0 8px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}';
+  html += '.q-row{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid #f1f5f9;font-size:12px}';
+  html += '.q-row.sub{padding-left:24px;border-left:2px solid #E2E8F0}.q-text{flex:1}.q-answer{width:90px;text-align:center;font-weight:600;border-radius:4px;padding:2px 8px;font-size:11px}';
+  html += '.yes{background:#DCFCE7;color:#16A34A}.no{background:#F1F5F9;color:#64748B}.unknown{background:#FEF3C7;color:#D97706}.na{background:#F8FAFC;color:#94A3B8}';
+  html += '.reg-pill{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin:2px;background:#CCFBF1;color:#0D9488}';
+  html += '.finding{padding:8px 12px;background:#FFFBEB;border-left:3px solid #D97706;border-radius:0 6px 6px 0;margin:6px 0;font-size:12px}';
+  html += '.reco{padding:14px;background:#F0FDFA;border-left:4px solid #0D9488;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px}';
+  html += '.footer{padding:16px 32px;background:#F8FAFC;font-size:11px;color:#94A3B8;text-align:center}';
+  html += '.bar-bg{background:#E2E8F0;border-radius:4px;height:8px;margin:4px 0 2px}.bar-fill{height:100%;border-radius:4px}';
+  html += '@media print{body{padding:0;background:#fff}.container{box-shadow:none;border-radius:0}}</style></head><body><div class="container">';
+
+  // Header
+  html += '<div class="header"><h1>GxP Applicability Assessment Report</h1><p>UCA (Unified Control Architecture) &mdash; SRMtech Quality Governance Framework</p></div>';
+
+  // Meta
+  html += '<div class="meta">';
+  html += '<div class="meta-item"><span style="color:#64748B">System</span><strong>'+sysName+'</strong></div>';
+  html += '<div class="meta-item"><span style="color:#64748B">Owner</span><strong>'+sysOwner+'</strong></div>';
+  html += '<div class="meta-item"><span style="color:#64748B">Department</span><strong>'+dept+'</strong></div>';
+  html += '<div class="meta-item"><span style="color:#64748B">Assessment date</span><strong>'+assessDate+'</strong></div>';
+  html += '</div>';
+
+  // Result banner
+  html += '<div class="result-banner">';
+  html += '<div class="result-badge" style="background:'+(pct>=60?'#FEE2E2;color:#DC2626':pct>=30?'#FEF3C7;color:#D97706':'#DCFCE7;color:#16A34A')+'">'+determination+'</div>';
+  html += '<div style="font-size:13px;color:#64748B;margin-bottom:8px">Overall GxP applicability score: <strong style="color:#0F172A;font-size:18px">'+pct+'%</strong></div>';
+  html += '<div class="score-row">';
+  html += '<div class="score-item"><strong style="color:#16A34A">'+yesCount+'</strong>Yes</div>';
+  html += '<div class="score-item"><strong style="color:#DC2626">'+noCount+'</strong>No</div>';
+  html += '<div class="score-item"><strong style="color:#D97706">'+unknownCount+'</strong>Unknown</div>';
+  html += '<div class="score-item"><strong style="color:#0D9488">'+totalScore+'/'+maxScore+'</strong>Weighted</div>';
+  html += '<div class="score-item"><strong style="color:#0F172A">'+gamp.split(' — ')[0]+'</strong>GAMP Category</div>';
+  html += '</div></div>';
+
+  // Division breakdown
+  html += '<div class="section"><h2>Division Breakdown</h2>';
+  Object.entries(divResults).forEach(([name, d]) => {
+    if(d.total === 0 && d.na === 0) return;
+    const c = colorMap[d.color] || '#334155';
+    const bg = bgMap[d.color] || '#F1F5F9';
+    const divPct = d.total > 0 ? Math.round(d.yes / d.total * 100) : 0;
+    html += '<div class="div-header" style="background:'+bg+';color:'+c+';border-left:4px solid '+c+'">'+d.icon+' '+name;
+    html += '<span style="margin-left:auto;font-size:12px;opacity:0.7">'+d.yes+'Y / '+d.no+'N / '+d.unknown+'U / '+d.na+'N/A &mdash; '+divPct+'%</span></div>';
+    html += '<div class="bar-bg"><div class="bar-fill" style="width:'+divPct+'%;background:'+c+'"></div></div>';
+    d.questions.forEach(q => {
+      const cls = q.isParent ? 'q-row' : 'q-row sub';
+      const answerCls = q.answer === 'yes' ? 'yes' : q.answer === 'no' ? 'no' : q.answer === 'unknown' ? 'unknown' : 'na';
+      const answerText = q.answer === 'yes' ? 'YES' : q.answer === 'no' ? 'NO' : q.answer === 'unknown' ? 'UNKNOWN' : q.answer.includes('N/A') ? 'N/A' : 'NOT ANSWERED';
+      html += '<div class="'+cls+'"><div class="q-text">'+(q.isParent?'<strong>':'')+q.q+(q.isParent?'</strong>':'')+'</div><div class="q-answer '+answerCls+'">'+answerText+'</div></div>';
+    });
+  });
+  html += '</div>';
+
+  // Applicable frameworks
+  html += '<div class="section"><h2>Applicable Regulatory Frameworks</h2>';
+  if(regs.size > 0) {
+    [...regs].forEach(r => { html += '<span class="reg-pill">'+r+'</span>'; });
+  } else {
+    html += '<p style="color:#94A3B8;font-size:13px">No regulatory frameworks triggered based on the assessment responses.</p>';
+  }
+  html += '</div>';
+
+  // Findings
+  if(findings.length > 0) {
+    html += '<div class="section"><h2 style="color:#D97706">&#9888; Items Requiring Investigation ('+findings.length+')</h2>';
+    findings.forEach(f => {
+      html += '<div class="finding"><strong>'+f.div+':</strong> '+f.q+'</div>';
+    });
+    html += '</div>';
+  }
+
+  // Recommendation
+  html += '<div class="section"><h2>Recommendation</h2>';
+  html += '<div class="reco"><strong>GAMP 5 Category:</strong> '+gamp+'<br><br>';
+  if(pct >= 60) html += 'This system requires <strong>full GxP validation</strong> under GAMP 5. Assign to UCA Layer A for control definition and regulatory mapping. Immediate actions: complete system inventory entry, assign system owner, initiate Validation Master Plan.';
+  else if(pct >= 30) html += 'This system has <strong>GxP relevance</strong> and requires further risk assessment to determine validation scope. Consider UCA Layer B for ongoing monitoring. Perform a formal FMEA to classify risk tier (Critical/Major/Minor).';
+  else html += 'This system <strong>does not appear to require GxP validation</strong> based on current assessment. Document the rationale and retain this assessment for audit purposes. Re-assess if system scope or usage changes.';
+  html += '</div></div>';
+
+  // Footer
+  html += '<div class="footer">Generated by SRMtech UCA Platform &mdash; Unified Control Architecture &mdash; '+new Date().toISOString().split('T')[0]+' '+new Date().toLocaleTimeString()+'<br>';
+  html += 'This report is auto-generated from the GxP Applicability Assessment tool. All findings should be reviewed by a qualified QA professional before regulatory decisions are made.</div>';
+
+  html += '</div></body></html>';
+
+  // Download as HTML
+  const blob = new Blob([html], {type: 'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'GxP_Assessment_'+sysName.replace(/\s+/g,'_')+'_'+assessDate+'.html';
+  a.click();
+  toast('HTML report downloaded', 'ok');
+}
+
+// ── MATURITY ASSESSMENT ────────────────────────────────────────
+const MAT_LAYERS = [
+  {id:'A',name:'Layer A — Technology Policy & Governance',color:'var(--blue)',bg:'var(--bluelt)',
+   questions:[
+    {q:'SOPs are mapped to specific, testable controls (not just narrative procedures)',id:'ma1'},
+    {q:'A complete inventory of GxP computerised systems exists and is current',id:'ma2'},
+    {q:'Each system has a documented GAMP 5 category and risk classification',id:'ma3'},
+    {q:'Regulatory requirements are decomposed into atomic obligations and mapped to controls',id:'ma4'},
+    {q:'A Validation Master Plan exists for each GxP system and is within review date',id:'ma5'},
+    {q:'Digital health and AI governance policies are defined and approved',id:'ma6'},
+   ]},
+  {id:'B',name:'Layer B — Controls Assurance',color:'var(--teal)',bg:'var(--teallt)',
+   questions:[
+    {q:'Controls are tested on a defined schedule (not just reviewed at periodic intervals)',id:'mb1'},
+    {q:'Test execution is automated (scripts, not manual checklists)',id:'mb2'},
+    {q:'Evidence is generated automatically as a by-product of test execution',id:'mb3'},
+    {q:'CAPA records are automatically linked to failing controls (not manually initiated)',id:'mb4'},
+    {q:'Audit trail reviews are performed routinely (not only before audits)',id:'mb5'},
+    {q:'A real-time dashboard shows current control posture across all systems',id:'mb6'},
+   ]},
+  {id:'C',name:'Layer C — Technology Controls & Risk Management',color:'var(--amber)',bg:'var(--amberlt)',
+   questions:[
+    {q:'Risk registers are connected to live control evidence (not static spreadsheets)',id:'mc1'},
+    {q:'AI models used in GxP are inventoried with version, training data, and performance baseline',id:'mc2'},
+    {q:'Drift detection is automated (configuration, process, data, AI model drift)',id:'mc3'},
+    {q:'Go/no-go decisions for system deployments are formally documented and governed',id:'mc4'},
+    {q:'Risk reporting is translated into business language for leadership',id:'mc5'},
+    {q:'Regulatory change monitoring is active and linked to control re-assessment',id:'mc6'},
+   ]},
+  {id:'D',name:'Layer D — Compliance, Evidence & Audit',color:'var(--coral)',bg:'var(--corallt)',
+   questions:[
+    {q:'Evidence packages can be retrieved within 60 seconds for any control',id:'md1'},
+    {q:'Traceability matrices link every requirement to a test, every test to evidence',id:'md2'},
+    {q:'Electronic signatures meet 21 CFR Part 11 requirements (name, date, meaning)',id:'md3'},
+    {q:'Backup and recovery is tested quarterly with documented restoration results',id:'md4'},
+    {q:'Audit-ready reports can be generated on demand by scope and framework',id:'md5'},
+    {q:'Record retention is managed with defined periods and retrievability testing',id:'md6'},
+   ]},
+];
+
+const MAT_LEVELS = [
+  {value:0,label:'Not started',desc:'No capability in place'},
+  {value:1,label:'Ad hoc',desc:'Done informally, person-dependent'},
+  {value:2,label:'Defined',desc:'Documented process exists but inconsistently followed'},
+  {value:3,label:'Managed',desc:'Process followed consistently, some automation'},
+  {value:4,label:'Measured',desc:'Metrics tracked, continuous improvement active'},
+  {value:5,label:'Optimised',desc:'Fully automated, continuously monitored, industry-leading'},
+];
+
+function renderMaturityQuestions() {
+  const el = document.getElementById('maturityLayers');
+  if(!el) return;
+  el.innerHTML = MAT_LAYERS.map(layer => `
+    <div class="card" style="margin-bottom:14px">
+      <div class="card-hdr" style="border-left:4px solid ${layer.color}">
+        <div class="card-title" style="color:${layer.color}">${layer.name}</div>
+      </div>
+      <div class="card-body">
+        ${layer.questions.map((q,i) => `
+          <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 0;${i<layer.questions.length-1?'border-bottom:1px solid var(--border)':''}">
+            <div style="flex:1;font-size:13px;color:var(--slate);padding-top:4px">${q.q}</div>
+            <select id="${q.id}" style="width:160px;border:1px solid var(--border);border-radius:6px;padding:6px 10px;font-size:12px;font-family:'DM Sans',sans-serif;color:var(--slate)">
+              <option value="">Select level...</option>
+              ${MAT_LEVELS.map(l=>`<option value="${l.value}">${l.value} — ${l.label}</option>`).join('')}
+            </select>
+          </div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function runMaturityAssessment() {
+  const layerScores = {};
+  let totalScore = 0, totalMax = 0, answered = 0;
+  MAT_LAYERS.forEach(layer => {
+    let layerTotal = 0, layerMax = 0;
+    layer.questions.forEach(q => {
+      const val = document.getElementById(q.id)?.value;
+      if(val !== '' && val !== undefined) {
+        layerTotal += parseInt(val);
+        answered++;
+      }
+      layerMax += 5;
+    });
+    layerScores[layer.id] = {score:layerTotal, max:layerMax, pct:Math.round(layerTotal/layerMax*100), name:layer.name, color:layer.color};
+    totalScore += layerTotal;
+    totalMax += layerMax;
+  });
+
+  if(answered < 8) { toast('Please answer at least 8 questions','err'); return; }
+
+  const overallPct = Math.round(totalScore/totalMax*100);
+  const matLevel = overallPct >= 80 ? 'Optimised' : overallPct >= 60 ? 'Managed' : overallPct >= 40 ? 'Defined' : overallPct >= 20 ? 'Ad Hoc' : 'Not Started';
+  const matColor = overallPct >= 80 ? 'var(--green)' : overallPct >= 60 ? 'var(--teal)' : overallPct >= 40 ? 'var(--amber)' : 'var(--red)';
+
+  const el = document.getElementById('matResult');
+  el.innerHTML = `
+    <div style="display:flex;gap:20px;margin-bottom:18px">
+      <div style="flex:1;background:var(--offwhite);border-radius:10px;padding:18px;text-align:center;border:2px solid ${matColor}">
+        <div style="font-size:36px;font-weight:600;color:${matColor};font-family:'Playfair Display',serif">${overallPct}%</div>
+        <div style="font-size:14px;font-weight:600;color:var(--navy);margin-top:4px">${matLevel}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:2px">Overall UCA maturity score</div>
+      </div>
+      <div style="flex:2">
+        ${Object.entries(layerScores).map(([id,ls]) => `
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+            <div style="width:36px;height:36px;border-radius:8px;background:${ls.color};color:white;display:flex;align-items:center;justify-content:center;font-weight:600;font-family:'Playfair Display',serif;font-size:16px">${id}</div>
+            <div style="flex:1">
+              <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px">
+                <span style="color:var(--slate);font-weight:500">${ls.name.split(' — ')[1] || ls.name}</span>
+                <span style="color:${ls.color};font-weight:600">${ls.pct}%</span>
+              </div>
+              <div style="background:var(--border);border-radius:4px;height:8px;overflow:hidden">
+                <div style="width:${ls.pct}%;height:100%;background:${ls.color};border-radius:4px;transition:width .6s"></div>
+              </div>
+            </div>
+          </div>`).join('')}
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:8px">Maturity level guide</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px">
+      ${MAT_LEVELS.map(l => {
+        const lc = l.value>=4?'var(--green)':l.value>=3?'var(--teal)':l.value>=2?'var(--amber)':l.value>=1?'var(--coral)':'var(--red)';
+        return `<span style="font-size:10px;padding:3px 10px;border-radius:10px;border:1px solid ${lc};color:${lc};font-weight:500">${l.value}: ${l.label}</span>`;
+      }).join('')}
+    </div>
+    <div style="padding:12px;background:var(--teallt);border-radius:8px;border-left:3px solid var(--teal);font-size:12px;color:var(--tealdk);line-height:1.6">
+      <b>Recommendation:</b> ${overallPct>=80?'Organisation is at optimised maturity. Focus on continuous improvement, community contribution to UCA framework, and thought leadership positioning.':overallPct>=60?'Organisation is well managed. Priority: automate remaining manual processes in Layers B and C, and establish continuous drift monitoring.':overallPct>=40?'Processes are defined but inconsistent. Priority: standardise Layer A controls, introduce automated testing in Layer B, and connect risk registers to live evidence.':overallPct>=20?'Ad hoc practices dominate. Priority: complete system inventory, define core controls (ACC-001 through RET-001), and establish basic periodic testing.':'Starting from scratch. Priority: engage SRMtech for Phase 1 assessment — system inventory, GxP determination, and UCA foundation build.'}
+    </div>`;
+  document.getElementById('matResultCard').style.display = '';
+  toast(`Maturity assessment: ${overallPct}% — ${matLevel}`, overallPct>=60?'ok':'err');
+}
+
+function resetMaturity() {
+  MAT_LAYERS.forEach(l => l.questions.forEach(q => { const e = document.getElementById(q.id); if(e) e.value = ''; }));
+  document.getElementById('matResultCard').style.display = 'none';
+  ['matOrg','matAssessor'].forEach(id => { const e = document.getElementById(id); if(e) e.value = ''; });
+  toast('Assessment reset','ok');
+}
+
+function downloadMaturityReport() {
+  const org = document.getElementById('matOrg')?.value || 'Unknown Organisation';
+  const assessor = document.getElementById('matAssessor')?.value || 'Not specified';
+  const matDate = document.getElementById('matDate')?.value || new Date().toISOString().split('T')[0];
+  const scope = document.getElementById('matScope')?.value || 'full';
+
+  let totalScore=0, totalMax=0, answered=0;
+  const layerData = {};
+  const colorMap = {blue:'#2563EB',teal:'#0D9488',amber:'#D97706',coral:'#EA580C'};
+  const bgMap = {blue:'#DBEAFE',teal:'#CCFBF1',amber:'#FEF3C7',coral:'#FFEDD5'};
+  const colorKey = {'var(--blue)':'blue','var(--teal)':'teal','var(--amber)':'amber','var(--coral)':'coral'};
+
+  MAT_LAYERS.forEach(layer => {
+    const ck = colorKey[layer.color] || 'teal';
+    layerData[layer.id] = {name:layer.name,color:colorMap[ck],bg:bgMap[ck],score:0,max:0,questions:[]};
+    layer.questions.forEach(q => {
+      const val = document.getElementById(q.id)?.value;
+      const numVal = val !== '' && val !== undefined ? parseInt(val) : -1;
+      layerData[layer.id].max += 5;
+      totalMax += 5;
+      if(numVal >= 0) { layerData[layer.id].score += numVal; totalScore += numVal; answered++; }
+      const levelLabel = numVal >= 0 ? MAT_LEVELS.find(l=>l.value===numVal)?.label || '' : 'Not answered';
+      layerData[layer.id].questions.push({q:q.q, value:numVal, label:levelLabel});
+    });
+  });
+
+  const overallPct = totalMax > 0 ? Math.round(totalScore/totalMax*100) : 0;
+  const matLevel = overallPct >= 80 ? 'Optimised' : overallPct >= 60 ? 'Managed' : overallPct >= 40 ? 'Defined' : overallPct >= 20 ? 'Ad Hoc' : 'Not Started';
+  const matColor = overallPct >= 80 ? '#16A34A' : overallPct >= 60 ? '#0D9488' : overallPct >= 40 ? '#D97706' : '#DC2626';
+
+  let html = '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>UCA Maturity Assessment - '+org+'</title>';
+  html += '<style>*{margin:0;padding:0;box-sizing:border-box}body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#F7F8FC;color:#334155;line-height:1.6;padding:20px}';
+  html += '.container{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,0.08);overflow:hidden}';
+  html += '.header{background:#0D9488;padding:28px 32px;color:#fff}.header h1{font-size:22px;margin-bottom:4px}.header p{font-size:12px;opacity:0.85}';
+  html += '.meta{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;padding:18px 32px;background:#F0FDFA;border-bottom:1px solid #E2E8F0}';
+  html += '.meta-item{font-size:12px}.meta-item strong{display:block;color:#0F172A;font-size:13px}';
+  html += '.result-banner{padding:24px 32px;text-align:center;border-bottom:2px solid #E2E8F0}';
+  html += '.result-score{font-size:48px;font-weight:700;margin-bottom:4px}.result-level{font-size:16px;font-weight:600}';
+  html += '.layer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:18px 32px;border-bottom:1px solid #E2E8F0}';
+  html += '.layer-card{border-radius:8px;padding:14px;border:1px solid #E2E8F0}.layer-name{font-size:12px;font-weight:600;margin-bottom:6px}';
+  html += '.bar-bg{background:#E2E8F0;border-radius:4px;height:10px;margin:4px 0}.bar-fill{height:100%;border-radius:4px}';
+  html += '.section{padding:20px 32px;border-bottom:1px solid #E2E8F0}.section h2{font-size:15px;margin-bottom:12px}';
+  html += '.q-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f8fafc;font-size:12px}';
+  html += '.q-text{flex:1}.q-score{width:30px;text-align:center;font-weight:700;font-size:14px}.q-label{width:100px;font-size:11px;color:#64748B}';
+  html += '.level-bar{display:flex;gap:2px;width:60px}.level-dot{width:10px;height:10px;border-radius:3px;background:#E2E8F0}';
+  html += '.reco{padding:14px;background:#F0FDFA;border-left:4px solid #0D9488;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px}';
+  html += '.footer{padding:16px 32px;background:#F8FAFC;font-size:11px;color:#94A3B8;text-align:center}';
+  html += '@media print{body{padding:0;background:#fff}.container{box-shadow:none}}</style></head><body><div class="container">';
+
+  html += '<div class="header"><h1>UCA Maturity Assessment Report</h1><p>Unified Control Architecture &mdash; SRMtech Quality Governance Framework</p></div>';
+
+  html += '<div class="meta">';
+  html += '<div class="meta-item"><span style="color:#64748B">Organisation</span><strong>'+org+'</strong></div>';
+  html += '<div class="meta-item"><span style="color:#64748B">Assessed by</span><strong>'+assessor+'</strong></div>';
+  html += '<div class="meta-item"><span style="color:#64748B">Date</span><strong>'+matDate+'</strong></div>';
+  html += '<div class="meta-item"><span style="color:#64748B">Scope</span><strong>'+scope.charAt(0).toUpperCase()+scope.slice(1)+'</strong></div>';
+  html += '</div>';
+
+  html += '<div class="result-banner">';
+  html += '<div class="result-score" style="color:'+matColor+'">'+overallPct+'%</div>';
+  html += '<div class="result-level" style="color:'+matColor+'">'+matLevel+'</div>';
+  html += '<div style="font-size:12px;color:#64748B;margin-top:4px">'+answered+' of '+MAT_LAYERS.reduce((a,l)=>a+l.questions.length,0)+' questions answered &mdash; Score: '+totalScore+' / '+totalMax+'</div>';
+  html += '</div>';
+
+  // Layer cards
+  html += '<div class="layer-grid">';
+  Object.entries(layerData).forEach(([id, ld]) => {
+    const layerPct = ld.max > 0 ? Math.round(ld.score/ld.max*100) : 0;
+    const lColor = layerPct >= 60 ? '#16A34A' : layerPct >= 40 ? '#D97706' : '#DC2626';
+    html += '<div class="layer-card" style="border-left:4px solid '+ld.color+'">';
+    html += '<div class="layer-name" style="color:'+ld.color+'">'+id+' &mdash; '+ld.name.split(' \u2014 ')[1]+'</div>';
+    html += '<div class="bar-bg"><div class="bar-fill" style="width:'+layerPct+'%;background:'+ld.color+'"></div></div>';
+    html += '<div style="display:flex;justify-content:space-between;font-size:11px;margin-top:2px"><span style="color:#64748B">'+ld.score+'/'+ld.max+'</span><span style="font-weight:600;color:'+lColor+'">'+layerPct+'%</span></div>';
+    html += '</div>';
+  });
+  html += '</div>';
+
+  // Detailed questions per layer
+  Object.entries(layerData).forEach(([id, ld]) => {
+    html += '<div class="section"><h2 style="color:'+ld.color+'">'+ld.name+'</h2>';
+    ld.questions.forEach(q => {
+      const dotColor = q.value >= 4 ? '#16A34A' : q.value >= 3 ? '#0D9488' : q.value >= 2 ? '#D97706' : q.value >= 1 ? '#EA580C' : q.value === 0 ? '#DC2626' : '#E2E8F0';
+      html += '<div class="q-row"><div class="q-text">'+q.q+'</div>';
+      html += '<div class="level-bar">';
+      for(let i=0;i<5;i++) html += '<div class="level-dot" style="background:'+(i < q.value ? dotColor : '#E2E8F0')+'"></div>';
+      html += '</div>';
+      html += '<div class="q-score" style="color:'+(q.value>=0?dotColor:'#94A3B8')+'">'+(q.value>=0?q.value:'-')+'</div>';
+      html += '<div class="q-label">'+q.label+'</div></div>';
+    });
+    html += '</div>';
+  });
+
+  // Recommendation
+  html += '<div class="section"><h2>Recommendation</h2>';
+  html += '<div class="reco">';
+  if(overallPct >= 80) html += '<strong>Optimised maturity.</strong> Focus on continuous improvement, community contribution to UCA framework, and thought leadership. Consider contributing control definitions and test patterns back to the UCA open-source community.';
+  else if(overallPct >= 60) html += '<strong>Managed maturity.</strong> Priority: automate remaining manual processes in Layers B and C. Establish continuous drift monitoring. Target: move from periodic to continuous validation model within 6 months.';
+  else if(overallPct >= 40) html += '<strong>Defined but inconsistent.</strong> Priority: standardise Layer A controls across all GxP systems. Introduce automated testing in Layer B. Connect risk registers to live evidence in Layer C. Target: achieve Managed maturity within 9 months.';
+  else if(overallPct >= 20) html += '<strong>Ad hoc practices.</strong> Priority: complete system inventory and GxP classification. Define core controls (ACC-001 through RET-001). Establish basic periodic testing. Target: achieve Defined maturity within 12 months.';
+  else html += '<strong>Starting from scratch.</strong> Priority: engage SRMtech for Phase 1 assessment — system inventory, GxP determination, and UCA foundation build. Target: achieve Ad Hoc to Defined maturity within 12 months.';
+  html += '</div></div>';
+
+  html += '<div class="footer">Generated by SRMtech UCA Platform &mdash; Unified Control Architecture &mdash; '+matDate+' '+new Date().toLocaleTimeString()+'<br>';
+  html += 'This report should be reviewed by a qualified QA professional. Maturity scores are self-assessed and should be validated through independent review.</div>';
+  html += '</div></body></html>';
+
+  const blob = new Blob([html], {type:'text/html'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'Maturity_Assessment_'+org.replace(/\s+/g,'_')+'_'+matDate+'.html';
+  a.click();
+  toast('HTML report downloaded', 'ok');
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+renderDashboard();
+</script>
+
+
+</body></html>
