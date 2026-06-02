@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software Test Automation Assessment Tool</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#F7F8FC;color:#334155;line-height:1.6;padding:20px}
+.container{max-width:900px;margin:0 auto}
+
+/* ── Header ── */
+.app-header{background:#0F4C81;border-radius:12px 12px 0 0;padding:28px 32px;color:#fff}
+.app-header h1{font-size:22px;font-weight:600;margin-bottom:4px}
+.app-header p{font-size:12px;opacity:.85}
+.progress-wrap{margin-top:14px}
+.progress-bg{background:rgba(255,255,255,.25);border-radius:4px;height:7px}
+.progress-fill{height:100%;border-radius:4px;background:#7DD3FC;transition:width .4s ease}
+.step-txt{font-size:11px;opacity:.7;margin-top:5px}
+
+/* ── Cards ── */
+.card{background:#fff;border:1px solid #E2E8F0;border-radius:0 0 12px 12px;padding:24px 32px;margin-bottom:0}
+.card-inner{background:#fff;border:1px solid #E2E8F0;border-radius:12px;padding:22px 28px;margin-bottom:16px}
+.section-title{font-size:15px;font-weight:600;color:#0F172A;margin-bottom:16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #F1F5F9;padding-bottom:10px}
+
+/* ── Meta inputs ── */
+.meta-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.meta-field{display:flex;flex-direction:column;gap:4px}
+.meta-field label{font-size:11px;color:#64748B;font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.meta-field input,.meta-field select{font-size:13px;padding:9px 11px;border:1px solid #CBD5E1;border-radius:8px;background:#fff;color:#0F172A;outline:none;transition:border .15s}
+.meta-field input:focus,.meta-field select:focus{border-color:#0F4C81}
+
+/* ── Questions ── */
+.q-block{margin-bottom:14px}
+.q-label{font-size:13px;color:#0F172A;margin-bottom:4px;font-weight:500}
+.q-hint{font-size:11px;color:#64748B;margin-bottom:5px;font-style:italic;padding-left:12px;border-left:2px solid #E2E8F0}
+.opt-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.opt-btn{font-size:11px;padding:4px 14px;border-radius:20px;border:1px solid #CBD5E1;background:#F8FAFC;color:#64748B;cursor:pointer;transition:all .15s;font-family:inherit}
+.opt-btn:hover{border-color:#94A3B8;color:#0F172A}
+.opt-btn.sel-yes{background:#DCFCE7;border-color:#16A34A;color:#15803D;font-weight:600}
+.opt-btn.sel-no{background:#F1F5F9;border-color:#94A3B8;color:#475569;font-weight:600}
+.opt-btn.sel-partial{background:#FEF9C3;border-color:#CA8A04;color:#92400E;font-weight:600}
+.opt-btn.sel-na{background:#F8FAFC;border-color:#CBD5E1;color:#94A3B8;font-weight:600}
+
+/* ── Nav buttons ── */
+.nav-row{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
+.btn-primary{background:#0F4C81;color:#fff;border:none;padding:10px 24px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:background .15s}
+.btn-primary:hover{background:#0C3D6E}
+.btn-secondary{background:#fff;color:#0F172A;border:1px solid #CBD5E1;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+.btn-secondary:hover{background:#F8FAFC}
+
+/* ── Report ── */
+.report-container{background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:hidden;margin-bottom:16px}
+.report-header{background:#0F4C81;padding:28px 32px;color:#fff}
+.report-header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.report-header p{font-size:12px;opacity:.85}
+.report-meta{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;padding:18px 32px;background:#EFF6FF;border-bottom:1px solid #BFDBFE}
+.rmeta-item{font-size:12px;color:#475569}
+.rmeta-item strong{display:block;font-size:13px;color:#0F172A}
+.result-banner{padding:24px 32px;text-align:center;border-bottom:2px solid #E2E8F0}
+.result-badge{display:inline-block;font-size:28px;font-weight:700;padding:8px 32px;border-radius:10px;margin-bottom:8px}
+.score-row{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.score-item{background:#F1F5F9;padding:8px 16px;border-radius:8px;font-size:12px;text-align:center}
+.score-item strong{display:block;font-size:18px}
+
+/* ── Report sections ── */
+.r-section{padding:20px 32px;border-bottom:1px solid #E2E8F0}
+.r-section h2{font-size:15px;font-weight:600;margin-bottom:12px;color:#0F172A;display:flex;align-items:center;gap:8px}
+.div-hdr{padding:8px 14px;border-radius:6px;margin:12px 0 8px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.q-row-r{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid #F1F5F9;font-size:12px}
+.q-text-r{flex:1;color:#334155}
+.q-ans{width:86px;text-align:center;font-weight:600;border-radius:4px;padding:2px 8px;font-size:11px}
+.ans-yes{background:#DCFCE7;color:#16A34A}
+.ans-no{background:#F1F5F9;color:#64748B}
+.ans-partial{background:#FEF9C3;color:#92400E}
+.ans-na{background:#F8FAFC;color:#94A3B8}
+.bar-bg{background:#E2E8F0;border-radius:4px;height:8px;margin:4px 0 2px}
+.bar-fill{height:100%;border-radius:4px}
+
+/* ── Tool cards ── */
+.tool-card{border:1px solid #E2E8F0;border-radius:10px;padding:16px 18px;margin-bottom:10px;background:#fff}
+.tool-card.top-pick{border-color:#0F4C81;border-width:2px}
+.tool-card-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.tool-name{font-size:16px;font-weight:700;color:#0F172A}
+.tool-badge{font-size:10px;padding:2px 10px;border-radius:10px;font-weight:700}
+.badge-top{background:#DBEAFE;color:#1D4ED8}
+.badge-alt{background:#F1F5F9;color:#475569}
+.tool-score{margin-left:auto;font-size:14px;font-weight:700}
+.tool-meta{font-size:11px;color:#64748B;margin:3px 0 10px}
+.tool-reasons{font-size:12px;color:#475569;padding-left:0;list-style:none}
+.tool-reasons li{margin:3px 0;padding-left:16px;position:relative}
+.tool-reasons li::before{content:"✓";position:absolute;left:0;color:#16A34A;font-size:10px;top:1px}
+.tool-bar-wrap{margin-top:10px}
+.tool-bar-bg{background:#E2E8F0;border-radius:4px;height:6px}
+.tool-bar-fill{height:100%;border-radius:4px;background:#0F4C81}
+
+/* ── Pills ── */
+.tool-pill{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin:2px;background:#DBEAFE;color:#1D4ED8}
+.finding-r{padding:8px 12px;background:#FFFBEB;border-left:3px solid #D97706;border-radius:0 6px 6px 0;margin:6px 0;font-size:12px}
+.reco-r{padding:14px;background:#EFF6FF;border-left:4px solid #0F4C81;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px}
+.r-footer{padding:16px 32px;background:#F8FAFC;font-size:11px;color:#94A3B8;text-align:center}
+
+/* ── Action buttons ── */
+.action-row{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.dl-btn{background:#0F4C81;color:#fff;border:none;padding:10px 22px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit}
+.dl-btn:hover{background:#0C3D6E}
+.restart-btn{background:#fff;color:#0F172A;border:1px solid #CBD5E1;padding:10px 20px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit}
+.restart-btn:hover{background:#F8FAFC}
+
+/* ── Misc ── */
+.hidden{display:none}
+@media print{body{padding:0;background:#fff}.container{max-width:100%}.action-row{display:none}}
+@media(max-width:600px){.meta-grid{grid-template-columns:1fr}.report-meta{grid-template-columns:1fr 1fr}.score-row{gap:8px}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- HEADER (always visible) -->
+<div class="app-header">
+  <h1>Software Test Automation Assessment</h1>
+  <p>Test Automation Assessment Framework &mdash; SRMtech Quality Governance</p>
+  <div class="progress-wrap">
+    <div class="progress-bg"><div class="progress-fill" id="prog" style="width:0%"></div></div>
+    <div class="step-txt" id="step-txt">Step 0 of 8 &mdash; Not started</div>
+  </div>
+</div>
+
+<!-- ASSESSMENT WRAP -->
+<div id="assessment-wrap">
+  <!-- Meta -->
+  <div class="card-inner" id="phase-meta" style="border-radius:0 0 12px 12px;border-top:0">
+    <div class="section-title">&#128203; System &amp; Project Information</div>
+    <div class="meta-grid">
+      <div class="meta-field"><label>System / Project Name</label><input id="sys-name" type="text" placeholder="e.g. Order Management System"></div>
+      <div class="meta-field"><label>System Owner / Team</label><input id="sys-owner" type="text" placeholder="e.g. QA Engineering Team"></div>
+      <div class="meta-field"><label>Department</label><input id="sys-dept" type="text" placeholder="e.g. Digital Products"></div>
+      <div class="meta-field"><label>Primary Technology Stack</label>
+        <select id="sys-tech">
+          <option value="">Select stack...</option>
+          <option>Web (React / Angular / Vue)</option>
+          <option>Web (Java / Spring)</option>
+          <option>Web (.NET / C#)</option>
+          <option>Mobile (iOS / Android)</option>
+          <option>Mobile (React Native / Flutter)</option>
+          <option>Desktop (Windows)</option>
+          <option>API / Microservices</option>
+          <option>SAP / Oracle ERP</option>
+          <option>Salesforce / CRM</option>
+          <option>Mixed / Multiple</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="nav-row"><button class="btn-primary" onclick="startAssessment()">Begin Assessment &#8594;</button></div>
+  </div>
+  <!-- Q sections injected here -->
+  <div id="q-sections"></div>
+</div>
+
+<!-- REPORT WRAP (hidden until generated) -->
+<div id="report-wrap" class="hidden">
+  <div id="report-html"></div>
+  <div class="action-row">
+    <button class="dl-btn" onclick="downloadReport()">&#8595; Download HTML Report</button>
+    <button class="dl-btn" onclick="window.print()" style="background:#334155">&#128438; Print / Save PDF</button>
+    <button class="restart-btn" onclick="restartAssessment()">&#8635; New Assessment</button>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+/* ════════════════════════════════════════════════
+   DATA
+════════════════════════════════════════════════ */
+const SECTIONS = [
+  {
+    id:"app-type", label:"Application Type & Scope",
+    icon:"&#127381;", color:"#2563EB", bg:"#DBEAFE",
+    questions:[
+      {id:"web",     text:"Does the application have a web browser-based UI?"},
+      {id:"mobile",  text:"Does it include mobile (iOS / Android) testing requirements?"},
+      {id:"api",     text:"Are there API / service layer components that need testing?"},
+      {id:"desktop", text:"Does it include desktop application components (Windows / macOS)?"},
+      {id:"erp",     text:"Does it involve ERP / CRM platforms (SAP, Salesforce, Oracle)?"},
+    ]
+  },
+  {
+    id:"tech-stack", label:"Technology & Integration",
+    icon:"&#128187;", color:"#7C3AED", bg:"#EDE9FE",
+    questions:[
+      {id:"js-heavy",      text:"Is the frontend primarily built with modern JavaScript frameworks (React, Angular, Vue)?"},
+      {id:"ci-cd",         text:"Does the project use CI/CD pipelines (Jenkins, GitHub Actions, GitLab CI)?",
+                           hint:"Integration with CI/CD pipelines is critical for shift-left testing."},
+      {id:"containers",    text:"Are tests expected to run in Docker or containerised environments?"},
+      {id:"cloud",         text:"Is cloud-based parallel test execution required (BrowserStack, Sauce Labs, LambdaTest)?"},
+      {id:"multi-browser", text:"Is cross-browser testing across multiple browsers and versions required?"},
+    ]
+  },
+  {
+    id:"team", label:"Team & Skills",
+    icon:"&#128101;", color:"#DC2626", bg:"#FEE2E2",
+    questions:[
+      {id:"dev-centric", text:"Are the primary test authors software developers or SDETs?"},
+      {id:"manual-qa",   text:"Are non-technical / manual QA testers expected to write or maintain tests?",
+                         hint:"Low-code / no-code tools may be preferred for non-developer teams."},
+      {id:"bdd",         text:"Is Behaviour-Driven Development (BDD / Gherkin) preferred by the team?"},
+      {id:"scale",       text:"Does the team have 10+ people actively involved in test automation?"},
+      {id:"oss",         text:"Is open-source tooling strongly preferred (licensing / cost constraints)?"},
+    ]
+  },
+  {
+    id:"test-scope", label:"Test Scope & Coverage",
+    icon:"&#127919;", color:"#0D9488", bg:"#CCFBF1",
+    questions:[
+      {id:"e2e",           text:"Is end-to-end (E2E) workflow testing a primary requirement?"},
+      {id:"unit",          text:"Is unit or component-level testing in scope?"},
+      {id:"perf",          text:"Is performance / load / stress testing required?"},
+      {id:"visual",        text:"Is visual regression testing (pixel-diff / layout comparison) required?"},
+      {id:"accessibility", text:"Is automated accessibility (WCAG / a11y) testing required?"},
+    ]
+  },
+  {
+    id:"data", label:"Test Data & Environment",
+    icon:"&#128202;", color:"#D97706", bg:"#FEF3C7",
+    questions:[
+      {id:"data-complexity", text:"Does test execution require complex, dynamic test data setup?",
+                             hint:"Parameterisation, data factories, or external data feeds."},
+      {id:"env-parity",      text:"Are test environments fully isolated and consistent (staging parity)?"},
+      {id:"db-validation",   text:"Is database / backend data validation part of the test suite?"},
+      {id:"mock-services",   text:"Does testing require mocking / stubbing of external services (WireMock, MSW)?"},
+    ]
+  },
+  {
+    id:"maturity", label:"Automation Maturity",
+    icon:"&#128200;", color:"#16A34A", bg:"#DCFCE7",
+    questions:[
+      {id:"existing",        text:"Does an existing automation framework or test suite already exist?",
+                             hint:"Migration cost and backward compatibility should be considered."},
+      {id:"reporting",       text:"Are detailed test reports and dashboards required for stakeholders?"},
+      {id:"rerun",           text:"Is smart test re-run / flaky test detection and quarantine needed?"},
+      {id:"record-playback", text:"Is record-and-playback capability needed for rapid test creation?"},
+      {id:"codegen",         text:"Would AI-assisted test code generation (Copilot, Playwright AI, etc.) be a valued feature?"},
+    ]
+  },
+  {
+    id:"compliance", label:"Compliance & Quality Gates",
+    icon:"&#128737;", color:"#EA580C", bg:"#FFEDD5",
+    questions:[
+      {id:"gxp",         text:"Is the system subject to GxP / FDA / regulatory validation requirements?",
+                         hint:"Validated test tools and IQ/OQ/PQ documentation may be required."},
+      {id:"audit-trail", text:"Is a complete audit trail of all test executions required?"},
+      {id:"traceability",text:"Is requirements-to-test traceability (e.g. Jira/ADO linkage) needed?"},
+      {id:"parallel",    text:"Is parallel / concurrent test execution required to reduce pipeline duration?"},
+    ]
+  },
+  {
+    id:"budget", label:"Budget & Licensing",
+    icon:"&#128176;", color:"#0F4C81", bg:"#DBEAFE",
+    questions:[
+      {id:"enterprise-budget", text:"Is there budget for a commercial enterprise testing platform?"},
+      {id:"per-seat",          text:"Is per-seat or per-execution pricing model acceptable?"},
+      {id:"support",           text:"Is dedicated vendor support with SLA important for this project?"},
+      {id:"consolidation",     text:"Is consolidating multiple testing tools into a single platform a goal?"},
+    ]
+  }
+];
+
+const TOOLS = [
+  {
+    name:"Playwright", type:"Open Source", lang:"JS/TS · Python · Java · C#",
+    url:"https://playwright.dev",
+    score_fn(a){
+      let s=0;
+      if(a.web==="yes")s+=25; if(a["js-heavy"]==="yes")s+=15; if(a["ci-cd"]==="yes")s+=15;
+      if(a.containers==="yes")s+=10; if(a.api==="yes")s+=10; if(a["multi-browser"]==="yes")s+=15;
+      if(a["dev-centric"]==="yes")s+=10; if(a.oss==="yes")s+=20; if(a.e2e==="yes")s+=15;
+      if(a.codegen==="yes")s+=10; if(a["mock-services"]==="yes")s+=8; if(a.parallel==="yes")s+=10;
+      if(a.visual==="yes")s+=8; if(a.mobile==="yes")s-=10; if(a.erp==="yes")s-=15;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Built-in cross-browser support: Chromium, Firefox, WebKit",
+      "Native parallel execution and CI/CD pipeline integration",
+      "Auto-wait and trace viewer significantly reduce flakiness",
+      "API testing, mocking, and network interception built-in",
+      "Free and open-source — zero licensing cost",
+      "AI codegen via Playwright MCP, Copilot and built-in codegen CLI"
+    ]
+  },
+  {
+    name:"Cypress", type:"Open Source / Commercial", lang:"JavaScript · TypeScript",
+    url:"https://cypress.io",
+    score_fn(a){
+      let s=0;
+      if(a.web==="yes")s+=25; if(a["js-heavy"]==="yes")s+=20; if(a.e2e==="yes")s+=15;
+      if(a["dev-centric"]==="yes")s+=15; if(a.oss==="yes")s+=15; if(a["ci-cd"]==="yes")s+=10;
+      if(a.cloud==="yes")s+=10; if(a["record-playback"]==="yes")s+=10; if(a.reporting==="yes")s+=8;
+      if(a.mobile==="yes")s-=20; if(a.api==="yes")s+=5; if(a.erp==="yes")s-=10;
+      if(a.desktop==="yes")s-=20; if(a.bdd==="yes")s+=5; if(a.rerun==="yes")s+=8;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Excellent developer experience for modern web applications",
+      "Real-time test replay and time-travel debugging",
+      "Strong ecosystem for React, Angular, and Vue apps",
+      "Cypress Cloud for parallelisation and flake detection",
+      "Component testing support alongside E2E"
+    ]
+  },
+  {
+    name:"Selenium WebDriver", type:"Open Source", lang:"Java · Python · JS · C# · Ruby",
+    url:"https://selenium.dev",
+    score_fn(a){
+      let s=0;
+      if(a.web==="yes")s+=20; if(a["multi-browser"]==="yes")s+=20; if(a.erp==="yes")s+=15;
+      if(a.bdd==="yes")s+=10; if(a.oss==="yes")s+=15; if(a.gxp==="yes")s+=12;
+      if(a["audit-trail"]==="yes")s+=8; if(a.existing==="yes")s+=15; if(a.scale==="yes")s+=10;
+      if(a.containers==="yes")s+=8; if(a["ci-cd"]==="yes")s+=8; if(a.traceability==="yes")s+=8;
+      if(a.parallel==="yes")s+=5;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Industry-standard with broadest browser, OS, and language support",
+      "Language-agnostic — fits any existing technology stack",
+      "Large global talent pool — easy to hire and onboard",
+      "Proven track record in GxP validated environments",
+      "Selenium Grid enables large-scale parallel execution",
+      "Integrates with all major CI/CD and reporting tools"
+    ]
+  },
+  {
+    name:"Katalon Studio", type:"Commercial", lang:"Groovy · Java · Low-code",
+    url:"https://katalon.com",
+    score_fn(a){
+      let s=0;
+      if(a.web==="yes")s+=15; if(a.mobile==="yes")s+=15; if(a.api==="yes")s+=10;
+      if(a["manual-qa"]==="yes")s+=25; if(a["record-playback"]==="yes")s+=20;
+      if(a.reporting==="yes")s+=15; if(a.traceability==="yes")s+=10;
+      if(a["enterprise-budget"]==="yes")s+=10; if(a.gxp==="yes")s+=12;
+      if(a.consolidation==="yes")s+=15; if(a.support==="yes")s+=10;
+      if(a.oss==="yes")s-=20;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Unified web, mobile, API, and desktop testing in one platform",
+      "Low-code interface enables manual QA participation without coding",
+      "Built-in reporting, analytics, and dashboard",
+      "Supports BDD Gherkin and keyword-driven frameworks",
+      "Good compliance posture for regulated GxP environments"
+    ]
+  },
+  {
+    name:"Appium", type:"Open Source", lang:"Java · JS · Python · Ruby · C#",
+    url:"https://appium.io",
+    score_fn(a){
+      let s=0;
+      if(a.mobile==="yes")s+=45; if(a.oss==="yes")s+=15; if(a.web==="yes")s+=5;
+      if(a["ci-cd"]==="yes")s+=10; if(a.containers==="yes")s+=8; if(a.cloud==="yes")s+=12;
+      if(a.bdd==="yes")s+=8; if(a["dev-centric"]==="yes")s+=10;
+      if(a.erp==="yes")s-=10;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "De-facto standard for iOS and Android native app automation",
+      "Cross-platform — same test code can target iOS and Android",
+      "Supports real devices, simulators, and emulators",
+      "Integrates with BrowserStack, Sauce Labs, and LambdaTest",
+      "Active open-source community with rich plugin ecosystem"
+    ]
+  },
+  {
+    name:"TestComplete", type:"Commercial", lang:"Script · Low-code",
+    url:"https://smartbear.com/product/testcomplete/",
+    score_fn(a){
+      let s=0;
+      if(a.desktop==="yes")s+=35; if(a.web==="yes")s+=15; if(a["enterprise-budget"]==="yes")s+=15;
+      if(a["manual-qa"]==="yes")s+=20; if(a.support==="yes")s+=15; if(a.reporting==="yes")s+=10;
+      if(a.erp==="yes")s+=15; if(a["record-playback"]==="yes")s+=15; if(a.gxp==="yes")s+=10;
+      if(a.oss==="yes")s-=25;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Strongest desktop automation (WinForms, WPF, Delphi, MFC) support",
+      "AI-powered object recognition for legacy and complex UI components",
+      "Record-and-replay with scripting override capability",
+      "Enterprise-grade support and SLA from SmartBear",
+      "Covers web, mobile, and desktop in a single license"
+    ]
+  },
+  {
+    name:"Robot Framework", type:"Open Source", lang:"Keyword-driven · Python",
+    url:"https://robotframework.org",
+    score_fn(a){
+      let s=0;
+      if(a.bdd==="yes")s+=15; if(a["manual-qa"]==="yes")s+=20; if(a.oss==="yes")s+=20;
+      if(a.api==="yes")s+=15; if(a.gxp==="yes")s+=18; if(a["audit-trail"]==="yes")s+=12;
+      if(a.traceability==="yes")s+=10; if(a.web==="yes")s+=10; if(a.reporting==="yes")s+=12;
+      if(a.existing==="yes")s+=5;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Keyword-driven approach readable by non-developers and business analysts",
+      "Extensive library ecosystem: SeleniumLibrary, RequestsLibrary, AppiumLibrary",
+      "Detailed HTML test reports generated out of the box",
+      "Widely adopted in regulated and GxP environments",
+      "Supports acceptance-test-driven development (ATDD) natively"
+    ]
+  },
+  {
+    name:"k6 / Gatling", type:"Open Source", lang:"JavaScript (k6) · Scala/Java (Gatling)",
+    url:"https://k6.io",
+    score_fn(a){
+      let s=0;
+      if(a.perf==="yes")s+=55; if(a.oss==="yes")s+=20; if(a["ci-cd"]==="yes")s+=15;
+      if(a.api==="yes")s+=15; if(a.containers==="yes")s+=10; if(a["dev-centric"]==="yes")s+=10;
+      if(a.reporting==="yes")s+=8; if(a.web==="yes")s+=5;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Purpose-built for load, performance, and stress testing",
+      "Scripts are code — version-controllable and CI/CD-friendly",
+      "Threshold-based quality gates fail the pipeline on regression",
+      "k6 Cloud / Grafana Cloud for real-time distributed execution",
+      "Supports HTTP, WebSocket, gRPC, and browser-based scenarios"
+    ]
+  },
+  {
+    name:"Tricentis Tosca", type:"Commercial", lang:"Model-based · Low-code",
+    url:"https://tricentis.com/products/automate-continuous-testing-tosca",
+    score_fn(a){
+      let s=0;
+      if(a.erp==="yes")s+=30; if(a["enterprise-budget"]==="yes")s+=15; if(a.consolidation==="yes")s+=20;
+      if(a.gxp==="yes")s+=22; if(a["audit-trail"]==="yes")s+=15; if(a.traceability==="yes")s+=15;
+      if(a.support==="yes")s+=12; if(a.scale==="yes")s+=10; if(a.reporting==="yes")s+=10;
+      if(a["manual-qa"]==="yes")s+=15; if(a.web==="yes")s+=5; if(a.mobile==="yes")s+=5;
+      if(a.oss==="yes")s-=30;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "Model-based test automation purpose-built for SAP, Salesforce, and Oracle",
+      "Strong GxP and 21 CFR Part 11 compliance documentation support",
+      "End-to-end business process coverage across all layers",
+      "Risk-based test optimisation reduces total test suite execution time",
+      "Dedicated customer success and enterprise SLA"
+    ]
+  },
+  {
+    name:"Mabl", type:"Commercial", lang:"Low-code · AI-native",
+    url:"https://mabl.com",
+    score_fn(a){
+      let s=0;
+      if(a.web==="yes")s+=20; if(a.codegen==="yes")s+=25; if(a["record-playback"]==="yes")s+=22;
+      if(a["manual-qa"]==="yes")s+=18; if(a.cloud==="yes")s+=15; if(a.reporting==="yes")s+=10;
+      if(a.visual==="yes")s+=15; if(a.accessibility==="yes")s+=12; if(a["ci-cd"]==="yes")s+=10;
+      if(a.consolidation==="yes")s+=10; if(a.oss==="yes")s-=20;
+      return Math.min(s,100);
+    },
+    reasons:[
+      "AI-powered self-healing tests dramatically reduce maintenance burden",
+      "Auto-generated test plans derived from real user journeys",
+      "Built-in visual and accessibility testing coverage",
+      "Cloud-native execution — no infrastructure to manage",
+      "Native integrations with Jira, GitHub, Slack, and Azure DevOps"
+    ]
+  }
+];
+
+/* ════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════ */
+let answers = {};
+let currentSection = -1;
+
+/* ════════════════════════════════════════════════
+   ASSESSMENT FLOW
+════════════════════════════════════════════════ */
+function startAssessment(){
+  document.getElementById('phase-meta').style.display = 'none';
+  currentSection = 0;
+  renderSection(0);
+  updateProgress();
+}
+
+function renderSection(idx){
+  const sec = SECTIONS[idx];
+  let html = `<div class="card-inner">
+    <div class="section-title">${sec.icon} ${sec.label}</div>`;
+  sec.questions.forEach(q => {
+    const av = answers[q.id] || '';
+    html += `<div class="q-block">
+      <div class="q-label">${q.text}</div>
+      ${q.hint ? `<div class="q-hint">${q.hint}</div>` : ''}
+      <div class="opt-row">
+        <button class="opt-btn ${av==='yes'?'sel-yes':''}"     onclick="setAns('${q.id}','yes',this)">Yes</button>
+        <button class="opt-btn ${av==='no'?'sel-no':''}"      onclick="setAns('${q.id}','no',this)">No</button>
+        <button class="opt-btn ${av==='partial'?'sel-partial':''}" onclick="setAns('${q.id}','partial',this)">Partial</button>
+        <button class="opt-btn ${av==='na'?'sel-na':''}"      onclick="setAns('${q.id}','na',this)">N/A</button>
+      </div>
+    </div>`;
+  });
+  const isLast = (idx === SECTIONS.length - 1);
+  html += `<div class="nav-row">
+    ${idx > 0 ? `<button class="btn-secondary" onclick="prevSection()">&larr; Back</button>` : ''}
+    <button class="btn-primary" onclick="${isLast ? 'generateReport()' : 'nextSection()'}">${isLast ? 'Generate Report &rarr;' : 'Next &rarr;'}</button>
+  </div></div>`;
+  document.getElementById('q-sections').innerHTML = html;
+}
+
+function setAns(id, val, btn){
+  answers[id] = val;
+  const map = {yes:'sel-yes', no:'sel-no', partial:'sel-partial', na:'sel-na'};
+  btn.closest('.opt-row').querySelectorAll('.opt-btn').forEach(b => {
+    b.className = 'opt-btn';
+  });
+  btn.classList.add(map[val]);
+}
+
+function nextSection(){
+  currentSection++;
+  if(currentSection < SECTIONS.length){ renderSection(currentSection); updateProgress(); window.scrollTo(0,0); }
+}
+function prevSection(){
+  currentSection--;
+  if(currentSection >= 0){ renderSection(currentSection); updateProgress(); window.scrollTo(0,0); }
+}
+
+function updateProgress(){
+  const pct = Math.round(((currentSection + 1) / SECTIONS.length) * 100);
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('step-txt').textContent =
+    `Step ${currentSection + 1} of ${SECTIONS.length} \u2014 ${SECTIONS[currentSection].label}`;
+}
+
+/* ════════════════════════════════════════════════
+   SCORING
+════════════════════════════════════════════════ */
+function scoredTools(){
+  return TOOLS.map(t => ({...t, score: t.score_fn(answers)})).sort((a,b) => b.score - a.score);
+}
+
+function overallScore(){
+  const vals = Object.values(answers);
+  const yes = vals.filter(v => v === 'yes').length;
+  const partial = vals.filter(v => v === 'partial').length;
+  return vals.length > 0 ? Math.round(((yes + partial * 0.5) / vals.length) * 100) : 0;
+}
+
+function readinessLabel(score){
+  if(score >= 75) return { label:"AUTOMATION&#8209;READY",    bg:"#DCFCE7", color:"#16A34A" };
+  if(score >= 50) return { label:"PARTIALLY READY",           bg:"#FEF3C7", color:"#D97706" };
+  return           { label:"NEEDS PREPARATION",               bg:"#FEE2E2", color:"#DC2626" };
+}
+
+/* ════════════════════════════════════════════════
+   REPORT GENERATION
+════════════════════════════════════════════════ */
+function generateReport(){
+  const tools = scoredTools();
+  const top3  = tools.slice(0, 3);
+  const score = overallScore();
+  const rl    = readinessLabel(score);
+
+  const sysName  = document.getElementById('sys-name').value  || 'Unnamed System';
+  const sysOwner = document.getElementById('sys-owner').value || 'Not specified';
+  const sysDept  = document.getElementById('sys-dept').value  || 'Not specified';
+  const sysTech  = document.getElementById('sys-tech').value  || 'Not specified';
+  const today    = new Date().toISOString().split('T')[0];
+
+  const yesCount     = Object.values(answers).filter(v => v === 'yes').length;
+  const noCount      = Object.values(answers).filter(v => v === 'no').length;
+  const partialCount = Object.values(answers).filter(v => v === 'partial').length;
+  const totalQ       = Object.values(answers).length;
+
+  /* Section breakdown rows */
+  let divRows = '';
+  SECTIONS.forEach(sec => {
+    const secAns = sec.questions.map(q => answers[q.id] || 'na');
+    const yc  = secAns.filter(v => v === 'yes').length;
+    const nc  = secAns.filter(v => v === 'no').length;
+    const pc  = secAns.filter(v => v === 'partial').length;
+    const pct = Math.round(((yc + pc * 0.5) / sec.questions.length) * 100);
+    divRows += `<div class="div-hdr" style="background:${sec.bg};color:${sec.color};border-left:4px solid ${sec.color}">
+      ${sec.icon} ${sec.label}
+      <span style="margin-left:auto;font-size:11px;opacity:.7">${yc}Y / ${nc}N / ${pc}P &mdash; ${pct}%</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${pct}%;background:${sec.color}"></div></div>`;
+    sec.questions.forEach(q => {
+      const av  = answers[q.id] || 'na';
+      const cls = av==='yes'?'ans-yes':av==='no'?'ans-no':av==='partial'?'ans-partial':'ans-na';
+      const lbl = av==='yes'?'YES':av==='no'?'NO':av==='partial'?'PARTIAL':'N/A';
+      divRows += `<div class="q-row-r"><div class="q-text-r">${q.text}</div><div class="q-ans ${cls}">${lbl}</div></div>`;
+    });
+  });
+
+  /* Tool cards */
+  let toolCards = '';
+  top3.forEach((t, i) => {
+    const isTop = i === 0;
+    toolCards += `<div class="tool-card ${isTop ? 'top-pick' : ''}">
+      <div class="tool-card-header">
+        <span class="tool-name">${t.name}</span>
+        <span class="tool-badge ${isTop ? 'badge-top' : 'badge-alt'}">${isTop ? '&#9733; Top Recommendation' : 'Alternative'}</span>
+        <span class="tool-score" style="color:${isTop?'#0F4C81':'#475569'}">${t.score}% match</span>
+      </div>
+      <div class="tool-meta">${t.type} &nbsp;&middot;&nbsp; ${t.lang}</div>
+      <ul class="tool-reasons">${t.reasons.slice(0,4).map(r => `<li>${r}</li>`).join('')}</ul>
+      <div class="tool-bar-wrap">
+        <div class="tool-bar-bg"><div class="tool-bar-fill" style="width:${t.score}%;background:${isTop?'#0F4C81':'#94A3B8'}"></div></div>
+      </div>
+    </div>`;
+  });
+
+  /* All scores pills */
+  const allPills = tools.map(t => `<span class="tool-pill">${t.name} &mdash; ${t.score}%</span>`).join('');
+
+  /* Findings */
+  const unanswered = SECTIONS.flatMap(s => s.questions).filter(q => !answers[q.id] || answers[q.id] === 'na');
+  let findings = '';
+  unanswered.slice(0, 6).forEach(q => {
+    findings += `<div class="finding-r"><strong>Unanswered / N/A:</strong> ${q.text}</div>`;
+  });
+
+  /* Recommendation text */
+  const perfNote = answers.perf === 'yes'
+    ? ` For performance and load testing, <strong>k6</strong> or <strong>Gatling</strong> should be added as a dedicated tool alongside ${top3[0].name}.`
+    : '';
+  const altNote  = top3[1]
+    ? ` Consider <strong>${top3[1].name}</strong> as an alternative or complementary tool for areas not fully covered by the primary recommendation.`
+    : '';
+
+  const reportHTML = `
+<div class="report-container">
+  <div class="report-header">
+    <h1>Test Automation Assessment Report</h1>
+    <p>Test Automation Assessment Framework &mdash; SRMtech Quality Governance</p>
+  </div>
+  <div class="report-meta">
+    <div class="rmeta-item"><span style="color:#64748B">System</span><strong>${sysName}</strong></div>
+    <div class="rmeta-item"><span style="color:#64748B">Owner</span><strong>${sysOwner}</strong></div>
+    <div class="rmeta-item"><span style="color:#64748B">Department</span><strong>${sysDept}</strong></div>
+    <div class="rmeta-item"><span style="color:#64748B">Assessment date</span><strong>${today}</strong></div>
+  </div>
+  <div class="result-banner">
+    <div class="result-badge" style="background:${rl.bg};color:${rl.color}">${rl.label}</div>
+    <div style="font-size:13px;color:#64748B;margin-bottom:8px">Overall automation readiness score: <strong style="color:#0F172A;font-size:18px">${score}%</strong></div>
+    <div class="score-row">
+      <div class="score-item"><strong style="color:#16A34A">${yesCount}</strong>Yes</div>
+      <div class="score-item"><strong style="color:#DC2626">${noCount}</strong>No</div>
+      <div class="score-item"><strong style="color:#D97706">${partialCount}</strong>Partial</div>
+      <div class="score-item"><strong style="color:#0D9488">${totalQ}/${SECTIONS.reduce((a,s)=>a+s.questions.length,0)}</strong>Answered</div>
+      <div class="score-item"><strong style="color:#0F172A">${top3[0].name}</strong>Top Tool Fit</div>
+    </div>
+  </div>
+
+  <div class="r-section"><h2>&#128202; Section Breakdown</h2>${divRows}</div>
+
+  <div class="r-section">
+    <h2>&#128295; Applicable Regulatory &amp; Standards Frameworks</h2>
+    ${answers.gxp==='yes'?'<span class="tool-pill">21 CFR Part 11</span><span class="tool-pill">GAMP 5</span>':''}
+    <span class="tool-pill">ISO/IEC 29119</span>
+    <span class="tool-pill">IEEE 829</span>
+    ${answers.bdd==='yes'?'<span class="tool-pill">BDD / Gherkin</span>':''}
+    ${answers.accessibility==='yes'?'<span class="tool-pill">WCAG 2.2</span>':''}
+    ${answers["ci-cd"]==='yes'?'<span class="tool-pill">Shift-Left CI/CD</span>':''}
+    ${answers.perf==='yes'?'<span class="tool-pill">ISO 25010 Performance</span>':''}
+    <span class="tool-pill">ISTQB</span>
+  </div>
+
+  <div class="r-section">
+    <h2>&#127942; Recommended Automation Tools</h2>
+    ${toolCards}
+    <div style="margin-top:12px">
+      <div style="font-size:12px;font-weight:600;color:#64748B;margin-bottom:6px">All tool scores:</div>
+      ${allPills}
+    </div>
+  </div>
+
+  ${findings ? `<div class="r-section"><h2 style="color:#D97706">&#9888; Items Requiring Clarification (${unanswered.length > 6 ? '6+' : unanswered.length})</h2>${findings}</div>` : ''}
+
+  <div class="r-section">
+    <h2>&#128203; Recommendation</h2>
+    <div class="reco-r">
+      <strong>Primary Tool Recommendation:</strong> ${top3[0].name} (${top3[0].score}% fit score)<br><br>
+      Based on this assessment, <strong>${top3[0].name}</strong> is the best-fit test automation tool for <strong>${sysName}</strong>.
+      ${altNote}
+      ${perfNote}
+      <br><br>
+      <strong>Immediate next steps:</strong> Assign an Automation Champion, define the automation scope boundary, create a POC sprint to validate the recommended tool against your actual test scenarios, and establish a framework baseline before scaling up.
+    </div>
+  </div>
+
+  <div class="r-footer">
+    Generated by SRMtech Test Automation Assessment Framework &mdash; ${today} &nbsp;|&nbsp; Tech Stack: ${sysTech}<br>
+    This report is auto-generated from the Software Test Automation Assessment tool. All findings should be reviewed by a qualified QA Lead or Test Architect before tool procurement decisions are made.
+  </div>
+</div>`;
+
+  document.getElementById('assessment-wrap').style.display = 'none';
+  document.getElementById('report-wrap').classList.remove('hidden');
+  document.getElementById('report-html').innerHTML = reportHTML;
+
+  // store for download
+  window._reportData = { html: reportHTML, sysName, sysOwner, sysDept, sysTech, today, score, rl, top3, allPills };
+  window.scrollTo(0, 0);
+}
+
+/* ════════════════════════════════════════════════
+   DOWNLOAD
+════════════════════════════════════════════════ */
+function downloadReport(){
+  const d = window._reportData;
+  if(!d){ alert('Generate the report first.'); return; }
+
+  const fullHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Automation Assessment &mdash; ${d.sysName}</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#F7F8FC;color:#334155;line-height:1.6;padding:20px}
+.report-container{max-width:900px;margin:0 auto;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:hidden}
+.report-header{background:#0F4C81;padding:28px 32px;color:#fff}
+.report-header h1{font-size:22px;font-weight:700;margin-bottom:4px}
+.report-header p{font-size:12px;opacity:.85}
+.report-meta{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;padding:18px 32px;background:#EFF6FF;border-bottom:1px solid #BFDBFE}
+.rmeta-item{font-size:12px;color:#475569}.rmeta-item strong{display:block;font-size:13px;color:#0F172A}
+.result-banner{padding:24px 32px;text-align:center;border-bottom:2px solid #E2E8F0}
+.result-badge{display:inline-block;font-size:28px;font-weight:700;padding:8px 32px;border-radius:10px;margin-bottom:8px}
+.score-row{display:flex;gap:16px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.score-item{background:#F1F5F9;padding:8px 16px;border-radius:8px;font-size:12px;text-align:center}
+.score-item strong{display:block;font-size:18px}
+.r-section{padding:20px 32px;border-bottom:1px solid #E2E8F0}
+.r-section h2{font-size:15px;font-weight:600;margin-bottom:12px;color:#0F172A;display:flex;align-items:center;gap:8px}
+.div-hdr{padding:8px 14px;border-radius:6px;margin:12px 0 8px;display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.q-row-r{display:flex;align-items:flex-start;gap:10px;padding:6px 0;border-bottom:1px solid #F1F5F9;font-size:12px}
+.q-text-r{flex:1;color:#334155}
+.q-ans{width:86px;text-align:center;font-weight:600;border-radius:4px;padding:2px 8px;font-size:11px}
+.ans-yes{background:#DCFCE7;color:#16A34A}.ans-no{background:#F1F5F9;color:#64748B}
+.ans-partial{background:#FEF9C3;color:#92400E}.ans-na{background:#F8FAFC;color:#94A3B8}
+.bar-bg{background:#E2E8F0;border-radius:4px;height:8px;margin:4px 0 2px}
+.bar-fill{height:100%;border-radius:4px}
+.tool-card{border:1px solid #E2E8F0;border-radius:10px;padding:16px 18px;margin-bottom:10px;background:#fff}
+.tool-card.top-pick{border-color:#0F4C81;border-width:2px}
+.tool-card-header{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.tool-name{font-size:16px;font-weight:700;color:#0F172A}
+.tool-badge{font-size:10px;padding:2px 10px;border-radius:10px;font-weight:700}
+.badge-top{background:#DBEAFE;color:#1D4ED8}.badge-alt{background:#F1F5F9;color:#475569}
+.tool-score{margin-left:auto;font-size:14px;font-weight:700}
+.tool-meta{font-size:11px;color:#64748B;margin:3px 0 10px}
+.tool-reasons{font-size:12px;color:#475569;padding-left:0;list-style:none}
+.tool-reasons li{margin:3px 0;padding-left:16px;position:relative}
+.tool-reasons li::before{content:"✓";position:absolute;left:0;color:#16A34A;font-size:10px;top:1px}
+.tool-bar-wrap{margin-top:10px}.tool-bar-bg{background:#E2E8F0;border-radius:4px;height:6px}
+.tool-bar-fill{height:100%;border-radius:4px}
+.tool-pill{display:inline-block;padding:3px 10px;border-radius:10px;font-size:11px;font-weight:600;margin:2px;background:#DBEAFE;color:#1D4ED8}
+.finding-r{padding:8px 12px;background:#FFFBEB;border-left:3px solid #D97706;border-radius:0 6px 6px 0;margin:6px 0;font-size:12px}
+.reco-r{padding:14px;background:#EFF6FF;border-left:4px solid #0F4C81;border-radius:0 8px 8px 0;margin:12px 0;font-size:13px}
+.r-footer{padding:16px 32px;background:#F8FAFC;font-size:11px;color:#94A3B8;text-align:center}
+@media print{body{padding:0;background:#fff}.report-container{box-shadow:none;border-radius:0}}
+</style>
+</head>
+<body>
+${d.html}
+</body>
+</html>`;
+
+  const blob = new Blob([fullHTML], { type: 'text/html' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = `TestAutomation_Assessment_${d.sysName.replace(/\s+/g,'_')}_${d.today}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ════════════════════════════════════════════════
+   RESTART
+════════════════════════════════════════════════ */
+function restartAssessment(){
+  answers = {}; currentSection = -1;
+  document.getElementById('assessment-wrap').style.display = '';
+  document.getElementById('report-wrap').classList.add('hidden');
+  document.getElementById('q-sections').innerHTML = '';
+  document.getElementById('phase-meta').style.display = '';
+  document.getElementById('prog').style.width = '0%';
+  document.getElementById('step-txt').textContent = 'Step 0 of 8 \u2014 Not started';
+  ['sys-name','sys-owner','sys-dept'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('sys-tech').value = '';
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
