@@ -1,0 +1,508 @@
+name: Generate Index HTML
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - '**.html'
+      - '!index.html'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-index:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Generate index.html
+        run: |
+          cat > index.html << 'EOF'
+          <!DOCTYPE html>
+          <html lang="en">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>AutomationPOCs - HTML Files Collection</title>
+              <style>
+                  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap');
+                  
+                  * {
+                      margin: 0;
+                      padding: 0;
+                      box-sizing: border-box;
+                  }
+                  
+                  body {
+                      font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                      line-height: 1.6;
+                      color: #1a202c;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+                      background-size: 400% 400%;
+                      animation: gradientShift 15s ease infinite;
+                      min-height: 100vh;
+                      padding: 2rem;
+                      position: relative;
+                      overflow-x: hidden;
+                  }
+                  
+                  @keyframes gradientShift {
+                      0% { background-position: 0% 50%; }
+                      50% { background-position: 100% 50%; }
+                      100% { background-position: 0% 50%; }
+                  }
+                  
+                  .container {
+                      max-width: 1100px;
+                      margin: 0 auto;
+                      background: rgba(255, 255, 255, 0.98);
+                      backdrop-filter: blur(10px);
+                      border-radius: 30px;
+                      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.5);
+                      padding: 0;
+                      overflow: hidden;
+                      animation: slideUp 0.8s ease;
+                  }
+                  
+                  @keyframes slideUp {
+                      from {
+                          opacity: 0;
+                          transform: translateY(30px);
+                      }
+                      to {
+                          opacity: 1;
+                          transform: translateY(0);
+                      }
+                  }
+                  
+                  .header {
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      padding: 3rem;
+                      text-align: center;
+                      position: relative;
+                      overflow: hidden;
+                  }
+                  
+                  .header::before {
+                      content: '';
+                      position: absolute;
+                      top: -50%;
+                      left: -50%;
+                      width: 200%;
+                      height: 200%;
+                      background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+                      background-size: 50px 50px;
+                      animation: movePattern 20s linear infinite;
+                  }
+                  
+                  @keyframes movePattern {
+                      0% { transform: translate(0, 0); }
+                      100% { transform: translate(50px, 50px); }
+                  }
+                  
+                  .header-content {
+                      position: relative;
+                      z-index: 1;
+                  }
+                  
+                  h1 {
+                      color: white;
+                      margin-bottom: 0.5rem;
+                      font-size: 3.5rem;
+                      font-weight: 800;
+                      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+                      letter-spacing: -1px;
+                  }
+                  
+                  .subtitle {
+                      color: rgba(255, 255, 255, 0.95);
+                      margin-bottom: 2rem;
+                      font-size: 1.3rem;
+                      font-weight: 300;
+                  }
+                  
+                  .stats {
+                      display: flex;
+                      justify-content: center;
+                      gap: 2rem;
+                      margin-top: 2rem;
+                  }
+                  
+                  .stat-item {
+                      background: rgba(255, 255, 255, 0.2);
+                      backdrop-filter: blur(10px);
+                      padding: 1rem 2rem;
+                      border-radius: 15px;
+                      border: 1px solid rgba(255, 255, 255, 0.3);
+                  }
+                  
+                  .stat-number {
+                      display: block;
+                      font-size: 2.5rem;
+                      font-weight: 700;
+                      color: white;
+                  }
+                  
+                  .stat-label {
+                      display: block;
+                      font-size: 0.9rem;
+                      color: rgba(255, 255, 255, 0.9);
+                      text-transform: uppercase;
+                      letter-spacing: 1px;
+                  }
+                  
+                  .content {
+                      padding: 3rem;
+                  }
+                  
+                  .search-box {
+                      margin-bottom: 2rem;
+                      position: relative;
+                  }
+                  
+                  .search-input {
+                      width: 100%;
+                      padding: 1.2rem 1.5rem 1.2rem 3.5rem;
+                      font-size: 1.1rem;
+                      font-family: 'Poppins', sans-serif;
+                      border: 2px solid #e2e8f0;
+                      border-radius: 15px;
+                      outline: none;
+                      transition: all 0.3s ease;
+                      background: #f7fafc;
+                  }
+                  
+                  .search-input:focus {
+                      border-color: #667eea;
+                      box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+                      background: white;
+                  }
+                  
+                  .search-icon {
+                      position: absolute;
+                      left: 1.2rem;
+                      top: 50%;
+                      transform: translateY(-50%);
+                      font-size: 1.3rem;
+                      color: #667eea;
+                  }
+                  
+                  .file-list {
+                      list-style: none;
+                      display: grid;
+                      gap: 1rem;
+                  }
+                  
+                  .file-item {
+                      animation: fadeIn 0.5s ease forwards;
+                      opacity: 0;
+                  }
+                  
+                  .file-item:nth-child(1) { animation-delay: 0.1s; }
+                  .file-item:nth-child(2) { animation-delay: 0.2s; }
+                  .file-item:nth-child(3) { animation-delay: 0.3s; }
+                  .file-item:nth-child(4) { animation-delay: 0.4s; }
+                  .file-item:nth-child(5) { animation-delay: 0.5s; }
+                  .file-item:nth-child(n+6) { animation-delay: 0.6s; }
+                  
+                  @keyframes fadeIn {
+                      to {
+                          opacity: 1;
+                      }
+                  }
+                  
+                  .file-link {
+                      display: flex;
+                      align-items: center;
+                      padding: 1.5rem;
+                      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+                      border-radius: 15px;
+                      text-decoration: none;
+                      color: #2d3748;
+                      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                      border: 2px solid #e2e8f0;
+                      position: relative;
+                      overflow: hidden;
+                  }
+                  
+                  .file-link::before {
+                      content: '';
+                      position: absolute;
+                      top: 0;
+                      left: -100%;
+                      width: 100%;
+                      height: 100%;
+                      background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.1), transparent);
+                      transition: left 0.5s ease;
+                  }
+                  
+                  .file-link:hover::before {
+                      left: 100%;
+                  }
+                  
+                  .file-link:hover {
+                      transform: translateX(10px) scale(1.02);
+                      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.3);
+                      border-color: #667eea;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      color: white;
+                  }
+                  
+                  .file-icon {
+                      font-size: 2.5rem;
+                      margin-right: 1.5rem;
+                      min-width: 60px;
+                      height: 60px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      border-radius: 12px;
+                      transition: all 0.3s ease;
+                  }
+                  
+                  .file-link:hover .file-icon {
+                      background: white;
+                      transform: rotate(10deg) scale(1.1);
+                  }
+                  
+                  .file-name {
+                      font-weight: 600;
+                      font-size: 1.15rem;
+                      flex: 1;
+                  }
+                  
+                  .file-arrow {
+                      font-size: 1.5rem;
+                      opacity: 0;
+                      transform: translateX(-10px);
+                      transition: all 0.3s ease;
+                  }
+                  
+                  .file-link:hover .file-arrow {
+                      opacity: 1;
+                      transform: translateX(0);
+                  }
+                  
+                  .no-results {
+                      text-align: center;
+                      padding: 3rem;
+                      color: #718096;
+                      font-size: 1.2rem;
+                      display: none;
+                  }
+                  
+                  .no-results.show {
+                      display: block;
+                  }
+                  
+                  .footer {
+                      background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+                      padding: 2.5rem 3rem;
+                      text-align: center;
+                      color: #718096;
+                      font-size: 0.95rem;
+                      border-top: 1px solid #e2e8f0;
+                  }
+                  
+                  .footer-content {
+                      display: flex;
+                      flex-direction: column;
+                      gap: 0.8rem;
+                  }
+                  
+                  .update-time {
+                      color: #667eea;
+                      font-weight: 700;
+                      font-size: 1.1rem;
+                  }
+                  
+                  .badge {
+                      display: inline-block;
+                      padding: 0.5rem 1rem;
+                      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                      color: white;
+                      border-radius: 50px;
+                      font-size: 0.85rem;
+                      font-weight: 600;
+                      margin-top: 1rem;
+                  }
+                  
+                  @media (max-width: 768px) {
+                      body {
+                          padding: 1rem;
+                      }
+                      
+                      .container {
+                          border-radius: 20px;
+                      }
+                      
+                      .header {
+                          padding: 2rem 1.5rem;
+                      }
+                      
+                      h1 {
+                          font-size: 2.5rem;
+                      }
+                      
+                      .subtitle {
+                          font-size: 1.1rem;
+                      }
+                      
+                      .stats {
+                          flex-direction: column;
+                          gap: 1rem;
+                      }
+                      
+                      .content {
+                          padding: 2rem 1.5rem;
+                      }
+                      
+                      .file-link {
+                          padding: 1.2rem;
+                      }
+                      
+                      .file-icon {
+                          font-size: 2rem;
+                          min-width: 50px;
+                          height: 50px;
+                      }
+                      
+                      .file-name {
+                          font-size: 1rem;
+                      }
+                  }
+              </style>
+          </head>
+          <body>
+              <div class="container">
+                  <div class="header">
+                      <div class="header-content">
+                          <h1>🚀 AutomationPOCs</h1>
+                          <p class="subtitle">HTML Files Collection & Repository</p>
+                          <div class="stats">
+                              <div class="stat-item">
+                                  <span class="stat-number" id="fileCount">0</span>
+                                  <span class="stat-label">Files</span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  
+                  <div class="content">
+                      <div class="search-box">
+                          <span class="search-icon">🔍</span>
+                          <input type="text" class="search-input" id="searchInput" placeholder="Search files...">
+                      </div>
+                      
+                      <ul class="file-list" id="fileList">
+          EOF
+          
+          # Find all HTML files except index.html and sort them
+          find . -maxdepth 1 -name "*.html" ! -name "index.html" -type f | sort | while read file; do
+            # Remove ./ prefix and get filename
+            filename=$(basename "$file")
+            # URL encode spaces and special characters for href
+            encoded=$(echo "$filename" | sed 's/ /%20/g' | sed 's/—/%E2%80%94/g')
+            
+            echo "                      <li class=\"file-item\">" >> index.html
+            echo "                          <a href=\"$encoded\" class=\"file-link\">" >> index.html
+            echo "                              <span class=\"file-icon\">📄</span>" >> index.html
+            echo "                              <span class=\"file-name\">$filename</span>" >> index.html
+            echo "                              <span class=\"file-arrow\">→</span>" >> index.html
+            echo "                          </a>" >> index.html
+            echo "                      </li>" >> index.html
+          done
+          
+          # Add footer with timestamp and JavaScript
+          cat >> index.html << 'EOF'
+                      </ul>
+                      
+                      <div class="no-results" id="noResults">
+                          <p>🔍 No files found matching your search</p>
+                      </div>
+                  </div>
+                  
+                  <div class="footer">
+                      <div class="footer-content">
+                          <p>Last updated: <span class="update-time">$(date -u +"%Y-%m-%d %H:%M:%S UTC")</span></p>
+                          <p>🤖 Automatically generated by GitHub Actions</p>
+                          <div class="badge">✨ Powered by Automation</div>
+                      </div>
+                  </div>
+              </div>
+              
+              <script>
+                  // Count files and update stats
+                  const fileItems = document.querySelectorAll('.file-item');
+                  document.getElementById('fileCount').textContent = fileItems.length;
+                  
+                  // Search functionality
+                  const searchInput = document.getElementById('searchInput');
+                  const fileList = document.getElementById('fileList');
+                  const noResults = document.getElementById('noResults');
+                  
+                  searchInput.addEventListener('input', function(e) {
+                      const searchTerm = e.target.value.toLowerCase();
+                      let visibleCount = 0;
+                      
+                      fileItems.forEach(item => {
+                          const fileName = item.querySelector('.file-name').textContent.toLowerCase();
+                          if (fileName.includes(searchTerm)) {
+                              item.style.display = '';
+                              visibleCount++;
+                          } else {
+                              item.style.display = 'none';
+                          }
+                      });
+                      
+                      // Show/hide no results message
+                      if (visibleCount === 0 && searchTerm !== '') {
+                          noResults.classList.add('show');
+                      } else {
+                          noResults.classList.remove('show');
+                      }
+                  });
+                  
+                  // Keyboard shortcut for search (Ctrl/Cmd + K)
+                  document.addEventListener('keydown', function(e) {
+                      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+                          e.preventDefault();
+                          searchInput.focus();
+                      }
+                  });
+              </script>
+          </body>
+          </html>
+          EOF
+          
+          # Replace the timestamp placeholder with actual timestamp
+          sed -i "s/\$(date -u +\"%Y-%m-%d %H:%M:%S UTC\")/$(date -u +"%Y-%m-%d %H:%M:%S UTC")/g" index.html
+      
+      - name: Check for changes
+        id: check_changes
+        run: |
+          if git diff --quiet index.html; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No changes to index.html"
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "Changes detected in index.html"
+          fi
+      
+      - name: Commit and push if changed
+        if: steps.check_changes.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git commit -m "🤖 Auto-generate index.html [skip ci]"
+          git push
